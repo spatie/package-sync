@@ -145,11 +145,9 @@ export class Composer {
     }
 
     public save() {
-        const f = File.create(this.filename)
+        File.create(this.filename)
             .setContents(this.toJson())
             .save();
-
-        console.log(f.contents);
 
         return this;
     }

@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
+import { FixerManager } from '../issues/FixerManager';
 import { Command, createOption } from './Command';
+
 const micromatch = require('micromatch');
 
 export default class FixCommand extends Command {
@@ -13,10 +15,6 @@ export default class FixCommand extends Command {
     public static options = [createOption('fixer', undefined, { alias: 'F', type: 'string' })];
 
     static handle(argv: any): void {
-        // const skeletonType = argv.packageName.startsWith('laravel-') ? 'laravel' : 'php';
-        // const skeletonPath = `${app.config.templatesPath}/temp-package-skeleton-${skeletonType}`; //`/development/repositories/spatie/package-skeleton-${skeletonType}`;
-        // const repositoryPath = `${app.config.packagesPath}/${argv.packageName}`;
-
         const skeletonType = argv.packageName.startsWith('laravel-') ? 'laravel' : 'php';
         const templateName = app.configuration.getFullTemplateName(skeletonType);
         const skeletonPath = app.templatePath(templateName);
@@ -35,12 +33,7 @@ export default class FixCommand extends Command {
             issueType = '*';
         }
 
-        console.log('using fixer ', argv.fixer);
-
-        app.fixIssues(
-            skeletonPath,
-            repositoryPath,
-            results.filter(r => micromatch.isMatch(r.kind, issueType)),
-        );
+        FixerManager.create(skeletonPath, repositoryPath)
+            .fixIssues(results.filter(r => micromatch.isMatch(r.kind, issueType)));
     }
 }

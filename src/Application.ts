@@ -3,15 +3,6 @@
 import { existsSync, mkdirSync } from 'fs';
 import { basename } from 'path';
 import { Configuration } from './Configuration';
-import { DirectoryNotFoundFixer } from './issues/fixers/DirectoryNotFoundFixer';
-import { FileIsNotSimilarEnoughFixer } from './issues/fixers/FileIsNotSimilarEnoughFixer';
-import { FileDoesNotMatchFixer } from './issues/fixers/FileDoesNotMatchFixer';
-import { FileNotFoundFixer } from './issues/fixers/FileNotFoundFixer';
-import { GitFileFixer } from './issues/fixers/GitFileFixer';
-import { OptionalPackagesFixer } from './issues/fixers/OptionalPackagesFixer';
-import { PackageNotUsedFixer } from './issues/fixers/PackageNotUsedFixer';
-import { PackageScriptNotFoundFixer } from './issues/fixers/PackageScriptNotFoundFixer';
-import { PsalmFixer } from './issues/fixers/PsalmFixer';
 import { PackageIssue } from './issues/PackageIssue';
 import { FileEntry, FileEntryArray } from './lib/FileEntry';
 import { FileReader } from './lib/FileReader';
@@ -262,48 +253,6 @@ export class Application {
         });
 
         process.stdout.write(`${fullLineSeparator}\n`);
-    }
-
-    public fixIssues(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]) {
-        this.init(skeletonPath, repositoryPath);
-
-        const issues = results.map(r => new PackageIssue(r, skeletonPath, repositoryPath, false));
-
-        this.runNamedFixers(skeletonPath, repositoryPath, issues);
-        issues.forEach(issue => this.fixIssue(issue));
-    }
-
-    public runNamedFixers(skeletonPath: string, repositoryPath: string, issues: PackageIssue[]) {
-        this.init(skeletonPath, repositoryPath);
-
-        const namedFixers = [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
-
-        // check every issue against each fixer so fixers have a chance to fix multiple related issues
-        namedFixers.forEach(fixer => {
-            issues.forEach(issue => {
-                if (fixer.fixes(issue.result.kind) && fixer.canFix(issue)) {
-                    new fixer(skeletonPath, repositoryPath, issue)
-                        .fix();
-                }
-            });
-        });
-    }
-
-    public fixIssue(issue: PackageIssue) {
-        const fixers = [
-            DirectoryNotFoundFixer,
-            FileIsNotSimilarEnoughFixer,
-            FileDoesNotMatchFixer,
-            FileNotFoundFixer,
-            PackageNotUsedFixer,
-            PackageScriptNotFoundFixer,
-        ];
-
-        fixers
-            .filter(fixer => fixer.fixes(issue.result.kind))
-            .filter(fixer => fixer.canFix(issue))
-            .forEach(fixer => new fixer(issue.skeletonPath, issue.repositoryPath, issue)
-                .fix());
     }
 }
 
