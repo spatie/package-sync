@@ -118,7 +118,7 @@ export class Application {
         return new FileEntryArray(result.filter(filterFunc));
     }
 
-    protected performComparisons(repositoryPath: string, repositoryFiles: any, filesDiff: any, fileinfo: any) {
+    protected performComparisons(skeletonPath: string, repositoryPath: string, repositoryFiles: any, filesDiff: any, fileinfo: any) {
         if (!fileinfo.isFile || !fileinfo.shouldCompare) {
             return;
         }
@@ -139,6 +139,8 @@ export class Application {
                 kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
                 score: sizeComparison.percentDifferenceForDisplay(8, 5),
                 fileinfo,
+                skeletonPath,
+                repositoryPath,
             });
             return;
         }
@@ -153,14 +155,20 @@ export class Application {
         }
     }
 
-    protected compareRepositoryToSkeleton(repositoryFiles: any, skeletonFiles: any, filesDiff: any) {
+    protected compareRepositoryToSkeleton(
+        skeletonPath: string,
+        repositoryPath: string,
+        repositoryFiles: any,
+        skeletonFiles: any,
+        filesDiff: any,
+    ) {
         repositoryFiles
             .filter((fi: any) => fi.shouldCompare || !fi.shouldIgnore)
             .filter((fi: any) => !skeletonFiles.containsEntry(fi))
             .forEach((fileinfo: any) => {
                 const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
 
-                filesDiff.push({ kind, score: 0, fileinfo });
+                filesDiff.push({ kind, score: 0, fileinfo, skeletonPath, repositoryPath });
             });
     }
 
@@ -174,14 +182,14 @@ export class Application {
         skeletonFiles.forEach(fileinfo => {
             if (!fileinfo.shouldIgnore && !repositoryFiles.containsEntry(fileinfo)) {
                 const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-                filesDiff.push({ kind: kind, score: 0, fileinfo });
+                filesDiff.push({ kind: kind, score: 0, fileinfo, skeletonPath, repositoryPath });
                 return;
             }
 
-            this.performComparisons(repositoryPath, repositoryFiles, filesDiff, fileinfo);
+            this.performComparisons(skeletonPath, repositoryPath, repositoryFiles, filesDiff, fileinfo);
         });
 
-        this.compareRepositoryToSkeleton(repositoryFiles, skeletonFiles, filesDiff);
+        this.compareRepositoryToSkeleton(skeletonPath, repositoryPath, repositoryFiles, skeletonFiles, filesDiff);
 
         const packagesDiff = ComposerComparer.comparePackages(skeletonPath, repositoryPath);
         const scriptsDiff = ComposerComparer.compareScripts(skeletonPath, repositoryPath);
@@ -197,7 +205,13 @@ export class Application {
             .sort((a: any, b: any) => {
                 return (firstSegment(a.kind) + a.fileinfo.relativeName).localeCompare(firstSegment(b.kind) + b.fileinfo.relativeName);
             })
-            .map((fi: any) => ({ kind: fi.kind, score: fi.score, name: fi.fileinfo.relativeName }))
+            .map((fi: any) => ({
+                kind: fi.kind,
+                score: fi.score,
+                name: fi.fileinfo.relativeName,
+                skeletonPath: fi.skeletonPath,
+                repositoryPath: fi.repositoryPath,
+            }))
             .concat(...additionalDiffs)
             .sort((a: any, b: any) => (firstSegment(a.kind) + a.name).localeCompare(firstSegment(b.kind) + b.name))
             .sort((a: any, b: any) => {
@@ -213,6 +227,10 @@ export class Application {
                 return a.kind === b.kind ? 0 : 1;
             })
             .sort((a: any) => (firstSegment(a.kind) === 'extra' ? -1 : 0));
+    }
+
+    public fileComparisonResultsToIssues(results: FileComparisonResult[]): PackageIssue[] {
+        return results.map(r => new PackageIssue(r, r.skeletonPath, r.repositoryPath, false));
     }
 
     public displayResults(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]): void {

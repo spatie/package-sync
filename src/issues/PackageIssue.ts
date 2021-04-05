@@ -11,4 +11,8 @@ export class PackageIssue {
     ) {
         //
     }
+
+    static fromComparison(result: FileComparisonResult) {
+        return new PackageIssue(result, result.skeletonPath, result.repositoryPath, false);
+    }
 }

@@ -22,4 +22,6 @@ export interface FileComparisonResult {
     score: string | number;
     name: string;
     context?: any;
+    skeletonPath: string;
+    repositoryPath: string;
 }

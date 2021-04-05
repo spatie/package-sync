@@ -1,11 +1,12 @@
 import { ComparisonKind, FileComparisonResult } from '../../types/FileComparisonResult';
 import { Composer } from './Composer';
+
 const semver = require('semver');
 
 export class ComposerComparer {
     static compareScripts(skeletonPath: string, repositoryPath: string): FileComparisonResult[] {
-        const skeletonComposer = Composer.create(`${skeletonPath}/composer.json`);
-        const repositoryComposer = Composer.create(`${repositoryPath}/composer.json`);
+        const skeletonComposer = Composer.createFromPath(skeletonPath);
+        const repositoryComposer = Composer.createFromPath(repositoryPath);
 
         return skeletonComposer
             .scripts()
@@ -16,6 +17,8 @@ export class ComposerComparer {
                     score: 0,
                     name: script.name,
                     context: Object.assign({}, script),
+                    skeletonPath,
+                    repositoryPath,
                 };
             });
     }
@@ -33,6 +36,8 @@ export class ComposerComparer {
                         score: 0,
                         name: pkg.name,
                         context: pkg.section,
+                        skeletonPath,
+                        repositoryPath,
                     };
                 }
 
@@ -48,6 +53,8 @@ export class ComposerComparer {
                         score: versionDiff,
                         name: pkg.name,
                         context: pkg,
+                        skeletonPath,
+                        repositoryPath,
                     };
                 }
 

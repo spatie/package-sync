@@ -22,6 +22,6 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-var-requires': 'off',
         'newline-per-chained-call': ['warn', { ignoreChainWithDepth: 1 }],
-        indent: ['error', 4, { SwitchCase: 1 }],
+        indent: ['warn', 4, { SwitchCase: 1 }],
     },
 };
