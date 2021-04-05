@@ -38,6 +38,10 @@ npm run dev analyze regex
 
 The `pull-*` commands clone the repositories to the local file system _(or run `git pull` if they already exist locally)_.
 
+You should see something similar to the following:
+
+![image](https://user-images.githubusercontent.com/5508707/113592108-bb375a00-9602-11eb-9a85-223350a68be4.png)
+
 ## Fixing package issues
 
 >
@@ -49,6 +53,8 @@ To fix any issues with the `regex` package from above, run the following:
 ```bash
 npm run dev fix regex all
 ```
+
+![image](https://user-images.githubusercontent.com/5508707/113592291-f5086080-9602-11eb-83d8-8d4399bfed26.png)
 
 You can also only fix certian issues.  To only fix the 'missing_pkg' issues, run:
 
