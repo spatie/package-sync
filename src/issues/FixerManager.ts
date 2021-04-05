@@ -15,6 +15,8 @@ import { PackageIssue } from './PackageIssue';
 
 const micromatch = require('micromatch');
 
+// test comment
+
 export class FixerManager {
     constructor(public skeletonPath: string, public repositoryPath: string) {
         //
