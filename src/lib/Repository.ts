@@ -87,15 +87,6 @@ export class Repository {
                             app.getFileScoreRequirements(fqName),
                         ),
                     );
-                    //     {
-                    //     isFile: !isPath,
-                    //     name: fqName,
-                    //     relativeName: relativeName,
-                    //     filesize: fileSize(fqName),
-                    //     shouldIgnore: app.shouldIgnoreFile(relativeName),
-                    //     shouldCompare: !isPath && app.shouldCompareFile(fqName),
-                    //     requiredScores: app.getFileScoreRequirements(fqName),
-                    // });
 
                     if (rfile.isDirectory()) {
                         result.push(...this.getFileList(fqName, basePath ?? directory));

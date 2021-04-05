@@ -2,19 +2,19 @@
 
 import { existsSync, mkdirSync } from 'fs';
 import { basename } from 'path';
-import { Configuration } from './Configuration';
-import { PackageIssue } from './issues/PackageIssue';
-import { FileEntry, FileEntryArray } from './lib/FileEntry';
-import { compareFileSizes } from './lib/FileSizeComparison';
-import { fileSize, getFileList, isDirectory } from './lib/helpers';
-import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { ComparisonKind, FileComparisonResult } from './types/FileComparisonResult';
-import { FileScoreRequirements } from './types/FileScoreRequirements';
+import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
+import { Configuration } from './Configuration';
 import { ConsolePrinter } from './printers/ConsolePrinter';
 import { File } from './lib/File';
+import { FileEntry, FileEntryArray } from './lib/FileEntry';
+import { FileScoreRequirements } from './types/FileScoreRequirements';
+import { PackageIssue } from './issues/PackageIssue';
 import { Repository } from './lib/Repository';
 import { RepositoryIssue } from './issues/RepositoryIssue';
+import { compareFileSizes } from './lib/FileSizeComparison';
+import { fileSize, getFileList, isDirectory } from './lib/helpers';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');

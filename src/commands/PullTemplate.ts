@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
-import { GitUtilties } from '../lib/GitUtilties';
 import { Command } from './Command';
+import { GitUtilties } from '../lib/GitUtilties';
 
 export default class PullTemplateCommand extends Command {
     public static command = 'pull-template [name]';

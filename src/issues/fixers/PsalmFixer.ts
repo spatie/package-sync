@@ -2,11 +2,11 @@
 
 import { existsSync, writeFileSync } from 'fs';
 import { basename } from 'path';
+import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Composer } from '../../lib/composer/Composer';
 import { File } from '../../lib/File';
-import { ComparisonKind } from '../../types/FileComparisonResult';
-import { PackageIssue } from '../PackageIssue';
 import { Fixer } from './Fixer';
+import { PackageIssue } from '../PackageIssue';
 
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];

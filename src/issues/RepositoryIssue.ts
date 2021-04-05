@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
-import { ComparisonKind } from '../types/FileComparisonResult';
 
 export class RepositoryIssue {
     constructor(
@@ -19,5 +19,9 @@ export class RepositoryIssue {
 
     get kind(): ComparisonKind {
         return this.result.kind;
+    }
+
+    get score(): number | string {
+        return this.result.score;
     }
 }

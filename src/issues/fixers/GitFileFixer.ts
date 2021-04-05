@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 
-import { FileMerger } from '../../lib/FileMerger';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { PackageIssue } from '../PackageIssue';
+import { FileMerger } from '../../lib/FileMerger';
 import { Fixer } from './Fixer';
+import { PackageIssue } from '../PackageIssue';
 
 export class GitFileFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED];

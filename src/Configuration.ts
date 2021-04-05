@@ -1,7 +1,8 @@
 import { readFileSync } from 'fs';
-import { PackageIssue } from './issues/PackageIssue';
 import { ComparisonKind } from './types/FileComparisonResult';
+import { PackageIssue } from './issues/PackageIssue';
 import { ScoreRequirements } from './types/ScoreRequirements';
+
 const yaml = require('js-yaml');
 
 export interface ConfigurationRecord {

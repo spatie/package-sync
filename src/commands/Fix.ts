@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
-import { FixerManager } from '../issues/FixerManager';
 import { Command, createOption } from './Command';
+import { FixerManager } from '../issues/FixerManager';
 
 const micromatch = require('micromatch');
 
