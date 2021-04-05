@@ -4,9 +4,8 @@
 import { basename } from 'path';
 import { app } from '../Application';
 //import { PackageIssue } from '../issues/PackageIssue';
-import { RepositoryPackageIssue } from '../issues/RepositoryPackageIssue';
+import { RepositoryIssue } from '../issues/RepositoryIssue';
 import { Composer } from './composer/Composer';
-//import { FileEntry, FileEntryArray } from './FileEntry';
 import { getFileList, isDirectory } from './helpers';
 import { RepositoryFile } from './RepositoryFile';
 
@@ -19,7 +18,7 @@ export class Repository {
     protected composerData: Composer;
     protected loadedFiles = false;
     protected fileList: RepositoryFile[] = [];
-    public issues: RepositoryPackageIssue[] = [];
+    public issues: RepositoryIssue[] = [];
 
     constructor(public path: string, public kind: RepositoryKind) {
         this.composerData = Composer.createFromPath(path);

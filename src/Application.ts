@@ -14,7 +14,7 @@ import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { ConsolePrinter } from './printers/ConsolePrinter';
 import { File } from './lib/File';
 import { Repository } from './lib/Repository';
-import { RepositoryPackageIssue } from './issues/RepositoryPackageIssue';
+import { RepositoryIssue } from './issues/RepositoryIssue';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -179,7 +179,7 @@ export class Application {
             if (!file.shouldIgnore && !repo.hasFile(file)) {
                 const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
 
-                repo.issues.push(new RepositoryPackageIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
+                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
 
                 return;
             }
@@ -193,7 +193,7 @@ export class Application {
                     score: similarityScore,
                 };
 
-                repo.issues.push(new RepositoryPackageIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
+                repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
                 return;
             }
         });
@@ -201,8 +201,8 @@ export class Application {
         const packagesDiff = ComposerComparer.comparePackages(skeleton.path, repo.path);
         const scriptsDiff = ComposerComparer.compareScripts(skeleton.path, repo.path);
 
-        packagesDiff.forEach(r => repo.issues.push(new RepositoryPackageIssue(r, r.name, null, null, skeleton, repo, false)));
-        scriptsDiff.forEach(r => repo.issues.push(new RepositoryPackageIssue(r, r.name, null, null, skeleton, repo, false)));
+        packagesDiff.forEach(r => repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)));
+        scriptsDiff.forEach(r => repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)));
 
         console.log(
             repo.issues

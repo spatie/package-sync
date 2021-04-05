@@ -4,7 +4,7 @@ import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
 import { ComparisonKind } from '../types/FileComparisonResult';
 
-export class RepositoryPackageIssue {
+export class RepositoryIssue {
     constructor(
         public result: any,
         public name: string,

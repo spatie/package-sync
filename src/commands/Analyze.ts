@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { app } from '../Application';
 import { Repository, RepositoryKind } from '../lib/Repository';
