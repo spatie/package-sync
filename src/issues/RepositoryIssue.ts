@@ -13,6 +13,8 @@ export class RepositoryIssue {
         public skeleton: Repository,
         public repository: Repository,
         public resolved: boolean = false,
+        public note: string | null = null,
+        public context: any | null = null,
     ) {
         //
     }

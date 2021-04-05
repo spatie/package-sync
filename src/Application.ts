@@ -187,7 +187,7 @@ export class Application {
             const repoFile = repo.getFile(file.relativeName);
             const similarityScore = compareTwoStrings(file?.processTemplate() ?? '', repoFile?.contents ?? '');
 
-            if (similarityScore < 0.75) {
+            if (similarityScore < this.getFileScoreRequirements(file.basename)) {
                 const compareResult = {
                     kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
                     score: similarityScore,
@@ -198,10 +198,22 @@ export class Application {
             }
         });
 
+        repo.files.forEach(file => {
+            if (!file.shouldIgnore && !skeleton.hasFile(file)) {
+                const kind = file.isFile() ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
+
+                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, null, file, skeleton, repo, false));
+
+                return;
+            }
+        });
+
         const packagesDiff = ComposerComparer.comparePackages(skeleton.path, repo.path);
         const scriptsDiff = ComposerComparer.compareScripts(skeleton.path, repo.path);
 
-        packagesDiff.forEach(r => repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)));
+        packagesDiff.forEach(r =>
+            repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false, <string>r.score, null)),
+        );
         scriptsDiff.forEach(r => repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)));
 
         console.log(
@@ -270,10 +282,6 @@ export class Application {
                 return a.kind === b.kind ? 0 : 1;
             })
             .sort((a: any) => (firstSegment(a.kind) === 'extra' ? -1 : 0));
-    }
-
-    public fileComparisonResultsToIssues(results: FileComparisonResult[]): PackageIssue[] {
-        return results.map(r => new PackageIssue(r, r.skeletonPath, r.repositoryPath, false));
     }
 
     public displayResults(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]): void {
