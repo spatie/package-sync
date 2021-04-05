@@ -1,0 +1,310 @@
+/* eslint-disable no-unused-vars */
+
+import { existsSync, mkdirSync } from 'fs';
+import { basename } from 'path';
+import { Configuration } from './Configuration';
+import { DirectoryNotFoundFixer } from './issues/fixers/DirectoryNotFoundFixer';
+import { FileIsNotSimilarEnoughFixer } from './issues/fixers/FileIsNotSimilarEnoughFixer';
+import { FileDoesNotMatchFixer } from './issues/fixers/FileDoesNotMatchFixer';
+import { FileNotFoundFixer } from './issues/fixers/FileNotFoundFixer';
+import { GitFileFixer } from './issues/fixers/GitFileFixer';
+import { OptionalPackagesFixer } from './issues/fixers/OptionalPackagesFixer';
+import { PackageNotUsedFixer } from './issues/fixers/PackageNotUsedFixer';
+import { PackageScriptNotFoundFixer } from './issues/fixers/PackageScriptNotFoundFixer';
+import { PsalmFixer } from './issues/fixers/PsalmFixer';
+import { PackageIssue } from './issues/PackageIssue';
+import { FileEntry, FileEntryArray } from './lib/FileEntry';
+import { FileReader } from './lib/FileReader';
+import { compareFileSizes } from './lib/FileSizeComparison';
+import { fileSize, getFileList, isDirectory } from './lib/helpers';
+import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
+import { ComparisonKind, FileComparisonResult } from './types/FileComparisonResult';
+import { FileScoreRequirements } from './types/FileScoreRequirements';
+import { ComposerComparer } from './lib/composer/ComposerComparer';
+
+const { compareTwoStrings } = require('string-similarity');
+const micromatch = require('micromatch');
+
+export class Application {
+    public configuration: Configuration;
+    public basePath: string;
+
+    public skeletonPath = '';
+    public repositoryPath = '';
+
+    get repositoryName() {
+        return basename(this.repositoryPath);
+    }
+
+    constructor(basePath: string) {
+        this.basePath = basePath;
+        this.configuration = new Configuration();
+
+        this.ensureStoragePathsExist();
+    }
+
+    get config() {
+        return this.configuration.conf;
+    }
+
+    public init(skeletonPath: string, repositoryPath: string) {
+        this.skeletonPath = skeletonPath;
+        this.repositoryPath = repositoryPath;
+    }
+
+    public ensureStoragePathsExist() {
+        if (!existsSync(this.config.templatesPath)) {
+            mkdirSync(this.config.templatesPath, { recursive: true });
+        }
+        if (!existsSync(this.config.packagesPath)) {
+            mkdirSync(this.config.packagesPath, { recursive: true });
+        }
+    }
+
+    public templatePath(templateName: string): string {
+        return `${this.config.templatesPath}/${templateName}`;
+    }
+
+    public packagePath(packageName: string): string {
+        return `${this.config.packagesPath}/${packageName}`;
+    }
+
+    public shouldIgnoreFile(fn: string): boolean {
+        return micromatch.contains(fn, this.config.ignoreNames);
+    }
+
+    public shouldCompareFile(fn: string): boolean {
+        return !this.config.skipComparisons.includes(basename(fn));
+    }
+
+    public getSimilarScoreRequirement(fn: string): number {
+        const reqs = this.config.scoreRequirements;
+
+        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
+    }
+
+    public getMaxAllowedSizeDifferenceScore(fn: string): number {
+        const reqs = this.config.scoreRequirements;
+
+        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.size ?? reqs.defaults.size;
+    }
+
+    public getFileScoreRequirements(fn: string): ComparisonScoreRequirements {
+        return {
+            similar: this.getSimilarScoreRequirement(fn),
+            size: this.getMaxAllowedSizeDifferenceScore(fn),
+        };
+    }
+
+    public getFiles(directory: string, basePath: string | null = null, filter: any | null = null): FileEntryArray {
+        const result: FileEntry[] = [];
+        const filterFunc = filter ?? (() => true);
+
+        getFileList(directory, basePath, true)
+            .filter(fn => !this.shouldIgnoreFile(fn.replace(`${basePath}/`, '')))
+            .forEach(fqName => {
+                const relativeName = basePath ? fqName.replace(`${basePath}/`, '') : fqName;
+                const isPath = isDirectory(fqName);
+
+                if (!result.find(item => item.relativeName === relativeName)) {
+                    result.push({
+                        isFile: !isPath,
+                        name: fqName,
+                        relativeName: relativeName,
+                        filesize: fileSize(fqName),
+                        shouldIgnore: this.shouldIgnoreFile(relativeName),
+                        shouldCompare: !isPath && this.shouldCompareFile(fqName),
+                        requiredScores: this.getFileScoreRequirements(fqName),
+                    });
+
+                    if (isPath) {
+                        result.push(...this.getFiles(fqName, basePath ?? directory));
+                    }
+                }
+            });
+
+        return new FileEntryArray(result.filter(filterFunc));
+    }
+
+    protected performComparisons(repositoryPath: string, repositoryFiles: any, filesDiff: any, fileinfo: any) {
+        if (!fileinfo.isFile || !fileinfo.shouldCompare) {
+            return;
+        }
+
+        const repoFile = repositoryFiles.findByRelativeName(fileinfo.relativeName);
+        const skeletonFileData = FileReader.create(fileinfo.name)
+            .processTemplate(basename(repositoryPath));
+        const repoFileData = FileReader.contents(repoFile?.name ?? '');
+        const similarityScore = compareTwoStrings(skeletonFileData, repoFileData);
+
+        //console.log(`similarityScore for '${fileinfo.relativeName}' = ${similarityScore}`);
+
+        const sizeComparison = compareFileSizes(fileinfo.filesize, repoFile?.filesize ?? 0);
+
+        if (sizeComparison.differByPercentage(fileinfo.requiredScores.size)) {
+            filesDiff.push({
+                kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
+                score: sizeComparison.percentDifferenceForDisplay(8, 5),
+                fileinfo,
+            });
+            return;
+        }
+
+        if (similarityScore < fileinfo.requiredScores.similar) {
+            const kind =
+                fileinfo.requiredScores.similar === 1.0 ? ComparisonKind.FILE_DOES_NOT_MATCH : ComparisonKind.FILE_NOT_SIMILAR_ENOUGH;
+
+            filesDiff.push({ kind: kind, score: similarityScore.toFixed(5)
+                .padStart(8), fileinfo });
+            return;
+        }
+    }
+
+    protected compareRepositoryToSkeleton(repositoryFiles: any, skeletonFiles: any, filesDiff: any) {
+        repositoryFiles
+            .filter((fi: any) => fi.shouldCompare || !fi.shouldIgnore)
+            .filter((fi: any) => !skeletonFiles.containsEntry(fi))
+            .forEach((fileinfo: any) => {
+                const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
+
+                filesDiff.push({ kind, score: '-'.padEnd(5)
+                    .padStart(8), fileinfo });
+            });
+    }
+
+    compareDotFiles(skeletonPath: string, repositoryPath: string) {
+        this.init(skeletonPath, repositoryPath);
+        const skeletonFiles = this.getFiles(skeletonPath, skeletonPath);
+        const repositoryFiles = this.getFiles(repositoryPath, repositoryPath);
+
+        const filesDiff: any = [];
+
+        skeletonFiles
+            //.filter(value => !value.shouldIgnore)
+            .forEach(fileinfo => {
+                if (!fileinfo.shouldIgnore && !repositoryFiles.containsEntry(fileinfo)) {
+                    const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
+                    filesDiff.push({ kind: kind, score: '-'.padEnd(5)
+                        .padStart(8), fileinfo });
+                    return;
+                }
+
+                this.performComparisons(repositoryPath, repositoryFiles, filesDiff, fileinfo);
+            });
+
+        this.compareRepositoryToSkeleton(repositoryFiles, skeletonFiles, filesDiff);
+
+        const packagesDiff = ComposerComparer.comparePackages(skeletonPath, repositoryPath);
+        const scriptsDiff = ComposerComparer.compareScripts(skeletonPath, repositoryPath);
+
+        return this.sortDiffResultsForOutput(filesDiff, packagesDiff, scriptsDiff);
+    }
+
+    protected sortDiffResultsForOutput(
+        filesDiff: any[],
+        packagesDiff: FileComparisonResult[],
+        scriptsDiff: FileComparisonResult[],
+    ): FileComparisonResult[] {
+        const firstSegment = (s: string, sep = '_') => s.split(sep)
+            .shift();
+
+        const sortedfilesDiff: any[] = filesDiff.sort((a: any, b: any) => {
+            return (firstSegment(a.kind) + a.fileinfo.relativeName).localeCompare(firstSegment(b.kind) + b.fileinfo.relativeName);
+        });
+
+        return sortedfilesDiff
+            .map((fi: any) => ({ kind: fi.kind, score: fi.score, name: fi.fileinfo.relativeName }))
+            .concat(...packagesDiff)
+            .concat(...scriptsDiff)
+            .sort((a: any, b: any) => (firstSegment(a.kind) + a.name).localeCompare(firstSegment(b.kind) + b.name))
+            .sort((a: any, b: any) => {
+                if (
+                    a.kind !== b.kind &&
+                    (a.kind === ComparisonKind.PACKAGE_NOT_USED ||
+                        a.kind === ComparisonKind.PACKAGE_VERSION_MISMATCH ||
+                        a.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND)
+                ) {
+                    return -1;
+                }
+
+                return a.kind === b.kind ? 0 : 1;
+            })
+            .sort((a: any) => (firstSegment(a.kind) === 'extra' ? -1 : 0));
+    }
+
+    public displayResults(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]): void {
+        this.init(skeletonPath, repositoryPath);
+
+        const issues = results
+            .map(r => new PackageIssue(r, skeletonPath, repositoryPath, false))
+            .filter(issue => !issue.resolved)
+            .filter(issue => !this.configuration.isIssueIgnored(issue.result.kind, issue.result.name));
+
+        const fullLineSeparator = `| ${'-----'.padEnd(12, '-')} + ${'-----'.padEnd(8, '-')} + ${'--------'.padEnd(20, '-')}\n`;
+
+        process.stdout.write(`\n\n`);
+        process.stdout.write(`* comparing package '${basename(repositoryPath)}' against template '${basename(skeletonPath)}'...\n`);
+        process.stdout.write(`\n`);
+        process.stdout.write(`| ${'issue'.padEnd(12)} | ${'score'.padEnd(8, ' ')} | filename\n`);
+        process.stdout.write(fullLineSeparator);
+
+        issues.forEach((issue: PackageIssue) => {
+            let scoreStr = '';
+            const item = issue.result;
+
+            if (typeof item.score === 'string') {
+                scoreStr = item.score.padEnd(7, '0');
+            } else {
+                scoreStr = item.score === 0 ? '   -' : item.score.toFixed(5);
+            }
+
+            process.stdout.write(`| ${item.kind.padEnd(12)} | ${scoreStr.padEnd(7)} | ${item.name}\n`);
+        });
+
+        process.stdout.write(`${fullLineSeparator}\n`);
+    }
+
+    public fixIssues(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]) {
+        this.init(skeletonPath, repositoryPath);
+
+        const issues = results.map(r => new PackageIssue(r, skeletonPath, repositoryPath, false));
+
+        this.runNamedFixers(skeletonPath, repositoryPath, issues);
+        issues.forEach(issue => this.fixIssue(issue));
+    }
+
+    public runNamedFixers(skeletonPath: string, repositoryPath: string, issues: PackageIssue[]) {
+        this.init(skeletonPath, repositoryPath);
+
+        const namedFixers = [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
+
+        // check every issue against each fixer so fixers have a chance to fix multiple related issues
+        namedFixers.forEach(fixer => {
+            issues.forEach(issue => {
+                if (fixer.fixes(issue.result.kind) && fixer.canFix(issue)) {
+                    new fixer(skeletonPath, repositoryPath, issue)
+                        .fix();
+                }
+            });
+        });
+    }
+
+    public fixIssue(issue: PackageIssue) {
+        const fixers = [
+            DirectoryNotFoundFixer,
+            FileIsNotSimilarEnoughFixer,
+            FileDoesNotMatchFixer,
+            FileNotFoundFixer,
+            PackageNotUsedFixer,
+            PackageScriptNotFoundFixer,
+        ];
+
+        fixers
+            .filter(fixer => fixer.fixes(issue.result.kind))
+            .filter(fixer => fixer.canFix(issue))
+            .forEach(fixer => new fixer(issue.skeletonPath, issue.repositoryPath, issue)
+                .fix());
+    }
+}
+
+export const app = new Application(process.cwd());
