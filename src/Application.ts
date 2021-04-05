@@ -13,6 +13,7 @@ import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { ConsolePrinter } from './printers/ConsolePrinter';
 import { File } from './lib/File';
+import { Repository } from './lib/Repository';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -170,6 +171,31 @@ export class Application {
 
                 filesDiff.push({ kind, score: 0, fileinfo, skeletonPath, repositoryPath });
             });
+    }
+
+    compareRepositories(skeleton: Repository, repo: Repository) {
+        const filesDiff: any = [];
+
+        skeleton.files.forEach(f => {
+            if (!f.shouldIgnore && !repo.files.find(rf => rf.relativeName === f.relativeName)) {
+                const kind = f.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
+                const compareResult = { kind: kind, score: 0, file: f, skeleton, repository: repo };
+                ///new PackageIssue(compareResult, skeleton.path, repo.path)
+                return;
+            }
+
+            console.log(`compare file ${f.relativeName}`);
+            //this.performComparisons(skeletonPath, repositoryPath, repositoryFiles, filesDiff, fileinfo);
+        });
+
+        console.log(filesDiff);
+
+        // this.compareRepositoryToSkeleton(skeletonPath, repositoryPath, repositoryFiles, skeletonFiles, filesDiff);
+
+        // const packagesDiff = ComposerComparer.comparePackages(skeletonPath, repositoryPath);
+        // const scriptsDiff = ComposerComparer.compareScripts(skeletonPath, repositoryPath);
+
+        // return this.sortDiffResultsForOutput(filesDiff, [...packagesDiff, ...scriptsDiff]);
     }
 
     compareDotFiles(skeletonPath: string, repositoryPath: string) {

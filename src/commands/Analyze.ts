@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
+import { Repository, RepositoryKind } from '../lib/Repository';
 import { Command } from './Command';
 
 export default class AnalyzeCommand extends Command {
@@ -18,7 +19,14 @@ export default class AnalyzeCommand extends Command {
         const skeletonPath = app.templatePath(templateName);
         const repositoryPath = app.packagePath(argv.packageName);
 
-        const results = app.compareDotFiles(skeletonPath, repositoryPath);
-        app.displayResults(skeletonPath, repositoryPath, results);
+        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
+        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+
+        app.compareRepositories(skeleton, repo);
+
+        return;
+
+        // const results = app.compareDotFiles(skeletonPath, repositoryPath);
+        // app.displayResults(skeletonPath, repositoryPath, results);
     }
 }
