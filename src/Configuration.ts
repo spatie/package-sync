@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { PackageIssue } from './issues/PackageIssue';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ScoreRequirements } from './types/ScoreRequirements';
 const yaml = require('js-yaml');
@@ -114,8 +115,8 @@ export class Configuration {
         return this.conf.templates.names.find(name => shortTemplateName(name) === shortName) ?? shortName;
     }
 
-    public isIssueIgnored(kind: ComparisonKind, name: string): boolean {
-        return this.conf.issues.ignored[kind.toString()]?.includes(name) ?? false;
+    public isIssueIgnored(issue: PackageIssue): boolean {
+        return this.conf.issues.ignored[issue.result.kind.toString()]?.includes(issue.result.name) ?? false;
     }
 }
 

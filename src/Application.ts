@@ -237,7 +237,7 @@ export class Application {
         const issues = results
             .map(r => new PackageIssue(r, skeletonPath, repositoryPath, false))
             .filter(issue => !issue.resolved)
-            .filter(issue => !this.configuration.isIssueIgnored(issue.result.kind, issue.result.name));
+            .filter(issue => !this.configuration.isIssueIgnored(issue));
 
         new ConsolePrinter()
             .printResults(skeletonPath, repositoryPath, issues);

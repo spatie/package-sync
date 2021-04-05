@@ -1,12 +1,25 @@
 /* eslint-disable no-unused-vars */
 
-import { existsSync, readFileSync, writeFileSync, unlinkSync, statSync } from 'fs';
+import { rmdirSync, existsSync, readFileSync, writeFileSync, unlinkSync, statSync } from 'fs';
 import { basename, extname } from 'path';
+import { isDirectory } from './helpers';
+
+export enum FileType {
+    FILE = 'file',
+    DIRECTORY = 'directory',
+}
 
 export class File {
     protected data: string | null = null;
+    protected type: FileType;
 
     constructor(protected fn: string, contents: string | null = null) {
+        this.type = FileType.FILE;
+
+        if (this.exists()) {
+            this.type = isDirectory(fn) ? FileType.DIRECTORY : FileType.FILE;
+        }
+
         this.data = contents;
     }
 
@@ -40,6 +53,10 @@ export class File {
     }
 
     get contents() {
+        if (this.isDirectory()) {
+            return '';
+        }
+
         if (this.data === null) {
             this.load();
         }
@@ -48,6 +65,10 @@ export class File {
     }
 
     get sizeOnDisk() {
+        if (this.isDirectory()) {
+            return 0;
+        }
+
         if (!this.exists()) {
             return 0;
         }
@@ -69,7 +90,19 @@ export class File {
         return extname(this.fn);
     }
 
+    public isDirectory() {
+        return this.type === FileType.DIRECTORY;
+    }
+
+    public isFile() {
+        return this.type === FileType.FILE;
+    }
+
     public load() {
+        if (!this.isFile()) {
+            return this;
+        }
+
         this.data = readFileSync(this.fn, { encoding: 'utf-8' });
 
         return this;
@@ -80,13 +113,21 @@ export class File {
     }
 
     public saveAs(fn: string) {
-        writeFileSync(fn, this.data ?? '');
+        if (this.isFile()) {
+            writeFileSync(fn, this.data ?? '');
+        }
 
         return this;
     }
 
     public delete() {
-        unlinkSync(this.fn);
+        if (this.isFile()) {
+            unlinkSync(this.fn);
+        }
+
+        if (this.isDirectory()) {
+            rmdirSync(this.fn);
+        }
 
         return this;
     }
