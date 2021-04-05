@@ -5,6 +5,8 @@ init();
 
 const yargs = require('yargs');
 
+console.log(`\n*** READ THE README FIRST TO AVOID UNEXPECTED FILE CHANGES ***`);
+
 yargs(process.argv.slice(2))
     //.scriptName('spatie-package')
     .version('1.0.0')

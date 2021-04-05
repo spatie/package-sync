@@ -12,6 +12,7 @@ import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements
 import { ComparisonKind, FileComparisonResult } from './types/FileComparisonResult';
 import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
+import { ConsolePrinter } from './printers/ConsolePrinter';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -123,9 +124,10 @@ export class Application {
         }
 
         const repoFile = repositoryFiles.findByRelativeName(fileinfo.relativeName);
+        const repoFileData = FileReader.contents(repoFile?.name ?? '');
         const skeletonFileData = FileReader.create(fileinfo.name)
             .processTemplate(basename(repositoryPath));
-        const repoFileData = FileReader.contents(repoFile?.name ?? '');
+
         const similarityScore = compareTwoStrings(skeletonFileData, repoFileData);
 
         //console.log(`similarityScore for '${fileinfo.relativeName}' = ${similarityScore}`);
@@ -158,8 +160,7 @@ export class Application {
             .forEach((fileinfo: any) => {
                 const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
 
-                filesDiff.push({ kind, score: '-'.padEnd(5)
-                    .padStart(8), fileinfo });
+                filesDiff.push({ kind, score: 0, fileinfo });
             });
     }
 
@@ -170,43 +171,34 @@ export class Application {
 
         const filesDiff: any = [];
 
-        skeletonFiles
-            //.filter(value => !value.shouldIgnore)
-            .forEach(fileinfo => {
-                if (!fileinfo.shouldIgnore && !repositoryFiles.containsEntry(fileinfo)) {
-                    const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-                    filesDiff.push({ kind: kind, score: '-'.padEnd(5)
-                        .padStart(8), fileinfo });
-                    return;
-                }
+        skeletonFiles.forEach(fileinfo => {
+            if (!fileinfo.shouldIgnore && !repositoryFiles.containsEntry(fileinfo)) {
+                const kind = fileinfo.isFile ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
+                filesDiff.push({ kind: kind, score: 0, fileinfo });
+                return;
+            }
 
-                this.performComparisons(repositoryPath, repositoryFiles, filesDiff, fileinfo);
-            });
+            this.performComparisons(repositoryPath, repositoryFiles, filesDiff, fileinfo);
+        });
 
         this.compareRepositoryToSkeleton(repositoryFiles, skeletonFiles, filesDiff);
 
         const packagesDiff = ComposerComparer.comparePackages(skeletonPath, repositoryPath);
         const scriptsDiff = ComposerComparer.compareScripts(skeletonPath, repositoryPath);
 
-        return this.sortDiffResultsForOutput(filesDiff, packagesDiff, scriptsDiff);
+        return this.sortDiffResultsForOutput(filesDiff, [...packagesDiff, ...scriptsDiff]);
     }
 
-    protected sortDiffResultsForOutput(
-        filesDiff: any[],
-        packagesDiff: FileComparisonResult[],
-        scriptsDiff: FileComparisonResult[],
-    ): FileComparisonResult[] {
+    protected sortDiffResultsForOutput(filesDiff: any[], additionalDiffs: any[]): FileComparisonResult[] {
         const firstSegment = (s: string, sep = '_') => s.split(sep)
             .shift();
 
-        const sortedfilesDiff: any[] = filesDiff.sort((a: any, b: any) => {
-            return (firstSegment(a.kind) + a.fileinfo.relativeName).localeCompare(firstSegment(b.kind) + b.fileinfo.relativeName);
-        });
-
-        return sortedfilesDiff
+        return filesDiff
+            .sort((a: any, b: any) => {
+                return (firstSegment(a.kind) + a.fileinfo.relativeName).localeCompare(firstSegment(b.kind) + b.fileinfo.relativeName);
+            })
             .map((fi: any) => ({ kind: fi.kind, score: fi.score, name: fi.fileinfo.relativeName }))
-            .concat(...packagesDiff)
-            .concat(...scriptsDiff)
+            .concat(...additionalDiffs)
             .sort((a: any, b: any) => (firstSegment(a.kind) + a.name).localeCompare(firstSegment(b.kind) + b.name))
             .sort((a: any, b: any) => {
                 if (
@@ -224,35 +216,13 @@ export class Application {
     }
 
     public displayResults(skeletonPath: string, repositoryPath: string, results: FileComparisonResult[]): void {
-        this.init(skeletonPath, repositoryPath);
-
         const issues = results
             .map(r => new PackageIssue(r, skeletonPath, repositoryPath, false))
             .filter(issue => !issue.resolved)
             .filter(issue => !this.configuration.isIssueIgnored(issue.result.kind, issue.result.name));
 
-        const fullLineSeparator = `| ${'-----'.padEnd(12, '-')} + ${'-----'.padEnd(8, '-')} + ${'--------'.padEnd(20, '-')}\n`;
-
-        process.stdout.write(`\n\n`);
-        process.stdout.write(`* comparing package '${basename(repositoryPath)}' against template '${basename(skeletonPath)}'...\n`);
-        process.stdout.write(`\n`);
-        process.stdout.write(`| ${'issue'.padEnd(12)} | ${'score'.padEnd(8, ' ')} | filename\n`);
-        process.stdout.write(fullLineSeparator);
-
-        issues.forEach((issue: PackageIssue) => {
-            let scoreStr = '';
-            const item = issue.result;
-
-            if (typeof item.score === 'string') {
-                scoreStr = item.score.padEnd(7, '0');
-            } else {
-                scoreStr = item.score === 0 ? '   -' : item.score.toFixed(5);
-            }
-
-            process.stdout.write(`| ${item.kind.padEnd(12)} | ${scoreStr.padEnd(7)} | ${item.name}\n`);
-        });
-
-        process.stdout.write(`${fullLineSeparator}\n`);
+        new ConsolePrinter()
+            .printResults(skeletonPath, repositoryPath, issues);
     }
 }
 
