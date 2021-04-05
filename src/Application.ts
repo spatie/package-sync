@@ -5,7 +5,6 @@ import { basename } from 'path';
 import { Configuration } from './Configuration';
 import { PackageIssue } from './issues/PackageIssue';
 import { FileEntry, FileEntryArray } from './lib/FileEntry';
-import { FileReader } from './lib/FileReader';
 import { compareFileSizes } from './lib/FileSizeComparison';
 import { fileSize, getFileList, isDirectory } from './lib/helpers';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
@@ -13,6 +12,7 @@ import { ComparisonKind, FileComparisonResult } from './types/FileComparisonResu
 import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { ConsolePrinter } from './printers/ConsolePrinter';
+import { File } from './lib/File';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -124,8 +124,8 @@ export class Application {
         }
 
         const repoFile = repositoryFiles.findByRelativeName(fileinfo.relativeName);
-        const repoFileData = FileReader.contents(repoFile?.name ?? '');
-        const skeletonFileData = FileReader.create(fileinfo.name)
+        const repoFileData = File.contents(repoFile?.name);
+        const skeletonFileData = File.read(fileinfo.name)
             .processTemplate(basename(repositoryPath));
 
         const similarityScore = compareTwoStrings(skeletonFileData, repoFileData);

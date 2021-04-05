@@ -19,7 +19,15 @@ export class File {
             .load();
     }
 
-    static contents(fn: string): string {
+    static contents(fn: string | null): string {
+        if (!fn) {
+            return '';
+        }
+
+        if (!fn.length) {
+            return '';
+        }
+
         return <string>File.create(fn).contents;
     }
 

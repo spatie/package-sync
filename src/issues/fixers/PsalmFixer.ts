@@ -3,7 +3,7 @@
 import { existsSync, writeFileSync } from 'fs';
 import { basename } from 'path';
 import { Composer } from '../../lib/composer/Composer';
-import { FileReader } from '../../lib/FileReader';
+import { File } from '../../lib/File';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { PackageIssue } from '../PackageIssue';
 import { Fixer } from './Fixer';
@@ -70,7 +70,7 @@ export class PsalmFixer extends Fixer {
             this.issue.resolved = true;
 
             if (!existsSync(`${this.repositoryPath}/${relativeFn}`)) {
-                const data = FileReader.create(`${this.skeletonPath}/${relativeFn}`)
+                const data = File.read(`${this.skeletonPath}/${relativeFn}`)
                     .processTemplate(basename(this.repositoryPath));
 
                 writeFileSync(`${this.repositoryPath}/${relativeFn}`, data, { encoding: 'utf-8' });
