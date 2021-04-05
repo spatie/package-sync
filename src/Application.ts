@@ -150,7 +150,7 @@ export class Application {
                 fileinfo.requiredScores.similar === 1.0 ? ComparisonKind.FILE_DOES_NOT_MATCH : ComparisonKind.FILE_NOT_SIMILAR_ENOUGH;
 
             filesDiff.push({ kind: kind, score: similarityScore.toFixed(5)
-                .padStart(8), fileinfo });
+                .padStart(8), fileinfo, skeletonPath, repositoryPath });
             return;
         }
     }
