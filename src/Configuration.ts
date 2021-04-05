@@ -5,6 +5,7 @@ const yaml = require('js-yaml');
 
 export interface ConfigurationRecord {
     fixers: {
+        disabled?: string[];
         OptionalPackages: string[];
     };
 

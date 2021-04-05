@@ -21,8 +21,8 @@ export class ComposerComparer {
     }
 
     static comparePackages(skeletonPath: string, repositoryPath: string): FileComparisonResult[] {
-        const skeletonComposer = Composer.create(`${skeletonPath}/composer.json`);
-        const repositoryComposer = Composer.create(`${repositoryPath}/composer.json`);
+        const skeletonComposer = Composer.createFromPath(skeletonPath);
+        const repositoryComposer = Composer.createFromPath(repositoryPath);
 
         return skeletonComposer
             .packages('all')

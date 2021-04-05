@@ -4,6 +4,13 @@ config:
   packagesPath: /development/repositories/spatie
   
   fixers:
+    # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
+    # such as 'File*', which would disable all fixers starting with 'File'.
+    # names must be the classname, with or without the suffix 'Fixer', so 'Blah' is the same as 'BlahFixer'.
+    disabled:
+      - GitFile
+      - FileDoesNotMatch
+        
     OptionalPackages:
       - spatie/ray
       - friendsofphp/php-cs-fixer
@@ -24,6 +31,14 @@ config:
       - package-skeleton-php
       - package-skeleton-laravel
         
+  # similiar and size score requirements for determining if a file is out of sync.
+  # for similar scores, the closer to 1.0 the value is, the more a file must match with 1.0 being an exact match.
+  # for size scores, the value is the percent difference in terms of file size, so the closer to 0 the value is, 
+  # the more a file must match.
+  #
+  # these scores are used together because a file can be considered fairly similar but still be out of sync.  for example, if
+  # a few lines were added to the skeleton .gitignore, a package's gitignore might be considered similar but would be listed as
+  # out of sync due to the size difference.
   scoreRequirements:
     defaults:
       similar: 0.79
@@ -50,6 +65,7 @@ config:
           similar: 1
           size: 5
 
+  # list of filenames that should not be compared during analysis
   skipComparisons:
     - composer.json
 

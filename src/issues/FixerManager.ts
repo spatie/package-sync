@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { app } from '../Application';
 import { FileComparisonResult } from '../types/FileComparisonResult';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
@@ -12,6 +13,8 @@ import { PackageScriptNotFoundFixer } from './fixers/PackageScriptNotFoundFixer'
 import { PsalmFixer } from './fixers/PsalmFixer';
 import { PackageIssue } from './PackageIssue';
 
+const micromatch = require('micromatch');
+
 export class FixerManager {
     constructor(public skeletonPath: string, public repositoryPath: string) {
         //
@@ -21,25 +24,35 @@ export class FixerManager {
         return new FixerManager(skeletonPath, repositoryPath);
     }
 
-    public fixIssues(results: FileComparisonResult[]) {
-        const issues = results.map(r => new PackageIssue(r, this.skeletonPath, this.repositoryPath, false));
+    public isFixerDisabled(fixer: any): boolean {
+        const name = Object.getOwnPropertyDescriptor(fixer, 'name')?.value ?? '';
+        const shortName = name.replace(/Fixer$/, '');
+        const disabledFixers = app.config.fixers?.disabled ?? [];
 
-        this.runNamedFixers(issues);
-        issues.forEach(issue => this.fixIssue(issue));
+        return micromatch.isMatch(name, disabledFixers) || micromatch.isMatch(shortName, disabledFixers);
     }
 
     public runNamedFixers(issues: PackageIssue[]) {
         const namedFixers = [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
 
         // check every issue against each fixer so fixers have a chance to fix multiple related issues
-        namedFixers.forEach(fixer => {
-            issues.forEach(issue => {
-                if (fixer.fixes(issue.result.kind) && fixer.canFix(issue)) {
-                    new fixer(this.skeletonPath, this.repositoryPath, issue)
-                        .fix();
-                }
+        namedFixers
+            .filter(fixer => !this.isFixerDisabled(fixer))
+            .forEach(fixer => {
+                issues.forEach(issue => {
+                    if (fixer.fixes(issue.result.kind) && fixer.canFix(issue)) {
+                        new fixer(this.skeletonPath, this.repositoryPath, issue)
+                            .fix();
+                    }
+                });
             });
-        });
+    }
+
+    public fixIssues(results: FileComparisonResult[]) {
+        const issues = results.map(r => new PackageIssue(r, this.skeletonPath, this.repositoryPath, false));
+
+        this.runNamedFixers(issues);
+        issues.forEach(issue => this.fixIssue(issue));
     }
 
     public fixIssue(issue: PackageIssue) {
@@ -53,6 +66,7 @@ export class FixerManager {
         ];
 
         fixers
+            .filter(fixer => !this.isFixerDisabled(fixer))
             .filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.canFix(issue))
             .forEach(fixer => new fixer(issue.skeletonPath, issue.repositoryPath, issue)

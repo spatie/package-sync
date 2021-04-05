@@ -27,6 +27,10 @@ export class Composer {
         return new Composer(filename);
     }
 
+    static createFromPath(directoryPath: string) {
+        return new Composer(`${directoryPath}/composer.json`);
+    }
+
     get dirname() {
         return dirname(this.filename);
     }
