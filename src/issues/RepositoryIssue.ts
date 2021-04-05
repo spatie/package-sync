@@ -24,6 +24,14 @@ export class RepositoryIssue {
     }
 
     get score(): number | string {
+        if (this.result.score === 0) {
+            return '-';
+        }
+
+        if (typeof this.result.score === 'number') {
+            return this.result.score.toFixed(3);
+        }
+
         return this.result.score;
     }
 }

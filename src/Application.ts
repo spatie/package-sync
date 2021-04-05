@@ -179,7 +179,9 @@ export class Application {
             if (!file.shouldIgnore && !repo.hasFile(file)) {
                 const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
 
-                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
+                repo.issues.push(
+                    new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false, 'fixable'),
+                );
 
                 return;
             }
@@ -187,44 +189,49 @@ export class Application {
             const repoFile = repo.getFile(file.relativeName);
             const similarityScore = compareTwoStrings(file?.processTemplate() ?? '', repoFile?.contents ?? '');
 
-            if (similarityScore < this.getFileScoreRequirements(file.basename)) {
+            if (similarityScore < file.requiredScores.similar) {
                 const compareResult = {
                     kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
                     score: similarityScore,
                 };
 
                 repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
+
+                return;
+            }
+
+            const sizeComparison = compareFileSizes(file.sizeOnDisk, repoFile?.sizeOnDisk ?? 0);
+
+            if (sizeComparison.differByPercentage(file.requiredScores.size)) {
+                const result = {
+                    kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
+                    score: sizeComparison.percentDifferenceForDisplay(8, 5),
+                };
+
+                repo.issues.push(new RepositoryIssue(result, file.relativeName, file, repoFile, skeleton, repo, false));
+
                 return;
             }
         });
 
-        repo.files.forEach(file => {
-            if (!file.shouldIgnore && !skeleton.hasFile(file)) {
+        repo.files
+            .filter(file => !file.shouldIgnore)
+            .filter(file => !skeleton.hasFile(file))
+            .forEach(file => {
                 const kind = file.isFile() ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
 
                 repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, null, file, skeleton, repo, false));
+            });
 
-                return;
-            }
-        });
+        ComposerComparer.comparePackages(skeleton.path, repo.path)
+            .forEach(r =>
+                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
+            );
 
-        const packagesDiff = ComposerComparer.comparePackages(skeleton.path, repo.path);
-        const scriptsDiff = ComposerComparer.compareScripts(skeleton.path, repo.path);
-
-        packagesDiff.forEach(r =>
-            repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false, <string>r.score, null)),
-        );
-        scriptsDiff.forEach(r => repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)));
-
-        console.log(
-            repo.issues
-                .map(issue => ({ kind: issue.result.kind, score: issue.result.score, name: issue.name }))
-                .sort((a, b) => {
-                    return (a.kind.toString() + a.score).localeCompare(b.kind.toString() + b.score);
-                }),
-        );
-
-        // this.compareRepositoryToSkeleton(skeletonPath, repositoryPath, repositoryFiles, skeletonFiles, filesDiff);
+        ComposerComparer.compareScripts(skeleton.path, repo.path)
+            .forEach(r =>
+                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false, 'fixable')),
+            );
     }
 
     compareDotFiles(skeletonPath: string, repositoryPath: string) {

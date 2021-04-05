@@ -41,12 +41,12 @@ config:
   # out of sync due to the size difference.
   scoreRequirements:
     defaults:
-      similar: 0.79
+      similar: 0.75
       size: 10
     files:
       - name: CONTRIBUTING.md
         scores:
-          similar: 0.99
+          similar: 0.95
           size: 5
       - name: .editorconfig
         scores:
@@ -54,11 +54,11 @@ config:
           size: 5
       - name: .gitattributes
         scores:
-          similar: 0.9
+          similar: 0.8
           size: 8
       - name: .gitignore
         scores:
-          similar: 0.9
+          similar: 0.8
           size: 8
       - name: .php_cs.dist
         scores:

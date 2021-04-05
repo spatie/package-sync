@@ -4,6 +4,7 @@
 import { app } from '../Application';
 import { Command } from './Command';
 import { Repository, RepositoryKind } from '../lib/Repository';
+import { NewConsolePrinter } from '../printers/NewConsolePrinter';
 
 export default class AnalyzeCommand extends Command {
     public static command = 'analyze <packageName>';
@@ -20,12 +21,14 @@ export default class AnalyzeCommand extends Command {
         const skeletonPath = app.templatePath(templateName);
         const repositoryPath = app.packagePath(argv.packageName);
 
-        // TODO: use Repository class, WIP
-        // const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
-        // const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
-        // app.compareRepositories(skeleton, repo); return;
+        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
+        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
 
-        const results = app.compareDotFiles(skeletonPath, repositoryPath);
-        app.displayResults(skeletonPath, repositoryPath, results);
+        app.compareRepositories(skeleton, repo);
+
+        NewConsolePrinter.printRepositoryIssues(repo);
+
+        // const results = app.compareDotFiles(skeletonPath, repositoryPath);
+        // app.displayResults(skeletonPath, repositoryPath, results);
     }
 }

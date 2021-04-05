@@ -26,7 +26,7 @@ export class FileSizeComparison {
     }
 
     public percentDifferenceForDisplay(padStart = 0, padEnd = 0): string {
-        return (this.percentDifference.toFixed(3) + '%').padStart(padStart)
+        return (this.percentDifference.toFixed(2) + '%').padStart(padStart)
             .padEnd(padEnd);
     }
 }
