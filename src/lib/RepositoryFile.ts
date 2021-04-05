@@ -24,4 +24,8 @@ export class RepositoryFile extends File {
         //
         return this;
     }
+
+    public processTemplate(): string {
+        return super.processTemplate(this.repository.name);
+    }
 }

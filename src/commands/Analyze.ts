@@ -19,14 +19,12 @@ export default class AnalyzeCommand extends Command {
         const skeletonPath = app.templatePath(templateName);
         const repositoryPath = app.packagePath(argv.packageName);
 
-        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
-        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+        // TODO: use Repository class, WIP
+        // const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
+        // const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+        // app.compareRepositories(skeleton, repo); return;
 
-        app.compareRepositories(skeleton, repo);
-
-        return;
-
-        // const results = app.compareDotFiles(skeletonPath, repositoryPath);
-        // app.displayResults(skeletonPath, repositoryPath, results);
+        const results = app.compareDotFiles(skeletonPath, repositoryPath);
+        app.displayResults(skeletonPath, repositoryPath, results);
     }
 }

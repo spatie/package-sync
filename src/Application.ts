@@ -14,6 +14,7 @@ import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { ConsolePrinter } from './printers/ConsolePrinter';
 import { File } from './lib/File';
 import { Repository } from './lib/Repository';
+import { RepositoryPackageIssue } from './issues/RepositoryPackageIssue';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -174,28 +175,44 @@ export class Application {
     }
 
     compareRepositories(skeleton: Repository, repo: Repository) {
-        const filesDiff: any = [];
+        skeleton.files.forEach(file => {
+            if (!file.shouldIgnore && !repo.hasFile(file)) {
+                const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
 
-        skeleton.files.forEach(f => {
-            if (!f.shouldIgnore && !repo.files.find(rf => rf.relativeName === f.relativeName)) {
-                const kind = f.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-                const compareResult = { kind: kind, score: 0, file: f, skeleton, repository: repo };
-                ///new PackageIssue(compareResult, skeleton.path, repo.path)
+                repo.issues.push(new RepositoryPackageIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
+
                 return;
             }
 
-            console.log(`compare file ${f.relativeName}`);
-            //this.performComparisons(skeletonPath, repositoryPath, repositoryFiles, filesDiff, fileinfo);
+            const repoFile = repo.getFile(file.relativeName);
+            const similarityScore = compareTwoStrings(file?.processTemplate() ?? '', repoFile?.contents ?? '');
+
+            if (similarityScore < 0.75) {
+                const compareResult = {
+                    kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
+                    score: similarityScore,
+                };
+
+                repo.issues.push(new RepositoryPackageIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
+                return;
+            }
         });
 
-        console.log(filesDiff);
+        const packagesDiff = ComposerComparer.comparePackages(skeleton.path, repo.path);
+        const scriptsDiff = ComposerComparer.compareScripts(skeleton.path, repo.path);
+
+        packagesDiff.forEach(r => repo.issues.push(new RepositoryPackageIssue(r, r.name, null, null, skeleton, repo, false)));
+        scriptsDiff.forEach(r => repo.issues.push(new RepositoryPackageIssue(r, r.name, null, null, skeleton, repo, false)));
+
+        console.log(
+            repo.issues
+                .map(issue => ({ kind: issue.result.kind, score: issue.result.score, name: issue.name }))
+                .sort((a, b) => {
+                    return (a.kind.toString() + a.score).localeCompare(b.kind.toString() + b.score);
+                }),
+        );
 
         // this.compareRepositoryToSkeleton(skeletonPath, repositoryPath, repositoryFiles, skeletonFiles, filesDiff);
-
-        // const packagesDiff = ComposerComparer.comparePackages(skeletonPath, repositoryPath);
-        // const scriptsDiff = ComposerComparer.compareScripts(skeletonPath, repositoryPath);
-
-        // return this.sortDiffResultsForOutput(filesDiff, [...packagesDiff, ...scriptsDiff]);
     }
 
     compareDotFiles(skeletonPath: string, repositoryPath: string) {

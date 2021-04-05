@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { basename } from 'path';
 import { app } from '../Application';
-import { PackageIssue } from '../issues/PackageIssue';
+//import { PackageIssue } from '../issues/PackageIssue';
+import { RepositoryPackageIssue } from '../issues/RepositoryPackageIssue';
 import { Composer } from './composer/Composer';
-import { FileEntry, FileEntryArray } from './FileEntry';
-import { fileSize, getFileList, isDirectory } from './helpers';
+//import { FileEntry, FileEntryArray } from './FileEntry';
+import { getFileList, isDirectory } from './helpers';
 import { RepositoryFile } from './RepositoryFile';
 
 export enum RepositoryKind {
@@ -17,7 +19,7 @@ export class Repository {
     protected composerData: Composer;
     protected loadedFiles = false;
     protected fileList: RepositoryFile[] = [];
-    public issues: PackageIssue[] = [];
+    public issues: RepositoryPackageIssue[] = [];
 
     constructor(public path: string, public kind: RepositoryKind) {
         this.composerData = Composer.createFromPath(path);
@@ -45,6 +47,14 @@ export class Repository {
         }
 
         return this.fileList;
+    }
+
+    getFile(relativeName: string): RepositoryFile | null {
+        return this.files.find(f => f.relativeName === relativeName) || null;
+    }
+
+    hasFile(file: RepositoryFile): boolean {
+        return this.files.find(f => f.relativeName === file.relativeName) !== undefined;
     }
 
     hasIssues() {
