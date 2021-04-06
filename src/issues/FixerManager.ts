@@ -92,7 +92,7 @@ export class FixerManager {
     }
 
     public async fixIssues(issues: RepositoryIssue[]) {
-        await this.runNamedFixers(issues);
+        //await this.runNamedFixers(issues);
         issues.forEach(async issue => await this.fixIssue(issue));
     }
 

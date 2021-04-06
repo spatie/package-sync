@@ -12,6 +12,7 @@ import { RepositoryIssue } from './issues/RepositoryIssue';
 import { FixerManager } from './issues/FixerManager';
 import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './lib/RepositoryFile';
+import { RepositoryValidator } from './lib/RepositoryValidator';
 
 const micromatch = require('micromatch');
 
@@ -48,7 +49,7 @@ export class Application {
     }
 
     public shouldIgnoreFile(fn: string): boolean {
-        return micromatch.contains(fn, this.config.ignoreNames);
+        return micromatch.isMatch(fn, this.config.ignoreNames) || micromatch.contains(fn, this.config.ignoreNames);
     }
 
     public shouldCompareFile(fn: string): boolean {
@@ -167,6 +168,9 @@ export class Application {
 
         const skeletonPath = this.templatePath(templateName);
         const repositoryPath = this.packagePath(packageName);
+
+        RepositoryValidator.ensurePackageExists(packageName);
+        RepositoryValidator.ensureTemplateExists(templateName);
 
         const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
         const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);

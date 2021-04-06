@@ -51,6 +51,10 @@ export class PsalmFixer extends Fixer {
     }
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         if (this.issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
             this.issue.resolved = true;
 

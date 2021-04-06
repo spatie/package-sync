@@ -10,6 +10,10 @@ export class FileNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_FOUND];
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         const relativeFn: string = this.issue.srcFile?.relativeName ?? this.issue.name;
 
         console.log(`* action: copy file '${relativeFn}' into '${basename(this.issue.repository.path)}'`);
@@ -19,10 +23,10 @@ export class FileNotFoundFixer extends Fixer {
                 .processTemplate(basename(this.issue.repository.path));
 
             writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
-
-            this.issue.resolve(FileNotFoundFixer.prettyName());
-            this.issue.resolvedNotes.push(`copy file '${relativeFn}' into '${this.issue.repository.name}'`);
         }
+
+        this.issue.resolve(FileNotFoundFixer.prettyName());
+        this.issue.resolvedNotes.push(`copy file '${relativeFn}' into '${this.issue.repository.name}'`);
 
         return true;
     }

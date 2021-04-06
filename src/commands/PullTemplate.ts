@@ -20,7 +20,7 @@ export default class PullTemplateCommand extends Command {
         };
 
         app.config.templates.names
-            .filter(name => shortTemplateName(name) === argvName || argvName === '')
+            .filter(name => shortTemplateName(name) === argvName || name === argvName || argvName === '')
             .forEach(name => {
                 GitUtilties.displayStatusMessages = true;
 
