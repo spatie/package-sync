@@ -17,6 +17,10 @@ export class GitFileFixer extends Fixer {
     }
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         FileMerger.create()
             .add(this.issue.sourcefile.filename, this.issue.targetfile.filename)
             .mergeAndSave(this.issue.targetfile.filename);

@@ -8,8 +8,9 @@ export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
 
     public fix(): boolean {
-        // const sourceFn = `${this.issue.skeleton.path}/${this.issue.result.name}`;
-        // const targetFn = `${this.issue.repository.path}/${this.issue.result.name}`;
+        if (this.issue.resolved) {
+            return false;
+        }
 
         File.read(this.issue.srcFile?.filename ?? '')
             .saveAs(this.issue.destFile?.filename ?? '');

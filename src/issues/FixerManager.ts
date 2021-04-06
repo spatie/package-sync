@@ -74,12 +74,6 @@ export class FixerManager {
                     }
 
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
-                        //const fixerObj = new fixer(issue);
-                        // if (fixerObj.isAsync) {
-                        //     await fixerObj.fixAsync();
-                        //     return;
-                        // }
-
                         new fixer(issue)
                             .fix();
                     }
@@ -88,7 +82,6 @@ export class FixerManager {
     }
 
     public async fixIssues(issues: RepositoryIssue[]) {
-        //await this.runNamedFixers(issues);
         issues.forEach(async issue => await this.fixIssue(issue));
     }
 

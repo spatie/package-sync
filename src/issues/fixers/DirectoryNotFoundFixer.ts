@@ -8,6 +8,10 @@ export class DirectoryNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND];
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         const relativeFn: string = this.issue.name;
 
         //console.log(`* action: create directory '${basename(this.issue.repository.path)}/${relativeFn}'`);

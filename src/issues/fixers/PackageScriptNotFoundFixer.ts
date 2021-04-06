@@ -6,6 +6,10 @@ export class PackageScriptNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND];
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         const script = this.issue.skeleton.composer.script(this.issue.name);
 
         this.issue.repository.composer.addScript(script)

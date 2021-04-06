@@ -9,6 +9,10 @@ export class PackageNotUsedFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED];
 
     public fix(): boolean {
+        if (this.issue.resolved) {
+            return false;
+        }
+
         const relativeFn: string = this.issue.name;
 
         console.log(

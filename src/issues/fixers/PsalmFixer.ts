@@ -68,8 +68,6 @@ export class PsalmFixer extends Fixer {
         }
 
         if (this.issue.kind === ComparisonKind.FILE_NOT_FOUND) {
-            //this.issue.resolved = true;
-
             if (!existsSync(`${this.issue.repository.path}/${this.issue.name}`)) {
                 const data = File.read(this.issue.sourcefile.filename)
                     .processTemplate(basename(this.issue.repository.path));
