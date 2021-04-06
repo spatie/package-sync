@@ -81,4 +81,8 @@ export class PsalmFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'psalm-setup';
+    }
 }

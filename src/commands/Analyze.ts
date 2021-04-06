@@ -5,6 +5,7 @@ import { app } from '../Application';
 import { Command } from './Command';
 import { Repository, RepositoryKind } from '../lib/Repository';
 import { NewConsolePrinter } from '../printers/NewConsolePrinter';
+import { FixerManager } from '../issues/FixerManager';
 
 export default class AnalyzeCommand extends Command {
     public static command = 'analyze <packageName>';
@@ -25,6 +26,20 @@ export default class AnalyzeCommand extends Command {
         const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
 
         app.compareRepositories(skeleton, repo);
+
+        repo.issues.forEach(issue => {
+            FixerManager.fixers()
+                .forEach(fixer => {
+                    if (fixer.fixes(issue.kind)) {
+                        if (issue.note?.length > 0) {
+                        //
+                        } else {
+                            issue.note = 'fix available';
+                        }
+                        issue.note += ' ' + fixer.prettyName();
+                    }
+                });
+        });
 
         NewConsolePrinter.printRepositoryIssues(repo);
 

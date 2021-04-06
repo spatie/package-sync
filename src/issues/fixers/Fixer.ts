@@ -25,4 +25,8 @@ export abstract class Fixer {
     public static fixes(kind: ComparisonKind): boolean {
         return this.handles.includes(kind);
     }
+
+    public static prettyName(): string {
+        return this.name;
+    }
 }

@@ -18,4 +18,8 @@ export class FileDoesNotMatchFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'overwrite-file';
+    }
 }

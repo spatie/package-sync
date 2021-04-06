@@ -8,7 +8,7 @@ config:
     # such as 'File*', which would disable all fixers starting with 'File'.
     # names must be the classname, with or without the suffix 'Fixer', so 'Blah' is the same as 'BlahFixer'.
     disabled:
-      - GitFile
+#      - GitFile
       - FileDoesNotMatch
         
     OptionalPackages:

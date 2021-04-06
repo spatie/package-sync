@@ -20,4 +20,8 @@ export class PackageScriptNotFoundFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'copy-script';
+    }
 }

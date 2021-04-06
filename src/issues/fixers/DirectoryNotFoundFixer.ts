@@ -17,4 +17,8 @@ export class DirectoryNotFoundFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'create-dir';
+    }
 }

@@ -179,9 +179,7 @@ export class Application {
             if (!file.shouldIgnore && !repo.hasFile(file)) {
                 const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
 
-                repo.issues.push(
-                    new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false, 'fixable'),
-                );
+                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
 
                 return;
             }
@@ -230,7 +228,7 @@ export class Application {
 
         ComposerComparer.compareScripts(skeleton.path, repo.path)
             .forEach(r =>
-                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false, 'fixable')),
+                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
             );
     }
 

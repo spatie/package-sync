@@ -23,4 +23,8 @@ export class OptionalPackagesFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'skip-dep';
+    }
 }

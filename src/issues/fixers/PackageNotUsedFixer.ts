@@ -20,4 +20,8 @@ export class PackageNotUsedFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'install-dep';
+    }
 }

@@ -13,4 +13,8 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'user-review';
+    }
 }

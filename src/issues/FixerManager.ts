@@ -18,6 +18,22 @@ const micromatch = require('micromatch');
 // test comment
 
 export class FixerManager {
+    public static fixers() {
+        return [
+            ...this.namedFixers(),
+            DirectoryNotFoundFixer,
+            FileIsNotSimilarEnoughFixer,
+            FileDoesNotMatchFixer,
+            FileNotFoundFixer,
+            PackageNotUsedFixer,
+            PackageScriptNotFoundFixer,
+        ];
+    }
+
+    public static namedFixers() {
+        return [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
+    }
+
     constructor(public skeletonPath: string, public repositoryPath: string) {
         //
     }
@@ -35,7 +51,7 @@ export class FixerManager {
     }
 
     public runNamedFixers(issues: PackageIssue[]) {
-        const namedFixers = [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
+        const namedFixers = FixerManager.namedFixers();
 
         // check every issue against each fixer so fixers have a chance to fix multiple related issues
         namedFixers
@@ -58,14 +74,7 @@ export class FixerManager {
     }
 
     public fixIssue(issue: PackageIssue) {
-        const fixers = [
-            DirectoryNotFoundFixer,
-            FileIsNotSimilarEnoughFixer,
-            FileDoesNotMatchFixer,
-            FileNotFoundFixer,
-            PackageNotUsedFixer,
-            PackageScriptNotFoundFixer,
-        ];
+        const fixers = FixerManager.fixers();
 
         fixers
             .filter(fixer => !this.isFixerDisabled(fixer))

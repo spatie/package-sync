@@ -23,4 +23,8 @@ export class FileNotFoundFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'create-file';
+    }
 }

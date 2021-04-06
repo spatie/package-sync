@@ -31,4 +31,8 @@ export class GitFileFixer extends Fixer {
 
         return true;
     }
+
+    public static prettyName(): string {
+        return 'merge-files';
+    }
 }
