@@ -50,6 +50,8 @@ You should see something similar to the following:
 
 Issues are resolved by 'fixers', which perform various actions, such as copying a missing file from the skeleton to the package repository.
 
+After an analysis, you'll see a list of the available fixers for each issue.  Note that the `user-review` fixer will prompt you to run other fixers for a given issue, ensuring that only issues that can fixed safely are automated.
+
 To fix all issues with the `regex` package from above, run:
 
 ```bash
