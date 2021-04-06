@@ -43,26 +43,32 @@ export default class FixCommand extends Command {
 
         const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
         const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+        const fixerMgr = FixerManager.create(skeletonPath, repositoryPath);
 
         app.compareRepositories(skeleton, repo);
 
-        // repo.issues.forEach(issue => {
-        //     FixerManager.fixers()
-        //         .forEach(fixer => {
-        //         // if (fixer.fixes(issue.kind)) {
-        //         //     if ((issue.note?.length ?? 0) > 0) {
-        //         //     //
-        //         //     } else {
-        //         //         issue.note = 'fix available';
-        //         //     }
-        //         //     issue.note += ' ' + fixer.prettyName();
-        //         // }
-        //         });
-        // });
+        repo.issues.forEach(issue => {
+            FixerManager.fixers()
+                .forEach(fixer => {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                        issue.availableFixers.push(fixer.prettyName());
+                    //     if ((issue.note?.length ?? 0) > 0) {
+                    //     //
+                    //     } else {
+                    //         issue.note = 'fix available';
+                    //     }
+                    //     issue.note += ' ' + fixer.prettyName();
+                    }
+                });
+        });
 
-        FixerManager.create(skeletonPath, repositoryPath)
-            .fixIssues(
-                repo.issues.filter(issue => micromatch.isMatch(issueType, issue.kind)),
-            );
+        fixerMgr.fixIssues(
+            repo.issues.filter(
+                issue =>
+                    issueType === '*' ||
+                    micromatch.isMatch(issueType, issue.kind) ||
+                    micromatch.isMatch(issueType, issue.availableFixers),
+            ),
+        );
     }
 }

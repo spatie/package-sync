@@ -30,13 +30,8 @@ export default class AnalyzeCommand extends Command {
         repo.issues.forEach(issue => {
             FixerManager.fixers()
                 .forEach(fixer => {
-                    if (fixer.fixes(issue.kind)) {
-                        if ((issue.note?.length ?? 0) > 0) {
-                        //
-                        } else {
-                            issue.note = 'fix available';
-                        }
-                        issue.note += ' ' + fixer.prettyName();
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                        issue.availableFixers.push(fixer.prettyName());
                     }
                 });
         });

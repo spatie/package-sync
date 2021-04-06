@@ -10,6 +10,10 @@ import { RepositoryIssue } from '../RepositoryIssue';
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
 
+    public fixesIssue(issue: RepositoryIssue): boolean {
+        return PsalmFixer.canFix(issue);
+    }
+
     public static canFix(issue: RepositoryIssue): boolean {
         if (issue.resolved) {
             return false;

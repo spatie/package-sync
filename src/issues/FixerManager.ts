@@ -5,6 +5,7 @@ import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
 import { FileNotFoundFixer } from './fixers/FileNotFoundFixer';
+import { Fixer } from './fixers/Fixer';
 import { GitFileFixer } from './fixers/GitFileFixer';
 import { OptionalPackagesFixer } from './fixers/OptionalPackagesFixer';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
@@ -49,6 +50,17 @@ export class FixerManager {
         return micromatch.isMatch(name, disabledFixers) || micromatch.isMatch(shortName, disabledFixers);
     }
 
+    public getFixerForIssue(name: string, issue: RepositoryIssue): Fixer | null {
+        const fixerClass = FixerManager.fixers()
+            .find(fixer => fixer.prettyName() === name) ?? null;
+
+        if (fixerClass) {
+            return new fixerClass(issue);
+        }
+
+        return null;
+    }
+
     public runNamedFixers(issues: RepositoryIssue[]) {
         const namedFixers = FixerManager.namedFixers();
 
@@ -57,6 +69,10 @@ export class FixerManager {
             .filter(fixer => !this.isFixerDisabled(fixer))
             .forEach(fixer => {
                 issues.forEach(issue => {
+                    if (issue.availableFixers.length && !issue.availableFixers.includes(fixer.prettyName())) {
+                        return;
+                    }
+
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
                         new fixer(issue)
                             .fix();
@@ -75,7 +91,23 @@ export class FixerManager {
     public fixIssue(issue: RepositoryIssue) {
         const fixers = FixerManager.fixers();
 
+        const fixerObjs: Fixer[] = [];
+
+        if (issue.availableFixers.length) {
+            issue.availableFixers.forEach(fixerName => {
+                fixerObjs.push(<Fixer>this.getFixerForIssue(fixerName, issue));
+            });
+
+            // fixerObjs
+            //     .filter(fixer => !this.isFixerDisabled(fixer))
+            //     //.filter(fixer => fixer.fixesIssue(issue))
+            //     .forEach(fixer => fixer.fix());
+
+            // return;
+        }
+
         fixers
+            .filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
             .filter(fixer => !this.isFixerDisabled(fixer))
             .filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.canFix(issue))

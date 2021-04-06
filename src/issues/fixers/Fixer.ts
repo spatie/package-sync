@@ -10,6 +10,11 @@ export abstract class Fixer {
     public constructor(public issue: RepositoryIssue) {
         //
     }
+
+    getName() {
+        return Fixer.prettyName();
+    }
+
     public abstract fix(): boolean;
 
     static config() {
@@ -28,5 +33,9 @@ export abstract class Fixer {
 
     public static prettyName(): string {
         return this.name;
+    }
+
+    public fixesIssue(issue: RepositoryIssue) {
+        return Fixer.fixes(issue.kind) && Fixer.canFix(issue);
     }
 }

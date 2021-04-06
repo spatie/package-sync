@@ -5,6 +5,8 @@ import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
 
 export class RepositoryIssue {
+    public availableFixers: string[] = [];
+
     constructor(
         public result: any,
         public name: string,
