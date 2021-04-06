@@ -26,7 +26,7 @@ export default class FixCommand extends Command {
             issueType = '*';
         }
 
-        const { repo } = app.analyzeRepository(argv.packageName);
+        const { repo } = app.analyzePackage(argv.packageName);
         let issues = repo.issues.slice(0);
 
         if (argv.file !== null) {

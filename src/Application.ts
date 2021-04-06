@@ -161,7 +161,7 @@ export class Application {
             });
     }
 
-    analyzeRepository(packageName: string) {
+    analyzePackage(packageName: string) {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
         const templateName = this.configuration.getFullTemplateName(skeletonType);
 
@@ -171,6 +171,10 @@ export class Application {
         const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
         const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
 
+        return this.analyzeRepository(skeleton, repo);
+    }
+
+    analyzeRepository(skeleton: Repository, repo: Repository) {
         this.compareRepositories(skeleton, repo);
 
         repo.issues.forEach(issue => {
