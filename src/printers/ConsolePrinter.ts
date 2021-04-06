@@ -74,7 +74,7 @@ export class ConsolePrinter {
             .filter(issue => !app.config.ignoreNames.includes(issue.name))
             .filter(issue => !app.config.skipComparisons.includes(issue.name))
             .filter(issue => !app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? true)
-            .sort((a, b) => (a.kind + a.score).localeCompare(b.kind + b.score))
+            .sort((a, b) => a.kind.localeCompare(b.kind))
             .forEach(issue => {
                 table.push([this.kindColor(issue.kind)(issue.name), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);
             });

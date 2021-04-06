@@ -5,7 +5,7 @@ import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
 
 export class RepositoryIssue {
-    public availableFixers: string[] = [];
+    protected _availableFixers: string[] = [];
 
     public resolvedByFixer = 'none';
     public resolvedNotes: string[] = [];
@@ -24,6 +24,10 @@ export class RepositoryIssue {
         public context: any | null = null,
     ) {
         //
+    }
+
+    get availableFixers() {
+        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0));
     }
 
     get kind(): ComparisonKind {

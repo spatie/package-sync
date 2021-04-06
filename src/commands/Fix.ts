@@ -27,20 +27,22 @@ export default class FixCommand extends Command {
         }
 
         const { repo } = app.analyzePackage(argv.packageName);
-        let issues = repo.issues.slice(0);
+        // let issues = repo.issues.slice(0);
 
-        if (argv.file !== null) {
-            issues = issues.filter(issue => issue.name === argv.file);
-        }
+        // if (argv.file !== null) {
+        //     issues = issues.filter(issue => issue.name === argv.file);
+        // }
 
         FixerManager.create()
             .fixIssues(
-                issues.filter(
-                    issue =>
-                        issueType === '*' ||
-                    micromatch.isMatch(issueType, issue.kind) ||
-                    micromatch.isMatch(issueType, issue.availableFixers),
-                ),
+                repo.issues
+                    .filter(issue => argv.file === null || issue.name === argv.file)
+                    .filter(
+                        issue =>
+                            issueType === '*' ||
+                        micromatch.isMatch(issueType, issue.kind) ||
+                        micromatch.isMatch(issueType, issue.availableFixers),
+                    ),
             );
 
         ConsolePrinter.printRepositoryFixerResults(repo);
