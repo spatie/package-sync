@@ -1,0 +1,95 @@
+config:
+
+  templatesPath: '{{__dirname}}/temp'
+  packagesPath: /development/repositories/spatie
+
+  fixers:
+    # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
+    # such as 'File*', which would disable all fixers starting with 'File'.
+    # names must be the classname, with or without the suffix 'Fixer', so 'Blah' is the same as 'BlahFixer'.
+    disabled:
+#      - GitFile
+      - FileDoesNotMatch
+
+    OptionalPackages:
+      - spatie/ray
+      - friendsofphp/php-cs-fixer
+
+  issues:
+    ignored:
+      missing_pkg:
+        - spatie/ray
+        - friendsofphp/php-cs-fixer
+      pkg_script:
+        - format
+      extra_file:
+        - .scrutinizer.yml
+
+  templates:
+    vendor: spatie
+    names:
+      - package-skeleton-php
+      - package-skeleton-laravel
+
+  # similiar and size score requirements for determining if a file is out of sync.
+  # for similar scores, the closer to 1.0 the value is, the more a file must match with 1.0 being an exact match.
+  # for size scores, the value is the percent difference in terms of file size, so the closer to 0 the value is,
+  # the more a file must match.
+  #
+  # these scores are used together because a file can be considered fairly similar but still be out of sync.  for example, if
+  # a few lines were added to the skeleton .gitignore, a package's gitignore might be considered similar but would be listed as
+  # out of sync due to the size difference.
+  scoreRequirements:
+    defaults:
+      similar: 0.75
+      size: 10
+    files:
+      - name: CONTRIBUTING.md
+        scores:
+          similar: 0.95
+          size: 5
+      - name: .editorconfig
+        scores:
+          similar: 1
+          size: 5
+      - name: .gitattributes
+        scores:
+          similar: 0.8
+          size: 8
+      - name: .gitignore
+        scores:
+          similar: 0.8
+          size: 8
+      - name: .php_cs.dist
+        scores:
+          similar: 1
+          size: 5
+
+  # list of filenames that should not be compared during analysis
+  skipComparisons:
+    - composer.json
+    - README.md
+
+  ignoreNames:
+    - .git/*
+    - .idea/*
+    - .vscode/*
+    - CHANGELOG.md
+    - art/*
+    - build/**/*
+    - composer.lock
+    - config/**/*
+    - coverage/
+    - database/**/*
+    - database
+    - docs/*
+    - node_modules/
+    - package-lock.json
+    - resources/*
+    - src/**/*
+    - stubs/*
+    - tests/**/*
+    - vendor/*
+    - '*.sh'
+    - '*.cache'
+    - '*.lock'

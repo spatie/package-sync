@@ -89,7 +89,12 @@ export class Configuration {
         //     ],
         // };
 
-        this.conf = this.loadConfigurationFile(__filename.replace(/\.js$/, '.yml')).config;
+        if (process.env.NODE_ENV === 'test') {
+            this.conf = this.loadConfigurationFile(process.cwd() + '/tests/data/index.yml').config;
+            return;
+        }
+
+        this.conf = this.loadConfigurationFile(__filename.replace(/\.[tj]s$/, '.yml')).config;
     }
 
     public loadConfigurationFile(filename: string) {

@@ -47,6 +47,12 @@ export class Composer {
         return JSON.stringify(this.data, null, 4);
     }
 
+    public fromJson(json: string) {
+        this.rawData = JSON.parse(json);
+
+        return this;
+    }
+
     public load() {
         this.rawData = require(this.filename);
         this.loaded = true;

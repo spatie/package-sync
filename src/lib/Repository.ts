@@ -14,9 +14,9 @@ export enum RepositoryKind {
 }
 
 export class Repository {
-    protected composerData: Composer;
+    public composerData: Composer;
     protected loadedFiles = false;
-    protected fileList: RepositoryFile[] = [];
+    public fileList: RepositoryFile[] = [];
     public issues: RepositoryIssue[] = [];
 
     constructor(public path: string, public kind: RepositoryKind) {
