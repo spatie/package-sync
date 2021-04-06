@@ -34,12 +34,14 @@ export class FixerManager {
         return [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
     }
 
-    constructor(public skeletonPath: string, public repositoryPath: string) {
+    constructor() {
+        //public skeletonPath: string, public repositoryPath: string) {
         //
     }
 
-    static create(skeletonPath: string, repositoryPath: string) {
-        return new FixerManager(skeletonPath, repositoryPath);
+    static create() {
+        //skeletonPath: string, repositoryPath: string) {
+        return new FixerManager(); //skeletonPath, repositoryPath);
     }
 
     public isFixerDisabled(fixer: any): boolean {
@@ -82,28 +84,18 @@ export class FixerManager {
     }
 
     public fixIssues(issues: RepositoryIssue[]) {
-        //const issues = results.map(r => new PackageIssue(r, this.skeletonPath, this.repositoryPath, false));
-
         this.runNamedFixers(issues);
         issues.forEach(issue => this.fixIssue(issue));
     }
 
     public fixIssue(issue: RepositoryIssue) {
         const fixers = FixerManager.fixers();
-
         const fixerObjs: Fixer[] = [];
 
         if (issue.availableFixers.length) {
             issue.availableFixers.forEach(fixerName => {
                 fixerObjs.push(<Fixer>this.getFixerForIssue(fixerName, issue));
             });
-
-            // fixerObjs
-            //     .filter(fixer => !this.isFixerDisabled(fixer))
-            //     //.filter(fixer => fixer.fixesIssue(issue))
-            //     .forEach(fixer => fixer.fix());
-
-            // return;
         }
 
         fixers

@@ -64,7 +64,7 @@ export class PsalmFixer extends Fixer {
         }
 
         if (this.issue.kind === ComparisonKind.FILE_NOT_FOUND) {
-            this.issue.resolved = true;
+            //this.issue.resolved = true;
 
             if (!existsSync(`${this.issue.repository.path}/${this.issue.name}`)) {
                 const data = File.read(this.issue.sourcefile.filename)
@@ -73,6 +73,9 @@ export class PsalmFixer extends Fixer {
                 writeFileSync(`${this.issue.repository.path}/${this.issue.name}`, data, { encoding: 'utf-8' });
             }
         }
+
+        this.issue.resolve(PsalmFixer.prettyName());
+        this.issue.resolvedNotes.push(`fixed '${this.issue.kind}' for '${this.issue.name}`);
 
         console.log(`PSALM FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 

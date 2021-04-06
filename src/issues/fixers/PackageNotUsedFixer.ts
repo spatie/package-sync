@@ -16,7 +16,10 @@ export class PackageNotUsedFixer extends Fixer {
                 `'${basename(this.issue.repository.path)}/${relativeFn}'`,
         );
 
-        console.log(`action: run git add '${relativeFn}'`);
+        //console.log(`action: run git add '${relativeFn}'`);
+
+        //this.issue.resolve(OptionalPackagesFixer.prettyName());
+        //this.issue.resolvedNotes.push(`skipped '${this.issue.name}'`);
 
         return true;
     }

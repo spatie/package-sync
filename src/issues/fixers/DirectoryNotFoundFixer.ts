@@ -11,9 +11,12 @@ export class DirectoryNotFoundFixer extends Fixer {
     public fix(): boolean {
         const relativeFn: string = this.issue.name;
 
-        console.log(`* action: create directory '${basename(this.issue.repository.path)}/${relativeFn}'`);
+        //console.log(`* action: create directory '${basename(this.issue.repository.path)}/${relativeFn}'`);
 
         mkdirSync(`${this.issue.repository.path}/${relativeFn}`, { recursive: true });
+
+        this.issue.resolve(DirectoryNotFoundFixer.prettyName());
+        this.issue.resolvedNotes.push(`created directory '${relativeFn}'`);
 
         return true;
     }

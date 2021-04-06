@@ -19,6 +19,9 @@ export class FileNotFoundFixer extends Fixer {
                 .processTemplate(basename(this.issue.repository.path));
 
             writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
+
+            this.issue.resolve(FileNotFoundFixer.prettyName());
+            this.issue.resolvedNotes.push(`copy file '${relativeFn}' into '${this.issue.repository.name}'`);
         }
 
         return true;

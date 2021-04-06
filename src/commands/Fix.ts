@@ -3,7 +3,7 @@
 import { app } from '../Application';
 import { Command, createOption } from './Command';
 import { FixerManager } from '../issues/FixerManager';
-import { Repository, RepositoryKind } from '../lib/Repository';
+import { ConsolePrinter } from '../printers/ConsolePrinter';
 
 const micromatch = require('micromatch');
 
@@ -13,7 +13,7 @@ export default class FixCommand extends Command {
     public static description = "Fix a package's issues";
     public static exports = exports;
 
-    public static options = [createOption('fixer', undefined, { alias: 'F', type: 'string' })];
+    public static options = [createOption('file', null, { alias: 'f', type: 'string' })];
 
     static handle(argv: any): void {
         let issueType = argv.issueType;
@@ -26,34 +26,23 @@ export default class FixCommand extends Command {
             issueType = '*';
         }
 
-        const skeletonType = argv.packageName.startsWith('laravel-') ? 'laravel' : 'php';
-        const templateName = app.configuration.getFullTemplateName(skeletonType);
+        const { skeleton, repo } = app.analyzeRepository(argv.packageName);
+        let issues = repo.issues.slice(0);
 
-        const skeletonPath = app.templatePath(templateName);
-        const repositoryPath = app.packagePath(argv.packageName);
+        if (argv.file !== null) {
+            issues = issues.filter(issue => issue.name === argv.file);
+        }
 
-        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
-        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
-        const fixerMgr = FixerManager.create(skeletonPath, repositoryPath);
-
-        app.compareRepositories(skeleton, repo);
-
-        repo.issues.forEach(issue => {
-            FixerManager.fixers()
-                .forEach(fixer => {
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
-                        issue.availableFixers.push(fixer.prettyName());
-                    }
-                });
-        });
-
-        fixerMgr.fixIssues(
-            repo.issues.filter(
-                issue =>
-                    issueType === '*' ||
+        FixerManager.create()
+            .fixIssues(
+                issues.filter(
+                    issue =>
+                        issueType === '*' ||
                     micromatch.isMatch(issueType, issue.kind) ||
                     micromatch.isMatch(issueType, issue.availableFixers),
-            ),
-        );
+                ),
+            );
+
+        ConsolePrinter.printRepositoryFixerResults(repo);
     }
 }

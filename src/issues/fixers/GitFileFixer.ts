@@ -21,9 +21,10 @@ export class GitFileFixer extends Fixer {
             .add(this.issue.sourcefile.filename, this.issue.targetfile.filename)
             .mergeAndSave(this.issue.targetfile.filename);
 
-        this.issue.resolved = true;
-
         console.log(`GIT FILE FIXER: merged '${this.issue.sourcefile.relativeName}'`);
+
+        this.issue.resolve(GitFileFixer.prettyName());
+        this.issue.resolvedNotes.push(`merged '${this.issue.sourcefile.relativeName}' from skeleton and package`);
 
         return true;
     }

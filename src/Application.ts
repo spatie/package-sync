@@ -7,9 +7,10 @@ import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { Configuration } from './Configuration';
 import { FileScoreRequirements } from './types/FileScoreRequirements';
-import { Repository } from './lib/Repository';
+import { Repository, RepositoryKind } from './lib/Repository';
 import { RepositoryIssue } from './issues/RepositoryIssue';
 import { compareFileSizes } from './lib/FileSizeComparison';
+import { FixerManager } from './issues/FixerManager';
 
 const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
@@ -141,6 +142,30 @@ export class Application {
             .forEach(r =>
                 repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
             );
+    }
+
+    analyzeRepository(packageName: string) {
+        const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
+        const templateName = this.configuration.getFullTemplateName(skeletonType);
+
+        const skeletonPath = this.templatePath(templateName);
+        const repositoryPath = this.packagePath(packageName);
+
+        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
+        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+
+        this.compareRepositories(skeleton, repo);
+
+        repo.issues.forEach(issue => {
+            FixerManager.fixers()
+                .forEach(fixer => {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                        issue.availableFixers.push(fixer.prettyName());
+                    }
+                });
+        });
+
+        return { skeleton, repo };
     }
 }
 

@@ -13,7 +13,8 @@ export class PackageScriptNotFoundFixer extends Fixer {
 
         console.log(`* PACKAGE SCRIPT FIXER: add composer script '${this.issue.name}'`);
 
-        this.issue.resolved = true;
+        this.issue.resolve(PackageScriptNotFoundFixer.prettyName());
+        this.issue.resolvedNotes.push(`added composer script '${this.issue.name}'`);
 
         return true;
     }

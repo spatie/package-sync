@@ -47,6 +47,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
+        "chalk": "^4.1.0",
         "cli-table3": "^0.6.0",
         "js-yaml": "^4.0.0",
         "micromatch": "^4.0.2",

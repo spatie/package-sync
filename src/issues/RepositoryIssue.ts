@@ -7,6 +7,9 @@ import { RepositoryFile } from '../lib/RepositoryFile';
 export class RepositoryIssue {
     public availableFixers: string[] = [];
 
+    public resolvedByFixer = 'none';
+    public resolvedNotes: string[] = [];
+
     constructor(
         public result: any,
         public name: string,
@@ -43,5 +46,10 @@ export class RepositoryIssue {
 
     get targetfile(): RepositoryFile {
         return <RepositoryFile>this.destFile;
+    }
+
+    public resolve(resolvedByFixer: string) {
+        this.resolvedByFixer = resolvedByFixer;
+        this.resolved = true;
     }
 }

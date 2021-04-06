@@ -14,7 +14,10 @@ export class FileDoesNotMatchFixer extends Fixer {
         File.read(this.issue.srcFile?.filename ?? '')
             .saveAs(this.issue.destFile?.filename ?? '');
 
-        console.log(`FILE MISMATCH FIXER: overwrote the package file '${this.issue.name}' with the template repo file`);
+        //console.log(`FILE MISMATCH FIXER: overwrote the package file '${this.issue.name}' with the template repo file`);
+
+        this.issue.resolve(FileDoesNotMatchFixer.prettyName());
+        this.issue.resolvedNotes.push(`overwrote existing file '${this.issue.name}'`);
 
         return true;
     }

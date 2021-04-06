@@ -17,9 +17,10 @@ export class OptionalPackagesFixer extends Fixer {
     }
 
     public fix(): boolean {
-        this.issue.resolved = true;
-
         console.log(`OPTIONAL PACKAGES FIXER: skipping '${this.issue.name}'`);
+
+        this.issue.resolve(OptionalPackagesFixer.prettyName());
+        this.issue.resolvedNotes.push(`skipped '${this.issue.name}'`);
 
         return true;
     }
