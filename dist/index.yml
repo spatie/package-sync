@@ -10,11 +10,11 @@ config:
     disabled:
 #      - GitFile
       - FileDoesNotMatch
-        
+
     OptionalPackages:
       - spatie/ray
       - friendsofphp/php-cs-fixer
-      
+
   issues:
     ignored:
       missing_pkg:
@@ -30,7 +30,7 @@ config:
     names:
       - package-skeleton-php
       - package-skeleton-laravel
-        
+
   # similiar and size score requirements for determining if a file is out of sync.
   # for similar scores, the closer to 1.0 the value is, the more a file must match with 1.0 being an exact match.
   # for size scores, the value is the percent difference in terms of file size, so the closer to 0 the value is, 
