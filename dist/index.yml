@@ -2,7 +2,7 @@ config:
 
   templatesPath: '{{__dirname}}/temp'
   packagesPath: /development/repositories/spatie
-  
+
   fixers:
     # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
     # such as 'File*', which would disable all fixers starting with 'File'.
@@ -33,7 +33,7 @@ config:
 
   # similiar and size score requirements for determining if a file is out of sync.
   # for similar scores, the closer to 1.0 the value is, the more a file must match with 1.0 being an exact match.
-  # for size scores, the value is the percent difference in terms of file size, so the closer to 0 the value is, 
+  # for size scores, the value is the percent difference in terms of file size, so the closer to 0 the value is,
   # the more a file must match.
   #
   # these scores are used together because a file can be considered fairly similar but still be out of sync.  for example, if
@@ -68,31 +68,27 @@ config:
   # list of filenames that should not be compared during analysis
   skipComparisons:
     - composer.json
+    - README.md
 
   ignoreNames:
     - .git/*
     - .idea/*
-    - .idea
     - .vscode/*
     - CHANGELOG.md
-    - README.md
     - art/*
-    - build/*
-    - build
+    - build/**/*
     - composer.lock
-    - config/
-    - config
+    - config/**/*
     - coverage/
-    - database/
+    - database/**/*
     - database
     - docs/*
     - node_modules/
     - package-lock.json
-    - resources/
-    - resources
-    - src/
+    - resources/*
+    - src/**/*
     - stubs/*
-    - tests/
+    - tests/**/*
     - vendor/*
     - '*.sh'
     - '*.cache'
