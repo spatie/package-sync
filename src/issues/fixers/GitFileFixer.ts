@@ -3,7 +3,6 @@
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { FileMerger } from '../../lib/FileMerger';
 import { Fixer } from './Fixer';
-import { PackageIssue } from '../PackageIssue';
 import { RepositoryIssue } from '../RepositoryIssue';
 
 export class GitFileFixer extends Fixer {

@@ -2,13 +2,11 @@
 
 import { app } from '../Application';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
-import { FileComparisonResult } from '../types/FileComparisonResult';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
 import { FileNotFoundFixer } from './fixers/FileNotFoundFixer';
 import { GitFileFixer } from './fixers/GitFileFixer';
 import { OptionalPackagesFixer } from './fixers/OptionalPackagesFixer';
-import { PackageIssue } from './PackageIssue';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
 import { PackageScriptNotFoundFixer } from './fixers/PackageScriptNotFoundFixer';
 import { PsalmFixer } from './fixers/PsalmFixer';

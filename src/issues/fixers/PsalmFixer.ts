@@ -3,10 +3,8 @@
 import { existsSync, writeFileSync } from 'fs';
 import { basename } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { Composer } from '../../lib/composer/Composer';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
-import { PackageIssue } from '../PackageIssue';
 import { RepositoryIssue } from '../RepositoryIssue';
 
 export class PsalmFixer extends Fixer {
@@ -51,7 +49,7 @@ export class PsalmFixer extends Fixer {
     }
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.name;
+        // const relativeFn: string = this.issue.name;
 
         if (this.issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
             this.issue.resolved = true;

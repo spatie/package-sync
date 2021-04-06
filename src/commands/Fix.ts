@@ -30,6 +30,7 @@ export default class FixCommand extends Command {
         if (issueType.trim().length === 0) {
             issueType = '*';
         }
+
         if (issueType === 'all') {
             issueType = '*';
         }
@@ -45,19 +46,19 @@ export default class FixCommand extends Command {
 
         app.compareRepositories(skeleton, repo);
 
-        repo.issues.forEach(issue => {
-            FixerManager.fixers()
-                .forEach(fixer => {
-                // if (fixer.fixes(issue.kind)) {
-                //     if ((issue.note?.length ?? 0) > 0) {
-                //     //
-                //     } else {
-                //         issue.note = 'fix available';
-                //     }
-                //     issue.note += ' ' + fixer.prettyName();
-                // }
-                });
-        });
+        // repo.issues.forEach(issue => {
+        //     FixerManager.fixers()
+        //         .forEach(fixer => {
+        //         // if (fixer.fixes(issue.kind)) {
+        //         //     if ((issue.note?.length ?? 0) > 0) {
+        //         //     //
+        //         //     } else {
+        //         //         issue.note = 'fix available';
+        //         //     }
+        //         //     issue.note += ' ' + fixer.prettyName();
+        //         // }
+        //         });
+        // });
 
         FixerManager.create(skeletonPath, repositoryPath)
             .fixIssues(
