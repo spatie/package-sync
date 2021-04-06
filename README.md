@@ -48,18 +48,24 @@ You should see something similar to the following:
 > **Warning**: this feature is incomplete and DOES modify files in the package's repository directory
 >
 
-To fix any issues with the `regex` package from above, run the following:
+Issues are resolved by 'fixers', which perform various actions, such as copying a missing file from the skeleton to the package repository.
+
+To fix all issues with the `regex` package from above, run:
 
 ```bash
 npm run dev fix regex all
 ```
 
-![image](https://user-images.githubusercontent.com/5508707/113592291-f5086080-9602-11eb-83d8-8d4399bfed26.png)
+![image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)
 
-You can also only fix certian issues.  To only fix the 'missing_pkg' issues, run:
+You can also only fix certian issues or run specific fixers.
 
 ```bash
+# only fix the 'missing_pkg' issues:
 npm run dev fix regex missing_pkg
+
+# only run the 'create-file' fixer:
+npm run dev fix regex create-file
 ```
 
 Note that this command will make modifications to the package's files, so be careful!
