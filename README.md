@@ -68,7 +68,7 @@ npm run dev fix regex all
 
 You can also only fix certian issues or run specific fixers.
 
-```bash
+```bashprocessed
 # only fix the 'missing_pkg' issues:
 npm run dev fix regex missing_pkg
 
@@ -77,6 +77,19 @@ npm run dev fix regex create-file
 ```
 
 Note that this command will make modifications to the package's files, so be careful!
+
+### Fixers
+
+| name | Description |
+| --- | --- |
+| `copy-script` | adds a missing composer script to the package composer.json file |
+| `copy-version` | merges a newer dependency version into the older one |
+| `create-dir` | creates a missing directory |
+| `create-file` | creates a missing file |
+| `install-dep` | adds a new package dependency to the package composer.json file |
+| `merge-files` | updaates a package file with a merged copy of both file versions |
+| `psalm-setup` | installs all psalm-related files, scripts, packages |
+| `user-review` | asks the user whether or not a file should be fixed automatically |
 
 ## Commands
 
