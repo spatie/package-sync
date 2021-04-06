@@ -4,7 +4,7 @@
 import { app } from '../Application';
 import { Command } from './Command';
 import { Repository, RepositoryKind } from '../lib/Repository';
-import { NewConsolePrinter } from '../printers/NewConsolePrinter';
+import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { FixerManager } from '../issues/FixerManager';
 
 export default class AnalyzeCommand extends Command {
@@ -36,9 +36,6 @@ export default class AnalyzeCommand extends Command {
                 });
         });
 
-        NewConsolePrinter.printRepositoryIssues(repo);
-
-        // const results = app.compareDotFiles(skeletonPath, repositoryPath);
-        // app.displayResults(skeletonPath, repositoryPath, results);
+        ConsolePrinter.printRepositoryIssues(repo);
     }
 }

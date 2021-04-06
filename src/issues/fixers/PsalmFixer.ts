@@ -44,8 +44,6 @@ export class PsalmFixer extends Fixer {
     }
 
     protected copyComposerPackage(name: string) {
-        // const skeletonComposer = Composer.create(`${this.issue.skeletonPath}/composer.json`);
-        // const repositoryComposer = Composer.create(`${this.issue.repositoryPath}/composer.json`);
         const pkg = this.issue.skeleton.composer.package(name);
 
         this.issue.repository.composer.addPackage(pkg)
@@ -53,8 +51,6 @@ export class PsalmFixer extends Fixer {
     }
 
     public fix(): boolean {
-        // const relativeFn: string = this.issue.name;
-
         if (this.issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
             this.issue.resolved = true;
 
