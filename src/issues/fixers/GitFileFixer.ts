@@ -6,7 +6,7 @@ import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
 
 export class GitFileFixer extends Fixer {
-    public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED];
+    public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED, ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
     public static canFix(issue: RepositoryIssue): boolean {
         if (issue.resolved) {

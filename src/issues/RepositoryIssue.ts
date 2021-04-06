@@ -10,6 +10,8 @@ export class RepositoryIssue {
     public resolvedByFixer = 'none';
     public resolvedNotes: string[] = [];
 
+    public pending = false;
+
     constructor(
         public result: any,
         public name: string,

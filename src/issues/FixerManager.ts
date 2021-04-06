@@ -8,6 +8,7 @@ import { FileNotFoundFixer } from './fixers/FileNotFoundFixer';
 import { Fixer } from './fixers/Fixer';
 import { GitFileFixer } from './fixers/GitFileFixer';
 import { OptionalPackagesFixer } from './fixers/OptionalPackagesFixer';
+import { OverwriteFileFixer } from './fixers/OverwriteFileFixer';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
 import { PackageScriptNotFoundFixer } from './fixers/PackageScriptNotFoundFixer';
 import { PsalmFixer } from './fixers/PsalmFixer';
@@ -23,6 +24,7 @@ export class FixerManager {
             ...this.namedFixers(),
             DirectoryNotFoundFixer,
             FileIsNotSimilarEnoughFixer,
+            OverwriteFileFixer,
             FileDoesNotMatchFixer,
             FileNotFoundFixer,
             PackageNotUsedFixer,
@@ -70,12 +72,18 @@ export class FixerManager {
         namedFixers
             .filter(fixer => !this.isFixerDisabled(fixer))
             .forEach(fixer => {
-                issues.forEach(issue => {
+                issues.forEach(async issue => {
                     if (issue.availableFixers.length && !issue.availableFixers.includes(fixer.prettyName())) {
                         return;
                     }
 
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                        //const fixerObj = new fixer(issue);
+                        // if (fixerObj.isAsync) {
+                        //     await fixerObj.fixAsync();
+                        //     return;
+                        // }
+
                         new fixer(issue)
                             .fix();
                     }
@@ -83,12 +91,12 @@ export class FixerManager {
             });
     }
 
-    public fixIssues(issues: RepositoryIssue[]) {
-        this.runNamedFixers(issues);
-        issues.forEach(issue => this.fixIssue(issue));
+    public async fixIssues(issues: RepositoryIssue[]) {
+        await this.runNamedFixers(issues);
+        issues.forEach(async issue => await this.fixIssue(issue));
     }
 
-    public fixIssue(issue: RepositoryIssue) {
+    public async fixIssue(issue: RepositoryIssue) {
         const fixers = FixerManager.fixers();
         const fixerObjs: Fixer[] = [];
 
@@ -103,7 +111,9 @@ export class FixerManager {
             .filter(fixer => !this.isFixerDisabled(fixer))
             .filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.canFix(issue))
-            .forEach(fixer => new fixer(issue)
-                .fix());
+            .forEach(fixer => {
+                new fixer(issue)
+                    .fix();
+            });
     }
 }
