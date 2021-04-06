@@ -1,0 +1,6 @@
+#!/bin/bash
+
+THISDIR=$(dirname $0)
+NODE=$(which node)
+
+$NODE "$THISDIR/../package-sync/dist/package-sync.js"

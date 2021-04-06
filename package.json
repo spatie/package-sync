@@ -2,7 +2,7 @@
     "name": "package-sync",
     "version": "1.0.0",
     "description": "sync a package repo with a template/skeleton repo",
-    "main": "dist/index.js",
+    "main": "dist/package-sync.js",
     "scripts": {
         "test": "./node_modules/.bin/jest tests --verbose",
         "test:coverage": "./node_modules/.bin/jest tests --coverage",
@@ -11,8 +11,8 @@
         "lint:fix": "./node_modules/.bin/eslint --ext ts,js --fix src/",
         "lint:staged": "./node_modules/.bin/lint-staged",
         "fix": "npm run fmt && npm run lint:fix",
-        "build:dev": "./node_modules/.bin/esbuild --platform=node --target=node14 --define:__APP_VERSION__=\"'1.0'\" --format=cjs --bundle --log-level=error --outdir=dist src/index.ts",
-        "dev": "npm run build:dev && node dist/index.js",
+        "build:dev": "./node_modules/.bin/esbuild --platform=node --target=node14 --define:__APP_VERSION__=\"'1.0'\" --format=cjs --bundle --log-level=error --outdir=dist src/index.ts && mv --force dist/index.js dist/package-sync.js",
+        "dev": "npm run build:dev && node dist/package-sync.js",
         "prepare": "is-ci || husky install"
     },
     "author": "Patrick Organ <patrick@permafrost.dev>",
@@ -54,5 +54,8 @@
         "semver": "^7.3.5",
         "string-similarity": "^4.0.4",
         "yargs": "^16.0.0"
+    },
+    "bin": {
+        "package-sync": "dist/package-sync"
     }
 }
