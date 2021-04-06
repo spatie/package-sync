@@ -40,7 +40,7 @@ The `pull-*` commands clone the repositories to the local file system _(or run `
 
 You should see something similar to the following:
 
-![image](https://user-images.githubusercontent.com/5508707/113592108-bb375a00-9602-11eb-9a85-223350a68be4.png)
+![image](https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png)
 
 ## Fixing package issues
 
