@@ -76,7 +76,7 @@ npm run dev fix regex missing_pkg
 Run just a specific fixer by name:
 
 ```bash
-# only run the 'create-file' fixer:
+# only run the 'github' fixer:
 npm run dev fix array-functions github
 ```
 
