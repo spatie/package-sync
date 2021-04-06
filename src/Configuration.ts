@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { PackageIssue } from './issues/PackageIssue';
 import { ScoreRequirements } from './types/ScoreRequirements';
-import smartMerge from './lib/stringPatch';
 
 const yaml = require('js-yaml');
 
@@ -77,5 +76,3 @@ export class Configuration {
 }
 
 export const config = new Configuration();
-
-export default smartMerge;

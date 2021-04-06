@@ -55,18 +55,6 @@ export class Repository {
         return this.files.find(f => f.relativeName === file.relativeName) !== undefined;
     }
 
-    hasIssues() {
-        return this.issues.length > 0;
-    }
-
-    isSkeleton() {
-        return this.kind === RepositoryKind.SKELETON;
-    }
-
-    isPackage() {
-        return this.kind === RepositoryKind.PACKAGE;
-    }
-
     protected getFileList(directory: string, basePath: string | null = null): RepositoryFile[] {
         const result: RepositoryFile[] = [];
 
