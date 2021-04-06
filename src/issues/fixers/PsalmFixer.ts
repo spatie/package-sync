@@ -7,25 +7,26 @@ import { Composer } from '../../lib/composer/Composer';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
 import { PackageIssue } from '../PackageIssue';
+import { RepositoryIssue } from '../RepositoryIssue';
 
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
 
-    public static canFix(issue: PackageIssue): boolean {
+    public static canFix(issue: RepositoryIssue): boolean {
         if (issue.resolved) {
             return false;
         }
 
-        if (issue.result.name.includes('psalm')) {
-            if (issue.result.kind === ComparisonKind.FILE_NOT_FOUND) {
-                return ['psalm.xml.dist', '.github/workflows/psalm.yml'].includes(issue.result.name);
+        if (issue.name.includes('psalm')) {
+            if (issue.kind === ComparisonKind.FILE_NOT_FOUND) {
+                return ['psalm.xml.dist', '.github/workflows/psalm.yml'].includes(issue.name);
             }
 
-            if (issue.result.kind === ComparisonKind.PACKAGE_NOT_USED) {
+            if (issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
                 return issue.result.name === 'vimeo/psalm';
             }
 
-            if (issue.result.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
+            if (issue.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
                 return true;
             }
         }
@@ -34,50 +35,48 @@ export class PsalmFixer extends Fixer {
     }
 
     protected copyComposerScript(name: string) {
-        const skeletonComposer = Composer.create(`${this.issue.skeletonPath}/composer.json`);
-        const repositoryComposer = Composer.create(`${this.issue.repositoryPath}/composer.json`);
-        const script = skeletonComposer.script(name);
+        const script = this.issue.skeleton.composer.script(name);
 
-        repositoryComposer.addScript(script)
+        this.issue.repository.composer.addScript(script)
             .save();
     }
 
     protected copyComposerPackage(name: string) {
-        const skeletonComposer = Composer.create(`${this.issue.skeletonPath}/composer.json`);
-        const repositoryComposer = Composer.create(`${this.issue.repositoryPath}/composer.json`);
-        const pkg = skeletonComposer.package(name);
+        // const skeletonComposer = Composer.create(`${this.issue.skeletonPath}/composer.json`);
+        // const repositoryComposer = Composer.create(`${this.issue.repositoryPath}/composer.json`);
+        const pkg = this.issue.skeleton.composer.package(name);
 
-        repositoryComposer.addPackage(pkg)
+        this.issue.repository.composer.addPackage(pkg)
             .save();
     }
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.result.name;
+        const relativeFn: string = this.issue.name;
 
-        if (this.issue.result.kind === ComparisonKind.PACKAGE_NOT_USED) {
+        if (this.issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
             this.issue.resolved = true;
 
-            this.copyComposerPackage(this.issue.result.name);
+            this.copyComposerPackage(this.issue.name);
         }
 
-        if (this.issue.result.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
+        if (this.issue.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
             this.issue.resolved = true;
 
-            this.copyComposerScript(this.issue.result.name);
+            this.copyComposerScript(this.issue.name);
         }
 
-        if (this.issue.result.kind === ComparisonKind.FILE_NOT_FOUND) {
+        if (this.issue.kind === ComparisonKind.FILE_NOT_FOUND) {
             this.issue.resolved = true;
 
-            if (!existsSync(`${this.repositoryPath}/${relativeFn}`)) {
-                const data = File.read(`${this.skeletonPath}/${relativeFn}`)
-                    .processTemplate(basename(this.repositoryPath));
+            if (!existsSync(`${this.issue.repository.path}/${this.issue.name}`)) {
+                const data = File.read(this.issue.sourcefile.filename)
+                    .processTemplate(basename(this.issue.repository.path));
 
-                writeFileSync(`${this.repositoryPath}/${relativeFn}`, data, { encoding: 'utf-8' });
+                writeFileSync(`${this.issue.repository.path}/${this.issue.name}`, data, { encoding: 'utf-8' });
             }
         }
 
-        console.log(`PSALM FIXER: fixed '${this.issue.result.kind}' issue for '${this.issue.result.name}'`);
+        console.log(`PSALM FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 
         return true;
     }

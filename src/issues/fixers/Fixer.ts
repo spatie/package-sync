@@ -2,12 +2,12 @@
 
 import { app } from '../../Application';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { PackageIssue } from '../PackageIssue';
+import { RepositoryIssue } from '../RepositoryIssue';
 
 export abstract class Fixer {
     public static handles: ComparisonKind[] = [];
 
-    public constructor(public skeletonPath: string, public repositoryPath: string, public issue: PackageIssue) {
+    public constructor(public issue: RepositoryIssue) {
         //
     }
     public abstract fix(): boolean;
@@ -18,7 +18,7 @@ export abstract class Fixer {
         return app.config.fixers[thisName] || null;
     }
 
-    public static canFix(issue: PackageIssue): boolean {
+    public static canFix(issue: RepositoryIssue): boolean {
         return !issue.resolved;
     }
 

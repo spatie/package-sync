@@ -9,13 +9,13 @@ export class PackageNotUsedFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED];
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.result.name;
+        const relativeFn: string = this.issue.name;
 
         console.log(
-            `action: copy '${basename(this.skeletonPath)}/${relativeFn}' over existing file '${basename(
-                this.repositoryPath,
-            )}/${relativeFn}'`,
+            `action: copy '${basename(this.issue.skeleton.path)}/${relativeFn}' over existing file ` +
+                `'${basename(this.issue.repository.path)}/${relativeFn}'`,
         );
+
         console.log(`action: run git add '${relativeFn}'`);
 
         return true;

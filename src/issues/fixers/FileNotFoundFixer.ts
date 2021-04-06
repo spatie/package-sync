@@ -10,15 +10,15 @@ export class FileNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_FOUND];
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.result.name;
+        const relativeFn: string = this.issue.srcFile?.relativeName ?? this.issue.name;
 
-        console.log(`* action: copy file '${relativeFn}' into '${basename(this.repositoryPath)}'`);
+        console.log(`* action: copy file '${relativeFn}' into '${basename(this.issue.repository.path)}'`);
 
-        if (!existsSync(`${this.repositoryPath}/${relativeFn}`)) {
-            const data = File.read(`${this.skeletonPath}/${relativeFn}`)
-                .processTemplate(basename(this.repositoryPath));
+        if (!existsSync(`${this.issue.repository.path}/${relativeFn}`)) {
+            const data = File.read(`${this.issue.skeleton.path}/${relativeFn}`)
+                .processTemplate(basename(this.issue.repository.path));
 
-            writeFileSync(`${this.repositoryPath}/${relativeFn}`, data, { encoding: 'utf-8' });
+            writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
         }
 
         return true;

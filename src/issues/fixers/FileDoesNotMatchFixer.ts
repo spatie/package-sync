@@ -8,13 +8,13 @@ export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
 
     public fix(): boolean {
-        const sourceFn = `${this.issue.skeletonPath}/${this.issue.result.name}`;
-        const targetFn = `${this.issue.repositoryPath}/${this.issue.result.name}`;
+        // const sourceFn = `${this.issue.skeleton.path}/${this.issue.result.name}`;
+        // const targetFn = `${this.issue.repository.path}/${this.issue.result.name}`;
 
-        File.read(sourceFn)
-            .saveAs(targetFn);
+        File.read(this.issue.srcFile?.filename ?? '')
+            .saveAs(this.issue.destFile?.filename ?? '');
 
-        console.log(`FILE MISMATCH FIXER: overwrote the package file '${this.issue.result.name}' with the template repo file`);
+        console.log(`FILE MISMATCH FIXER: overwrote the package file '${this.issue.name}' with the template repo file`);
 
         return true;
     }

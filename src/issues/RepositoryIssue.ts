@@ -34,4 +34,12 @@ export class RepositoryIssue {
 
         return this.result.score;
     }
+
+    get sourcefile(): RepositoryFile {
+        return <RepositoryFile>this.srcFile;
+    }
+
+    get targetfile(): RepositoryFile {
+        return <RepositoryFile>this.destFile;
+    }
 }

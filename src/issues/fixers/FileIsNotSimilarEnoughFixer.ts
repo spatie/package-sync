@@ -9,7 +9,7 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
     public fix(): boolean {
         this.issue.resolved = false;
 
-        console.log(`FILE NOT SIMILAR FIXER: manual review required for '${this.issue.result.name}'`);
+        console.log(`FILE NOT SIMILAR FIXER: manual review required for '${this.issue.name}'`);
 
         return true;
     }

@@ -12,6 +12,7 @@ import { PackageIssue } from './PackageIssue';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
 import { PackageScriptNotFoundFixer } from './fixers/PackageScriptNotFoundFixer';
 import { PsalmFixer } from './fixers/PsalmFixer';
+import { RepositoryIssue } from './RepositoryIssue';
 
 const micromatch = require('micromatch');
 
@@ -50,7 +51,7 @@ export class FixerManager {
         return micromatch.isMatch(name, disabledFixers) || micromatch.isMatch(shortName, disabledFixers);
     }
 
-    public runNamedFixers(issues: PackageIssue[]) {
+    public runNamedFixers(issues: RepositoryIssue[]) {
         const namedFixers = FixerManager.namedFixers();
 
         // check every issue against each fixer so fixers have a chance to fix multiple related issues
@@ -58,29 +59,29 @@ export class FixerManager {
             .filter(fixer => !this.isFixerDisabled(fixer))
             .forEach(fixer => {
                 issues.forEach(issue => {
-                    if (fixer.fixes(issue.result.kind) && fixer.canFix(issue)) {
-                        new fixer(this.skeletonPath, this.repositoryPath, issue)
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                        new fixer(issue)
                             .fix();
                     }
                 });
             });
     }
 
-    public fixIssues(results: FileComparisonResult[]) {
-        const issues = results.map(r => new PackageIssue(r, this.skeletonPath, this.repositoryPath, false));
+    public fixIssues(issues: RepositoryIssue[]) {
+        //const issues = results.map(r => new PackageIssue(r, this.skeletonPath, this.repositoryPath, false));
 
         this.runNamedFixers(issues);
         issues.forEach(issue => this.fixIssue(issue));
     }
 
-    public fixIssue(issue: PackageIssue) {
+    public fixIssue(issue: RepositoryIssue) {
         const fixers = FixerManager.fixers();
 
         fixers
             .filter(fixer => !this.isFixerDisabled(fixer))
             .filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.canFix(issue))
-            .forEach(fixer => new fixer(issue.skeletonPath, issue.repositoryPath, issue)
+            .forEach(fixer => new fixer(issue)
                 .fix());
     }
 }

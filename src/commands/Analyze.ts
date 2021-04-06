@@ -31,7 +31,7 @@ export default class AnalyzeCommand extends Command {
             FixerManager.fixers()
                 .forEach(fixer => {
                     if (fixer.fixes(issue.kind)) {
-                        if (issue.note?.length > 0) {
+                        if ((issue.note?.length ?? 0) > 0) {
                         //
                         } else {
                             issue.note = 'fix available';

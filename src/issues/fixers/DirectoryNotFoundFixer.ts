@@ -9,11 +9,11 @@ export class DirectoryNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND];
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.result.name;
+        const relativeFn: string = this.issue.name;
 
-        console.log(`* action: create directory '${basename(this.repositoryPath)}/${relativeFn}'`);
+        console.log(`* action: create directory '${basename(this.issue.repository.path)}/${relativeFn}'`);
 
-        mkdirSync(`${this.repositoryPath}/${relativeFn}`, { recursive: true });
+        mkdirSync(`${this.issue.repository.path}/${relativeFn}`, { recursive: true });
 
         return true;
     }

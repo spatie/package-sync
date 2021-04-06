@@ -4,30 +4,27 @@ import { ComparisonKind } from '../../types/FileComparisonResult';
 import { FileMerger } from '../../lib/FileMerger';
 import { Fixer } from './Fixer';
 import { PackageIssue } from '../PackageIssue';
+import { RepositoryIssue } from '../RepositoryIssue';
 
 export class GitFileFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED];
 
-    public static canFix(issue: PackageIssue): boolean {
+    public static canFix(issue: RepositoryIssue): boolean {
         if (issue.resolved) {
             return false;
         }
 
-        return ['.gitattributes', '.gitignore'].includes(issue.result.name);
+        return ['.gitattributes', '.gitignore'].includes(issue.name);
     }
 
     public fix(): boolean {
-        const relativeFn: string = this.issue.result.name;
-        const sourceFn = `${this.issue.skeletonPath}/${relativeFn}`;
-        const targetFn = `${this.issue.repositoryPath}/${relativeFn}`;
-
         FileMerger.create()
-            .add(sourceFn, targetFn)
-            .mergeAndSave(targetFn);
+            .add(this.issue.sourcefile.filename, this.issue.targetfile.filename)
+            .mergeAndSave(this.issue.targetfile.filename);
 
         this.issue.resolved = true;
 
-        console.log(`GIT FILE FIXER: merged '${relativeFn}'`);
+        console.log(`GIT FILE FIXER: merged '${this.issue.sourcefile.relativeName}'`);
 
         return true;
     }
