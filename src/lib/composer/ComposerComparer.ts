@@ -45,6 +45,11 @@ export class ComposerComparer {
                 const version1 = semver.coerce(pkg.version);
                 const version2 = semver.coerce(repositoryPackage.version);
 
+                // treat version strings like '^8.1|^9.5' and '^9.5' as a non-issue
+                if (repositoryPackage.version.includes(pkg.version)) {
+                    return <FileComparisonResult>{ name: '!remove' };
+                }
+
                 if (semver.gt(version1, version2)) {
                     const versionDiff = semver.diff(version1, version2);
 

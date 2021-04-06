@@ -64,3 +64,5 @@ export function uniqueStrings(arr: string[], allowEmptyLines = true, sortResult 
 export function runCommand(cmd: string, args: string[], cwd: string | undefined = undefined, stdio: any = 'inherit') {
     return spawnSync(cmd, args, { cwd: cwd, stdio: stdio, encoding: 'utf8', env: process.env });
 }
+
+export const last = (arr: any[]) => arr[arr.length - 1] ?? undefined;

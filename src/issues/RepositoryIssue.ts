@@ -57,5 +57,7 @@ export class RepositoryIssue {
     public resolve(resolvedByFixer: string) {
         this.resolvedByFixer = resolvedByFixer;
         this.resolved = true;
+
+        return this;
     }
 }

@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { PackageIssue } from './issues/PackageIssue';
 import { ScoreRequirements } from './types/ScoreRequirements';
+import smartMerge from './lib/stringPatch';
 
 const yaml = require('js-yaml');
 
@@ -38,57 +39,6 @@ export class Configuration {
     public conf: ConfigurationRecord;
 
     constructor() {
-        // this.conf = {
-        //     templates: {
-        //         vendor: 'spatie',
-        //         names: ['package-skeleton-php', 'package-skeleton-laravel'],
-        //     },
-        //     templatesPath: `${__dirname}/temp`,
-        //     packagesPath: `/development/repositories/spatie`,
-        //     scoreRequirements: {
-        //         defaults: {
-        //             similar: 0.79,
-        //             size: 10,
-        //         },
-        //         files: [
-        //             { name: 'CONTRIBUTING.md', scores: { similar: 0.99, size: 5 } },
-        //             { name: '.editorconfig', scores: { similar: 1.0, size: 5 } },
-        //             { name: '.gitattributes', scores: { similar: 0.9, size: 8 } },
-        //             { name: '.gitignore', scores: { similar: 0.9, size: 8 } },
-        //             { name: '.php_cs.dist', scores: { similar: 1.0, size: 5 } },
-        //         ],
-        //     },
-        //     skipComparisons: ['composer.json'],
-        //     ignoreNames: [
-        //         '.git/*',
-        //         '.idea/*',
-        //         '.idea',
-        //         '.vscode/*',
-        //         'CHANGELOG.md',
-        //         'README.md',
-        //         'art/*',
-        //         'build/*',
-        //         'build',
-        //         'composer.lock',
-        //         //'config',
-        //         'coverage',
-        //         'database',
-        //         'docs/*',
-        //         'node_modules/*',
-        //         'package-lock.json',
-        //         'resources/*',
-        //         'resources',
-        //         'src/*',
-        //         'src',
-        //         'stubs/*',
-        //         'tests/*',
-        //         'vendor/*',
-        //         '*.sh',
-        //         '*.cache',
-        //         '*.lock',
-        //     ],
-        // };
-
         if (process.env.NODE_ENV === 'test') {
             this.conf = this.loadConfigurationFile(process.cwd() + '/tests/data/index.yml').config;
             return;
@@ -127,3 +77,5 @@ export class Configuration {
 }
 
 export const config = new Configuration();
+
+export default smartMerge;

@@ -11,6 +11,7 @@ import { OptionalPackagesFixer } from './fixers/OptionalPackagesFixer';
 import { OverwriteFileFixer } from './fixers/OverwriteFileFixer';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
 import { PackageScriptNotFoundFixer } from './fixers/PackageScriptNotFoundFixer';
+import { PackageVersionFixer } from './fixers/PackageVersionFixer';
 import { PsalmFixer } from './fixers/PsalmFixer';
 import { RepositoryIssue } from './RepositoryIssue';
 
@@ -29,6 +30,7 @@ export class FixerManager {
             FileNotFoundFixer,
             PackageNotUsedFixer,
             PackageScriptNotFoundFixer,
+            PackageVersionFixer,
         ];
     }
 
@@ -36,14 +38,8 @@ export class FixerManager {
         return [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
     }
 
-    constructor() {
-        //public skeletonPath: string, public repositoryPath: string) {
-        //
-    }
-
     static create() {
-        //skeletonPath: string, repositoryPath: string) {
-        return new FixerManager(); //skeletonPath, repositoryPath);
+        return new FixerManager();
     }
 
     public isFixerDisabled(fixer: any): boolean {

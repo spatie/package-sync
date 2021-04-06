@@ -4,7 +4,7 @@
 import { basename } from 'path';
 import { app } from '../Application';
 import { RepositoryIssue } from '../issues/RepositoryIssue';
-import { Composer } from './composer/Composer';
+import { Composer, ComposerPackage } from './composer/Composer';
 import { getFileList } from './helpers';
 import { RepositoryFile } from './RepositoryFile';
 

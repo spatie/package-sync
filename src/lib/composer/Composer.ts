@@ -134,6 +134,13 @@ export class Composer {
         return this;
     }
 
+    public setPackageVersion(pkg: ComposerPackage, version: string) {
+        this.rawData[pkg.section][pkg.name] = version;
+        pkg.version = version;
+
+        return this;
+    }
+
     public script(name: string): ComposerScript {
         return this.scripts()
             .find(script => script.name === name) ?? <ComposerScript>{};
