@@ -65,6 +65,8 @@ export class Composer {
             return this.hasPackage(name, 'require') || this.hasPackage(name, 'require-dev');
         }
 
+        this.ensureSectionExists(section);
+
         return typeof this.data[section][name] !== 'undefined';
     }
 

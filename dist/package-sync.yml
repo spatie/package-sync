@@ -74,11 +74,13 @@ config:
     - .git/*
     - .idea/*
     - .vscode/*
+    - README.md
     - CHANGELOG.md
     - art/*
     - build/**/*
     - composer.lock
     - config/**/*
+    - (config)+
     - coverage/
     - database/**/*
     - database
@@ -89,6 +91,7 @@ config:
     - src/**/*
     - stubs/*
     - tests/**/*
+    - (tests)+
     - vendor/*
     - '*.sh'
     - '*.cache'

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
-import { basename } from 'path';
+import { basename, sep } from 'path';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
@@ -49,7 +49,10 @@ export class Application {
     }
 
     public shouldIgnoreFile(fn: string): boolean {
-        return micromatch.isMatch(fn, this.config.ignoreNames) || micromatch.contains(fn, this.config.ignoreNames);
+        return (
+            micromatch.isMatch(fn, this.config.ignoreNames) || // || micromatch.contains(fn, this.config.ignoreNames);
+            micromatch.isMatch(fn.replace(process.cwd() + sep, ''), this.config.ignoreNames)
+        );
     }
 
     public shouldCompareFile(fn: string): boolean {

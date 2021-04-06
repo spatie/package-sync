@@ -7,6 +7,7 @@ import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixe
 import { FileNotFoundFixer } from './fixers/FileNotFoundFixer';
 import { Fixer } from './fixers/Fixer';
 import { GitFileFixer } from './fixers/GitFileFixer';
+import { GithubFixer } from './fixers/GithubFixer';
 import { OptionalPackagesFixer } from './fixers/OptionalPackagesFixer';
 import { OverwriteFileFixer } from './fixers/OverwriteFileFixer';
 import { PackageNotUsedFixer } from './fixers/PackageNotUsedFixer';
@@ -35,7 +36,7 @@ export class FixerManager {
     }
 
     public static namedFixers() {
-        return [GitFileFixer, PsalmFixer, OptionalPackagesFixer];
+        return [GitFileFixer, GithubFixer, PsalmFixer, OptionalPackagesFixer];
     }
 
     static create() {
