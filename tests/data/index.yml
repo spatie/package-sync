@@ -1,7 +1,7 @@
 config:
 
   templatesPath: '{{__dirname}}/temp'
-  packagesPath: /development/repositories/spatie
+  packagesPath: '{{__dirname}}/repos'
 
   fixers:
     # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
