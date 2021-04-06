@@ -31,8 +31,14 @@ You can use the placeholder `{{__dirname}}` in the values of either setting and 
 Example analyzing of `spatie/regex` using the `spatie/package-skeleton-php` repository as a template:
 
 ```bash
+# retrieve the php package skeleton
 npm run dev pull-template php
-npm run dev pull-package regex
+
+# this is called automatically if required
+# npm run dev pull-package regex
+
+# compare package repository against the skeleton repository and
+# display out-of-sync files and other issues
 npm run dev analyze regex
 ```
 
