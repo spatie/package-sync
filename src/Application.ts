@@ -9,22 +9,15 @@ import { Configuration } from './Configuration';
 import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { Repository, RepositoryKind } from './lib/Repository';
 import { RepositoryIssue } from './issues/RepositoryIssue';
-import { compareFileSizes } from './lib/FileSizeComparison';
 import { FixerManager } from './issues/FixerManager';
+import { Comparisons } from './lib/comparisions/Comparisons';
+import { RepositoryFile } from './lib/RepositoryFile';
 
-const { compareTwoStrings } = require('string-similarity');
 const micromatch = require('micromatch');
 
 export class Application {
     public configuration: Configuration;
     public basePath: string;
-
-    public skeletonPath = '';
-    public repositoryPath = '';
-
-    get repositoryName() {
-        return basename(this.repositoryPath);
-    }
 
     constructor(basePath: string) {
         this.basePath = basePath;
@@ -35,11 +28,6 @@ export class Application {
 
     get config() {
         return this.configuration.conf;
-    }
-
-    public init(skeletonPath: string, repositoryPath: string) {
-        this.skeletonPath = skeletonPath;
-        this.repositoryPath = repositoryPath;
     }
 
     public ensureStoragePathsExist() {
@@ -76,7 +64,7 @@ export class Application {
     public getMaxAllowedSizeDifferenceScore(fn: string): number {
         const reqs = this.config.scoreRequirements;
 
-        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.size ?? reqs.defaults.size;
+        return reqs.files.find(req => req.name === basename(fn))?.scores?.size ?? reqs.defaults.size;
     }
 
     public getFileScoreRequirements(fn: string): ComparisonScoreRequirements {
@@ -86,52 +74,70 @@ export class Application {
         };
     }
 
+    performStringComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
+        const strComparison = Comparisons.strings(file?.processTemplate(), repoFile?.contents);
+
+        if (!strComparison.meetsRequirement(file.requiredScores.similar)) {
+            const compareResult = {
+                kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
+                score: strComparison.similarityScore,
+            };
+
+            repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    performSizeComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
+        const sizeComparison = Comparisons.filesizes(file.sizeOnDisk, repoFile?.sizeOnDisk);
+
+        if (sizeComparison.meetsRequirement(file.requiredScores.size)) {
+            const result = {
+                kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
+                score: sizeComparison.format(2),
+            };
+
+            repo.issues.push(new RepositoryIssue(result, file.relativeName, file, repoFile, skeleton, repo, false));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    performFileExistsComparison(skeleton: Repository, repo: Repository, file: RepositoryFile) {
+        if (!file.shouldIgnore && !repo.hasFile(file)) {
+            const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
+
+            repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
+
+            return true;
+        }
+
+        return false;
+    }
+
     compareRepositories(skeleton: Repository, repo: Repository) {
         skeleton.files.forEach(file => {
-            if (!file.shouldIgnore && !repo.hasFile(file)) {
-                const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-
-                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
-
-                return;
-            }
-
             const repoFile = repo.getFile(file.relativeName);
-            const similarityScore = compareTwoStrings(file?.processTemplate() ?? '', repoFile?.contents ?? '');
 
-            if (similarityScore < file.requiredScores.similar) {
-                const compareResult = {
-                    kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
-                    score: similarityScore,
-                };
-
-                repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
-
+            if (this.performFileExistsComparison(skeleton, repo, file)) {
                 return;
             }
 
-            const sizeComparison = compareFileSizes(file.sizeOnDisk, repoFile?.sizeOnDisk ?? 0);
+            if (this.performStringComparison(skeleton, repo, file, repoFile)) {
+                return;
+            }
 
-            if (sizeComparison.differByPercentage(file.requiredScores.size)) {
-                const result = {
-                    kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
-                    score: sizeComparison.percentDifferenceForDisplay(8, 5),
-                };
-
-                repo.issues.push(new RepositoryIssue(result, file.relativeName, file, repoFile, skeleton, repo, false));
-
+            if (this.performSizeComparison(skeleton, repo, file, repoFile)) {
                 return;
             }
         });
 
-        repo.files
-            .filter(file => !file.shouldIgnore)
-            .filter(file => !skeleton.hasFile(file))
-            .forEach(file => {
-                const kind = file.isFile() ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
-
-                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, null, file, skeleton, repo, false));
-            });
+        this.checkRepoForFilesNotInSkeleton(repo, skeleton);
 
         ComposerComparer.comparePackages(skeleton.path, repo.path)
             .forEach(r =>
@@ -142,6 +148,17 @@ export class Application {
             .forEach(r =>
                 repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
             );
+    }
+
+    checkRepoForFilesNotInSkeleton(repo: Repository, skeleton: Repository) {
+        repo.files
+            .filter(file => !file.shouldIgnore)
+            .filter(file => !skeleton.hasFile(file))
+            .forEach(file => {
+                const kind = file.isFile() ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
+
+                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, null, file, skeleton, repo, false));
+            });
     }
 
     analyzeRepository(packageName: string) {

@@ -3,10 +3,9 @@
 
 import { basename } from 'path';
 import { app } from '../Application';
-//import { PackageIssue } from '../issues/PackageIssue';
 import { RepositoryIssue } from '../issues/RepositoryIssue';
 import { Composer } from './composer/Composer';
-import { getFileList, isDirectory } from './helpers';
+import { getFileList } from './helpers';
 import { RepositoryFile } from './RepositoryFile';
 
 export enum RepositoryKind {
@@ -75,9 +74,7 @@ export class Repository {
             .filter(fn => !app.shouldIgnoreFile(fn.replace(`${basePath}/`, '')))
             .forEach(fqName => {
                 const rfile = new RepositoryFile(this, fqName);
-
                 const relativeName = basePath ? fqName.replace(`${basePath}/`, '') : fqName;
-                const isFile = !isDirectory(fqName);
 
                 if (!result.find(item => item.relativeName === relativeName)) {
                     result.push(
