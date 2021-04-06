@@ -2,6 +2,6 @@
 /build
 /tempdir
 /dist/temp
-/dist/index.js
+/dist/*.js
 package-lock.json
 yarn.lock
