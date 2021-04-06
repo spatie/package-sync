@@ -128,6 +128,7 @@ export class Composer {
     }
 
     public addPackage(pkg: ComposerPackage) {
+        this.ensureSectionExists(pkg.section);
         this.data[pkg.section][pkg.name] = pkg.version;
 
         return this;
@@ -149,6 +150,7 @@ export class Composer {
     }
 
     public addScript(script: ComposerScript) {
+        this.ensureSectionExists('scripts');
         this.data.scripts[script.name] = script.command;
 
         return this;
@@ -158,6 +160,14 @@ export class Composer {
         File.create(this.filename)
             .setContents(this.toJson())
             .save();
+
+        return this;
+    }
+
+    public ensureSectionExists(section: string) {
+        if (typeof this.data[section] === 'undefined') {
+            this.data[section] = {};
+        }
 
         return this;
     }
