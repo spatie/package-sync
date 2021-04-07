@@ -12,7 +12,9 @@ compares the contents of a package repo against a package skeleton repo, display
 
 ## Requirements
 
-`package-sync` targets node v14+.
+`package-sync` requires:
+- `node v12+`
+- `git`
 
 ## Setup
 
@@ -39,15 +41,16 @@ See the configuration file comments for more information on the various options.
 
 After running an analysis, you'll see a list of issues discovered with the package repository and the fixes available for each issue _(not all issues have automated fixes available)_.  Issues include out-of-sync files, missing composer dependencies, required version updates, missing files and more.
 
-Analyze the `spatie/regex` package using the `spatie/package-skeleton-php` repository as a template:
+Analyze the `spatie/array-to-xml` package using the `spatie/package-skeleton-php` repository as a template:
 
 ```bash
-./dist/package-sync analyze regex
+./dist/package-sync analyze array-to-xml
 ```
 
-You should see something similar to the following:
+You will see something similar to the following:
 
-![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
+![image](https://user-images.githubusercontent.com/5508707/113942438-c808a900-97ce-11eb-8546-4d160ccd3e58.png)
+
 
 Fixers are color-coded:
 
@@ -57,18 +60,15 @@ Fixers are color-coded:
 
 ## Fixing package issues
 
->
-> **Warning**: this feature is incomplete and DOES modify files in the package's repository directory
->
+Issues are resolved by `fixers`, which are utilities that perform a various action, such as copying a missing file from the skeleton to the package repository.  The available fixers for an issue are listed in the output of the `analyze` command. 
 
-Issues are resolved by 'fixers', which perform various actions, such as copying a missing file from the skeleton to the package repository.
+> If there are multiple fixers listed for an issue, the first one is when running `fix`.
 
+Some fixers are considered "risky" - meaning they modify existing files.  By default, these fixers will not run automatically when running the `fix` command.  In order to permit risky fixers to run, you must call `fix` with the `--risky` flag.
 
-You can fix all package issues with the `fix` command.  By default, fixers considered "risky" _(meaning they modify existing files)_ are skipped unless the `--risky` flag is provided when running `fix`.
+You can apply all fixers to the discovered issues with the `fix` command.
 
-If multiple fixers are listed for an issue, you may specify both the fixer name and the `--file` flag to apply the fixer to the given file.  
-
-If the fixer name is not specified, the first fixer listed will be used to resolve the issue.
+You may specify both the fixer name and the `--file` flag to apply a fixer to the given file.
 
 ```bash
 # fix all issues except for those with "risky" fixes
