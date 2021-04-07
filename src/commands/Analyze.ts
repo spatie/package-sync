@@ -4,8 +4,6 @@
 import { app } from '../Application';
 import { Command } from './Command';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
-import { RepositoryValidator } from '../lib/RepositoryValidator';
-import { RepositoryKind } from '../lib/Repository';
 
 export default class AnalyzeCommand extends Command {
     public static command = 'analyze <packageName>';

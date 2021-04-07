@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
 import { classOf } from '../../lib/helpers';
-import { FixerManager } from '../FixerManager';
 import { Fixer } from './Fixer';
 
 const readline = require('readline');
@@ -50,11 +49,7 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
 
             this.issue.pending = false;
 
-            // console.log('TOOD: run next fixer');
-
-            FixerManager.create()
-                .getFixerForIssue(fixers[0], this.issue)
-                ?.fix();
+            this.issue.fixers[0].fix();
         } finally {
             rl.close();
             this.issue.pending = false;
@@ -75,13 +70,11 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
         this.issue.pending = true;
         this.issue.resolved = false;
 
-        console.log(`FILE NOT SIMILAR FIXER: manual review required for '${this.issue.name}'`);
+        // const additionalFixers = this.issue.availableFixers.filter(name => name !== FileIsNotSimilarEnoughFixer.prettyName());
 
-        const additionalFixers = this.issue.availableFixers.filter(name => name !== FileIsNotSimilarEnoughFixer.prettyName());
-
-        if (additionalFixers.length > 0) {
-            await this.promptUser(additionalFixers);
-        }
+        // if (additionalFixers.length > 0) {
+        //     await this.promptUser(additionalFixers);
+        // }
     }
 
     public static prettyName(): string {

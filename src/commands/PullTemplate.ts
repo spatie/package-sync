@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import { app } from '../Application';
 import { Command } from './Command';
+import { config } from '../Configuration';
 import { GitUtilties } from '../lib/GitUtilties';
 
 export default class PullTemplateCommand extends Command {
@@ -19,13 +19,13 @@ export default class PullTemplateCommand extends Command {
                 .pop() ?? longName;
         };
 
-        app.config.templates.names
+        config.conf.templates.names
             .filter(name => shortTemplateName(name) === argvName || name === argvName || argvName === '')
             .forEach(name => {
                 GitUtilties.displayStatusMessages = true;
 
-                GitUtilties.cloneRepo(app.configuration.qualifiedTemplateName(name), app.config.paths.templates);
-                GitUtilties.pullRepo(name, app.templatePath(name));
+                GitUtilties.cloneRepo(config.qualifiedTemplateName(name), config.conf.paths.templates);
+                GitUtilties.pullRepo(name, config.templatePath(name));
             });
     }
 }

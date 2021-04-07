@@ -75,6 +75,14 @@ export class Configuration {
     public isIssueIgnored(issue: PackageIssue): boolean {
         return this.conf.issues.ignored[issue.result.kind.toString()]?.includes(issue.result.name) ?? false;
     }
+
+    public templatePath(templateName: string): string {
+        return `${this.conf.paths.templates}/${templateName}`;
+    }
+
+    public packagePath(packageName: string): string {
+        return `${this.conf.paths.packages}/${packageName}`;
+    }
 }
 
 export const config = new Configuration();

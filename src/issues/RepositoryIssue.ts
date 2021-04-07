@@ -3,16 +3,13 @@
 import { ComparisonKind } from '../types/FileComparisonResult';
 import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
-import Fixer from './fixers/Fixer';
+//import Fixer from './fixers/Fixer';
 import { classOf } from '../lib/helpers';
 
 export class RepositoryIssue {
-    protected _fixers: Fixer[] = [];
-    protected _availableFixers: string[] = [];
-
+    protected _fixers: any[] = [];
     public resolvedByFixer = 'none';
     public resolvedNotes: string[] = [];
-
     public pending = false;
 
     constructor(
@@ -36,10 +33,6 @@ export class RepositoryIssue {
 
         return this._fixers.sort((a, b) => methodCompare(a, b, 'runsFixers'))
             .sort((a, b) => methodCompare(a, b, 'isRisky'));
-    }
-
-    get availableFixers() {
-        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0));
     }
 
     get kind(): ComparisonKind {
@@ -66,7 +59,7 @@ export class RepositoryIssue {
         return <RepositoryFile>this.destFile;
     }
 
-    public addFixer(fixer: Fixer) {
+    public addFixer(fixer: any) {
         if (this.fixers.find(f => f.getName() === fixer.getName()) === undefined) {
             this.fixers.push(fixer);
         }
@@ -78,7 +71,7 @@ export class RepositoryIssue {
         return this.kind === kind;
     }
 
-    public resolve(resolvedByFixer: string | Fixer) {
+    public resolve(resolvedByFixer: string | any) {
         if (typeof resolvedByFixer !== 'string') {
             resolvedByFixer = classOf(resolvedByFixer)
                 .prettyName();

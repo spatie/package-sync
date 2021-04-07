@@ -5,7 +5,7 @@ import { basename, sep } from 'path';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
-import { Configuration } from './Configuration';
+import { config, Configuration } from './Configuration';
 import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { Repository, RepositoryKind } from './lib/Repository';
 import { RepositoryIssue } from './issues/RepositoryIssue';
@@ -22,7 +22,7 @@ export class Application {
 
     constructor(basePath: string) {
         this.basePath = basePath;
-        this.configuration = new Configuration();
+        this.configuration = config;
 
         this.ensureStoragePathsExist();
     }
@@ -41,11 +41,11 @@ export class Application {
     }
 
     public templatePath(templateName: string): string {
-        return `${this.config.paths.templates}/${templateName}`;
+        return this.configuration.templatePath(templateName);
     }
 
     public packagePath(packageName: string): string {
-        return `${this.config.paths.packages}/${packageName}`;
+        return this.configuration.packagePath(packageName);
     }
 
     public shouldIgnoreFile(fn: string): boolean {
@@ -179,9 +179,10 @@ export class Application {
 
         const skeletonPath = this.templatePath(templateName);
         const repositoryPath = this.packagePath(packageName);
+        const validator = new RepositoryValidator(app.config.paths.packages, app.config.paths.templates);
 
-        RepositoryValidator.ensurePackageExists(packageName);
-        RepositoryValidator.ensureTemplateExists(templateName);
+        validator.ensurePackageExists(packageName);
+        validator.ensureTemplateExists(templateName);
 
         const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
         const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
@@ -196,8 +197,7 @@ export class Application {
             FixerManager.fixers()
                 .forEach(fixer => {
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.shouldIgnoreIssue(issue)) {
-                        issue.availableFixers.push(fixer.prettyName());
-
+                    //issue.availableFixers.push(fixer.prettyName());
                         issue.addFixer(new fixer(issue));
                     }
                 });

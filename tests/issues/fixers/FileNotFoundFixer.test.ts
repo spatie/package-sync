@@ -22,16 +22,17 @@ beforeEach(() => {
     );
 
     fixer = new FileNotFoundFixer(issue);
-
-    issue.availableFixers.push(fixer.getClass().prettyName());
 });
 
 it('copies a missing file from skeleton to package', () => {
     const targetFile = `${issue.repository.path}/${issue.name}`;
 
-    expect(existsSync(targetFile)).toBeFalsy();
-    expect(fixer.fix()).toBeTruthy();
-    expect(existsSync(targetFile)).toBeTruthy();
+    expect(existsSync(targetFile))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeTruthy();
+    expect(existsSync(targetFile))
+        .toBeTruthy();
 
     unlinkSync(targetFile);
 });
@@ -41,7 +42,10 @@ it("doesn't copy a missing file if the issue is resolved", () => {
 
     issue.resolve('test');
 
-    expect(existsSync(targetPath)).toBeFalsy();
-    expect(fixer.fix()).toBeFalsy();
-    expect(existsSync(targetPath)).toBeFalsy();
+    expect(existsSync(targetPath))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeFalsy();
+    expect(existsSync(targetPath))
+        .toBeFalsy();
 });

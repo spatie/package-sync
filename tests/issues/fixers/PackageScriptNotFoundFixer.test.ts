@@ -14,22 +14,27 @@ beforeEach(() => {
     issue = new RepositoryIssue({ kind: ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, score: 0 }, 'format', null, null, skeleton, repo);
 
     fixer = new PackageScriptNotFoundFixer(issue);
-
-    issue.availableFixers.push(fixer.getClass().prettyName());
 });
 
 it('copies a missing composer script from skeleton to package', () => {
-    expect(repo.composer.hasScript('format')).toBeFalsy();
-    expect(fixer.fix()).toBeTruthy();
-    expect(repo.composer.hasScript('format')).toBeTruthy();
+    expect(repo.composer.hasScript('format'))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeTruthy();
+    expect(repo.composer.hasScript('format'))
+        .toBeTruthy();
 
-    repo.composer.removeScript('format').save();
+    repo.composer.removeScript('format')
+        .save();
 });
 
 it("doesn't add a missing composer script if the issue is resolved", () => {
     issue.resolve('test');
 
-    expect(repo.composer.hasScript('format')).toBeFalsy();
-    expect(fixer.fix()).toBeFalsy();
-    expect(repo.composer.hasScript('format')).toBeFalsy();
+    expect(repo.composer.hasScript('format'))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeFalsy();
+    expect(repo.composer.hasScript('format'))
+        .toBeFalsy();
 });

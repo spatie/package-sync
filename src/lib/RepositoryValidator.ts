@@ -1,19 +1,25 @@
+/* eslint-disable no-unused-vars */
+
 import { existsSync, mkdirSync } from 'fs';
-import { app } from '../Application';
 import PullPackageCommand from '../commands/PullPackage';
 import PullTemplateCommand from '../commands/PullTemplate';
 import { RepositoryKind } from './Repository';
 
+//  (app.config.paths.packages,  app.config.paths.templates)
 export class RepositoryValidator {
-    static ensureExists(name: string, kind: RepositoryKind) {
+    constructor(public packagesPath: string, public templatesPath: string) {
+        //
+    }
+
+    ensureExists(name: string, kind: RepositoryKind) {
         if (kind === RepositoryKind.PACKAGE) {
-            this.ensurePathExists(app.config.paths.packages);
+            this.ensurePathExists(this.packagesPath);
             PullPackageCommand.handle({ name });
             return true;
         }
 
         if (kind === RepositoryKind.SKELETON) {
-            this.ensurePathExists(app.config.paths.templates);
+            this.ensurePathExists(this.templatesPath);
             PullTemplateCommand.handle({ name });
             return true;
         }
@@ -21,15 +27,15 @@ export class RepositoryValidator {
         return false;
     }
 
-    static ensurePackageExists(name: string) {
+    ensurePackageExists(name: string) {
         return this.ensureExists(name, RepositoryKind.PACKAGE);
     }
 
-    static ensureTemplateExists(name: string) {
+    ensureTemplateExists(name: string) {
         return this.ensureExists(name, RepositoryKind.SKELETON);
     }
 
-    protected static ensurePathExists(path: string) {
+    protected ensurePathExists(path: string) {
         if (path.length && !existsSync(path)) {
             mkdirSync(path, { recursive: true });
         }

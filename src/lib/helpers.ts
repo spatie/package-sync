@@ -1,7 +1,6 @@
 import { spawnSync } from 'child_process';
-import { lstatSync, readdirSync } from 'fs';
+import { existsSync, lstatSync, readdirSync, statSync } from 'fs';
 import { basename } from 'path';
-import { File } from './File';
 
 const micromatch = require('micromatch');
 
@@ -17,7 +16,17 @@ export function isDirectory(path: string): boolean {
 }
 
 export function fileSize(fn: string): number {
-    return File.create(fn).sizeOnDisk;
+    if (!existsSync(fn)) {
+        return 0;
+    }
+
+    const stat = statSync(fn);
+
+    if (!stat.isFile()) {
+        return 0;
+    }
+
+    return stat.size;
 }
 
 export function getFileList(directory: string, basePath: string | null = null, recursive = true) {
