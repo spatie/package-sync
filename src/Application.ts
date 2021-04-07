@@ -189,6 +189,8 @@ export class Application {
                 .forEach(fixer => {
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
                         issue.availableFixers.push(fixer.prettyName());
+
+                        issue.addFixer(new fixer(issue));
                     }
                 });
         });

@@ -9,7 +9,7 @@ const readline = require('readline');
 const util = require('util');
 
 export class FileIsNotSimilarEnoughFixer extends Fixer {
-    public static handles = [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
+    public static handles = []; //ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
     public async promptUser(fixers: string[]) {
         const rl = readline.createInterface({

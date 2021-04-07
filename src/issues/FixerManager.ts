@@ -78,22 +78,43 @@ export class FixerManager {
     }
 
     public fixIssue(issue: RepositoryIssue) {
-        const fixers = classOf(this)
-            .fixers();
-        const fixerObjs: any[] = [];
+        const fixers = FixerManager.fixers();
 
-        issue.availableFixers.forEach(fixerName => {
-            fixerObjs.push(<any>this.getFixerForIssue(fixerName, issue));
-        });
-
-        fixers
-            .filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
-            .filter(fixer => !this.isFixerDisabled(fixer))
-            .filter(fixer => fixer.fixes(issue.result.kind))
-            .filter(fixer => fixer.canFix(issue))
+        issue.fixers
+            //.filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
+            .filter(fixer => !this.isFixerDisabled(fixer.getClass()))
+            //.filter(fixer => fixer.fixes(issue.result.kind))
+            .filter(fixer => fixer.getClass()
+                .canFix(issue))
             .forEach(fixer => {
-                new fixer(issue)
-                    .fix();
+                console.log('trying fixer ' + fixer.getName());
+
+                if (issue.resolved) {
+                    return;
+                }
+
+                if (fixer.isRisky()) {
+                    console.log('skipping risky fixer ' + fixer.getName());
+                    return;
+                }
+
+                fixer.fix();
             });
+
+        // const fixerObjs: any[] = [];
+
+        // issue.availableFixers.forEach(fixerName => {
+        //     fixerObjs.push(<any>this.getFixerForIssue(fixerName, issue));
+        // });
+
+        // fixers
+        //     .filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
+        //     .filter(fixer => !this.isFixerDisabled(fixer))
+        //     .filter(fixer => fixer.fixes(issue.result.kind))
+        //     .filter(fixer => fixer.canFix(issue))
+        //     .forEach(fixer => {
+        //         new fixer(issue)
+        //             .fix();
+        //     });
     }
 }

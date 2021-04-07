@@ -7,6 +7,7 @@ import Fixer from './fixers/Fixer';
 import { classOf } from '../lib/helpers';
 
 export class RepositoryIssue {
+    protected _fixers: Fixer[] = [];
     protected _availableFixers: string[] = [];
     protected _disabledFixers: string[] = [];
 
@@ -27,6 +28,10 @@ export class RepositoryIssue {
         public context: any | null = null,
     ) {
         //
+    }
+
+    get fixers() {
+        return this._fixers; //.filter(fixer => fixer.enabled);
     }
 
     get availableFixers() {
@@ -59,6 +64,14 @@ export class RepositoryIssue {
 
     get targetfile(): RepositoryFile {
         return <RepositoryFile>this.destFile;
+    }
+
+    public addFixer(fixer: Fixer) {
+        if (this.fixers.find(f => f.getName() === fixer.getName()) === undefined) {
+            this.fixers.push(fixer);
+        }
+
+        return this;
     }
 
     public is(kind: ComparisonKind): boolean {

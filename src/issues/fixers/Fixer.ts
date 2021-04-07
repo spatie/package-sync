@@ -15,7 +15,8 @@ export class Fixer {
     }
 
     getName() {
-        return Fixer.prettyName();
+        return this.getClass()
+            .prettyName();
     }
 
     getClass() {
