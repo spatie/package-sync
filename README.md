@@ -68,8 +68,6 @@ If the fixer name is not specified, the first fixer listed will be used to resol
 ```
 ![image](https://user-images.githubusercontent.com/5508707/113923782-f37f9980-97b6-11eb-8b29-9c6ae04c6e03.png)
 
-![image](https://user-images.githubusercontent.com/5508707/113930020-c1723580-97be-11eb-9c02-be3b94cf033b.png)
-
 Fix only certian issue types:
 
 ```bash
@@ -81,12 +79,16 @@ Run a specific fixer by name:
 ```bash
 ./dist/package-sync fix array-to-xml psalm
 ```
+
+![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
+
 Apply a specific fixer to a specific file:
 
 ```bash
 ./dist/package-sync fix array-to-xml psalm --file psalm.xml.dist
 ```
-![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
+
+![image](https://user-images.githubusercontent.com/5508707/113930020-c1723580-97be-11eb-9c02-be3b94cf033b.png)
 
 ### Fixers
 
