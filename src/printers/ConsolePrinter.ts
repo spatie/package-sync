@@ -70,12 +70,17 @@ export class ConsolePrinter {
         table.push(['-'.padEnd(35, '-'), '-'.padEnd(12, '-'), '-'.padEnd(55, '-')]);
 
         repo.issues
-            .filter(issue => issue.resolved)
+            //.filter(issue => issue.resolved)
             .filter(issue => !app.config.ignoreNames.includes(issue.name))
             .filter(issue => !app.config.skipComparisons.includes(issue.name))
             .filter(issue => !app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? true)
             .sort((a, b) => a.kind.localeCompare(b.kind))
             .forEach(issue => {
+                if (issue.resolvedByFixer === 'none') {
+                    issue.resolvedByFixer = '-';
+                    issue.addResolvedNote('issue unresolved');
+                }
+
                 table.push([this.kindColor(issue.kind)(issue.name), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);
             });
 
