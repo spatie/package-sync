@@ -1,7 +1,7 @@
 {
-    "name": "package-sync",
+    "name": "pkg-sync",
     "version": "1.0.0",
-    "description": "sync a package repo with a template/skeleton repo",
+    "description": "keep package repositories in sync with a master template repository",
     "main": "dist/package-sync.js",
     "scripts": {
         "test": "./node_modules/.bin/jest tests --verbose",
@@ -16,7 +16,9 @@
         "build:prod": "./node_modules/.bin/esbuild --platform=node --target=node12 --define:__APP_VERSION__=\"'1.0'\" --format=cjs --bundle --log-level=error --outdir=dist --minify src/index.ts && mv --force dist/index.js dist/package-sync.js",
         "dev": "npm run build:dev && node dist/package-sync.js",
         "prepare": "is-ci || husky install",
-        "check:circular": "npx madge --circular --extensions ts ./src"
+        "check:circular": "npx madge --circular --extensions ts ./src",
+        "preversion": "npm run test",
+        "postversion": "npm run build:prod"
     },
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",
@@ -60,6 +62,9 @@
         "yargs": "^16.0.0"
     },
     "bin": {
-        "package-sync": "dist/package-sync"
+        "pkg-sync": "dist/package-sync"
+    },
+    "engines": {
+        "node": ">=12.0.0"
     }
 }
