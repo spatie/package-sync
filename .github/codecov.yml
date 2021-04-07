@@ -36,4 +36,5 @@ ignore:
   - "build/"
   - "dist/"
   - ".eslintrc.js"
+  - ".eslintrc.test.js"
   - "jest.config.js"
