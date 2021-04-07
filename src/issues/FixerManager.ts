@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
-import { classOf, matches } from '../lib/helpers';
+import { matches } from '../lib/helpers';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
@@ -78,12 +78,8 @@ export class FixerManager {
     }
 
     public fixIssue(issue: RepositoryIssue) {
-        const fixers = FixerManager.fixers();
-
         issue.fixers
-            //.filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
             .filter(fixer => !this.isFixerDisabled(fixer.getClass()))
-            //.filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.getClass()
                 .canFix(issue))
             .sort(a => (a.runsFixers() ? -1 : 0))
@@ -101,21 +97,5 @@ export class FixerManager {
 
                 fixer.fix();
             });
-
-        // const fixerObjs: any[] = [];
-
-        // issue.availableFixers.forEach(fixerName => {
-        //     fixerObjs.push(<any>this.getFixerForIssue(fixerName, issue));
-        // });
-
-        // fixers
-        //     .filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)
-        //     .filter(fixer => !this.isFixerDisabled(fixer))
-        //     .filter(fixer => fixer.fixes(issue.result.kind))
-        //     .filter(fixer => fixer.canFix(issue))
-        //     .forEach(fixer => {
-        //         new fixer(issue)
-        //             .fix();
-        //     });
     }
 }

@@ -13,7 +13,7 @@ export default class ListFixersCommand extends Command {
 
     public static options = [];
 
-    static handle(argv: any): void {
+    static handle(): void {
         const fixers = FixerManager.fixers()
             .map(fixer => new fixer(<RepositoryIssue>(<unknown>null)));
 

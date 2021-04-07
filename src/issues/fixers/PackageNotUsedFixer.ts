@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 

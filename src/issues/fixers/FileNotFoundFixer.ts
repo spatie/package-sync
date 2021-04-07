@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { existsSync, writeFileSync } from 'fs';
-import { basename } from 'path';
+import { existsSync } from 'fs';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
