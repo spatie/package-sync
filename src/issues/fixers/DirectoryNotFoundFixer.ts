@@ -3,7 +3,7 @@
 import { mkdirSync } from 'fs';
 import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { Fixer } from './Fixer';
+import Fixer from './Fixer';
 
 export class DirectoryNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND];

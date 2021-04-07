@@ -13,7 +13,8 @@
         "fix": "npm run fmt && npm run lint:fix",
         "build:dev": "./node_modules/.bin/esbuild --platform=node --target=node14 --define:__APP_VERSION__=\"'1.0'\" --format=cjs --bundle --log-level=error --outdir=dist src/index.ts && mv --force dist/index.js dist/package-sync.js",
         "dev": "npm run build:dev && node dist/package-sync.js",
-        "prepare": "is-ci || husky install"
+        "prepare": "is-ci || husky install",
+        "check:circular": "npx madge --circular --extensions ts ./src"
     },
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",

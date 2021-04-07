@@ -50,6 +50,8 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
 
             this.issue.pending = false;
 
+            // console.log('TOOD: run next fixer');
+
             FixerManager.create()
                 .getFixerForIssue(fixers[0], this.issue)
                 ?.fix();

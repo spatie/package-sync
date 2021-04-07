@@ -3,7 +3,6 @@
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
-import { classOf } from '../../lib/helpers';
 
 export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
@@ -16,8 +15,7 @@ export class FileDoesNotMatchFixer extends Fixer {
         File.read(this.issue.srcFile?.filename ?? '')
             .saveAs(this.issue.destFile?.filename ?? '');
 
-        this.issue.resolve(classOf(this)
-            .prettyName())
+        this.issue.resolve(this)
             .addResolvedNote(`overwrote existing file '${this.issue.name}'`);
 
         return true;

@@ -3,6 +3,8 @@
 import { ComparisonKind } from '../types/FileComparisonResult';
 import { Repository } from '../lib/Repository';
 import { RepositoryFile } from '../lib/RepositoryFile';
+import Fixer from './fixers/Fixer';
+import { classOf } from '../lib/helpers';
 
 export class RepositoryIssue {
     protected _availableFixers: string[] = [];
@@ -28,8 +30,7 @@ export class RepositoryIssue {
     }
 
     get availableFixers() {
-        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0))
-            .filter(name => !this.disabledFixers.includes(name));
+        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0));
     }
 
     get disabledFixers() {
@@ -60,8 +61,17 @@ export class RepositoryIssue {
         return <RepositoryFile>this.destFile;
     }
 
-    public resolve(resolvedByFixer: string) {
-        this.resolvedByFixer = resolvedByFixer;
+    public is(kind: ComparisonKind): boolean {
+        return this.kind === kind;
+    }
+
+    public resolve(resolvedByFixer: string | Fixer) {
+        if (typeof resolvedByFixer !== 'string') {
+            resolvedByFixer = classOf(resolvedByFixer)
+                .prettyName();
+        }
+
+        this.resolvedByFixer = <string>resolvedByFixer;
         this.resolved = true;
 
         return this;

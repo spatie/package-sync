@@ -5,7 +5,6 @@ import { basename } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
-import { classOf } from '../../lib/helpers';
 
 export class FileNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_FOUND];
@@ -17,8 +16,6 @@ export class FileNotFoundFixer extends Fixer {
 
         const relativeFn: string = this.issue.srcFile?.relativeName ?? this.issue.name;
 
-        console.log(`* action: copy file '${relativeFn}' into '${basename(this.issue.repository.path)}'`);
-
         if (!existsSync(`${this.issue.repository.path}/${relativeFn}`)) {
             const data = File.read(`${this.issue.skeleton.path}/${relativeFn}`)
                 .processTemplate(basename(this.issue.repository.path));
@@ -26,10 +23,8 @@ export class FileNotFoundFixer extends Fixer {
             writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
         }
 
-        this.issue
-            .resolve(classOf(this)
-                .prettyName())
-            .addResolvedNote(`copy file '${relativeFn}' into '${this.issue.repository.name}'`);
+        this.issue.resolve(this)
+            .addResolvedNote(`copied file '${relativeFn}' from skeleton`);
 
         return true;
     }

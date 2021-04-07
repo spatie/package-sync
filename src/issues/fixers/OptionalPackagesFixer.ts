@@ -13,8 +13,7 @@ export class OptionalPackagesFixer extends Fixer {
             return false;
         }
 
-        return this.config()
-            ?.includes(issue.name) ?? false;
+        return false;
     }
 
     public fix(): boolean {

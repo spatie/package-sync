@@ -35,20 +35,17 @@ export class GithubFixer extends Fixer {
             return false;
         }
 
-        if (this.issue.kind === ComparisonKind.DIRECTORY_NOT_FOUND) {
+        if (this.issue.is(ComparisonKind.DIRECTORY_NOT_FOUND)) {
             new DirectoryNotFoundFixer(this.issue)
                 .fix();
         }
 
-        if (this.issue.kind === ComparisonKind.FILE_NOT_FOUND) {
+        if (this.issue.is(ComparisonKind.FILE_NOT_FOUND)) {
             new FileNotFoundFixer(this.issue)
                 .fix();
         }
 
-        this.issue.resolve(classOf(this)
-            .prettyName());
-
-        console.log(`GITHUB FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
+        this.issue.resolve(this);
 
         return true;
     }

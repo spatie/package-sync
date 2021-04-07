@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
-import { matches } from '../lib/helpers';
+import { classOf, matches } from '../lib/helpers';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
@@ -18,7 +19,7 @@ import { PsalmFixer } from './fixers/PsalmFixer';
 import { RepositoryIssue } from './RepositoryIssue';
 
 export class FixerManager {
-    public static fixers(): any[] {
+    public static fixers() {
         return [
             // specific fixers:
             GitFileFixer,
@@ -50,10 +51,14 @@ export class FixerManager {
     }
 
     public static getFixerClass(name: string): any | null {
-        const result = this.fixers()
+        const result = FixerManager.fixers()
             .find(fixer => fixer.prettyName() === name);
 
-        return result ?? null;
+        if (result === undefined) {
+            return null;
+        }
+
+        return result;
     }
 
     public getFixerForIssue(name: string, issue: RepositoryIssue): Fixer | null {
@@ -61,6 +66,7 @@ export class FixerManager {
             .find(fixer => fixer.prettyName() === name) ?? null;
 
         if (fixerClass) {
+            // @ts-ignore
             return new fixerClass(issue);
         }
 
@@ -72,14 +78,13 @@ export class FixerManager {
     }
 
     public fixIssue(issue: RepositoryIssue) {
-        const fixers = FixerManager.fixers();
-        const fixerObjs: Fixer[] = [];
+        const fixers = classOf(this)
+            .fixers();
+        const fixerObjs: any[] = [];
 
-        if (issue.availableFixers.length) {
-            issue.availableFixers.forEach(fixerName => {
-                fixerObjs.push(<Fixer>this.getFixerForIssue(fixerName, issue));
-            });
-        }
+        issue.availableFixers.forEach(fixerName => {
+            fixerObjs.push(<any>this.getFixerForIssue(fixerName, issue));
+        });
 
         fixers
             .filter(fixer => fixerObjs.find(obj => obj.getName() === fixer.prettyName()) !== null || !fixerObjs.length)

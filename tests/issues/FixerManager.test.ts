@@ -7,18 +7,14 @@ it('gets the class of a fixer based on its name', () => {
     const fixers = [
         FixerManager.getFixerClass(FileNotFoundFixer.prettyName()),
         FixerManager.getFixerClass(DirectoryNotFoundFixer.prettyName()),
-        FixerManager.getFixerClass('missing'),
-        FixerManager.getFixerClass(''),
     ];
 
-    expect(fixers[0]).not.toBeNull();
     expect(fixers[0])
         .toBe(FileNotFoundFixer);
-    expect(fixers[1]).not.toBeNull();
     expect(fixers[1])
         .toBe(DirectoryNotFoundFixer);
-    expect(fixers[2])
+    expect(FixerManager.getFixerClass('missing'))
         .toBeNull();
-    expect(fixers[3])
+    expect(FixerManager.getFixerClass(''))
         .toBeNull();
 });

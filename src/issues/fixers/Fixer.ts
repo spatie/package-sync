@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 
-import { app } from '../../Application';
+//import { app } from '../../Application';
 import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { RepositoryIssue } from '../RepositoryIssue';
-export abstract class Fixer {
+
+export class Fixer {
     public enabled = true;
 
     public static handles: ComparisonKind[] = [];
@@ -20,13 +21,16 @@ export abstract class Fixer {
     getClass() {
         return classOf(this);
     }
-    public abstract fix(): boolean;
 
-    static config() {
-        const thisName = (Object.getOwnPropertyDescriptor(this, 'name')?.value ?? 'Fixer').replace(/Fixer$/, '');
-
-        return app.config.fixers[thisName] || null;
+    public fix(): boolean {
+        return false;
     }
+
+    // static config() {
+    //     const thisName = (Object.getOwnPropertyDescriptor(this, 'name')?.value ?? 'Fixer').replace(/Fixer$/, '');
+
+    //     return [];//config.fixers[thisName] || null;
+    // }
 
     public static canFix(issue: RepositoryIssue): boolean {
         return !issue.resolved;
@@ -51,7 +55,7 @@ export abstract class Fixer {
     public fixesIssue(issue: RepositoryIssue) {
         return this.getClass()
             .fixes(issue.kind) && this.getClass()
-            .canFix(issue) && this.enabled;
+            .canFix(issue);
     }
 
     protected shouldPerformFix() {
@@ -59,3 +63,5 @@ export abstract class Fixer {
             .prettyName());
     }
 }
+
+export default Fixer;
