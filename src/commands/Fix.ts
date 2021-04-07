@@ -6,8 +6,6 @@ import { FixerManager } from '../issues/FixerManager';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { matches } from '../lib/helpers';
 
-const micromatch = require('micromatch');
-
 export default class FixCommand extends Command {
     public static command = 'fix <packageName> [issueType]';
     public static aliases: string[] = [];
