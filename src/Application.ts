@@ -13,7 +13,6 @@ import { FixerManager } from './issues/FixerManager';
 import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './lib/RepositoryFile';
 import { RepositoryValidator } from './lib/RepositoryValidator';
-import { fixerClasses } from './issues/fixers/FixerRegistry';
 
 const micromatch = require('micromatch');
 

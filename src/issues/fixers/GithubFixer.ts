@@ -5,7 +5,6 @@ import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
 import { DirectoryNotFoundFixer } from './DirectoryNotFoundFixer';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
-import { classOf } from '../../lib/helpers';
 
 export class GithubFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
