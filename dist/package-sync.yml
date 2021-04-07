@@ -9,7 +9,7 @@ config:
     # names must be the classname, with or without the suffix 'Fixer', so 'Blah' is the same as 'BlahFixer'.
     disabled:
 #      - GitFile
-      - FileDoesNotMatch
+#      - FileDoesNotMatch
 
     OptionalPackages:
       - spatie/ray

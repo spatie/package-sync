@@ -141,7 +141,7 @@ export class ConsolePrinter {
             .forEach(issue => {
                 if (issue.resolvedByFixer === 'none') {
                     issue.resolvedByFixer = '-';
-                    issue.addResolvedNote('issue unresolved');
+                    // issue.addResolvedNote('issue unresolved');
                 }
 
                 table.push([colorText(issue.name, issue.kind), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);

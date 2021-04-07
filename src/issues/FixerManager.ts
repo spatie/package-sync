@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
-import { matches } from '../lib/helpers';
+import { matches, uniqueArray } from '../lib/helpers';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
@@ -77,18 +77,19 @@ export class FixerManager {
         return null;
     }
 
-    public fixIssues(issues: RepositoryIssue[], issueTypeOrFixer: string) {
-        issues.filter(issue => !this.isIssueIgnored(issue))
-            .forEach(issue => this.fixIssue(issue, issueTypeOrFixer));
+    public fixIssues(issues: RepositoryIssue[], issueTypeOrFixer: string, allowRisky: boolean) {
+        issues //.filter(issue => !this.isIssueIgnored(issue))
+            .forEach(issue => this.fixIssue(issue, issueTypeOrFixer, allowRisky));
     }
 
-    public fixIssue(issue: RepositoryIssue, issueTypeOrFixer: string, allowRisky = false) {
+    public fixIssue(issue: RepositoryIssue, issueTypeOrFixer: string, allowRisky: boolean) {
         const fixers = issue.fixers
             .filter(fixer => !this.isFixerDisabled(fixer.getClass()))
             .filter(fixer => fixer.getClass()
                 .canFix(issue))
             .slice(0);
 
+        let skippedFixers: string[] = [];
         let fixer = fixers.find(fixer => fixer.getName() === issueTypeOrFixer);
         const onlyRunOnce = fixer === undefined;
 
@@ -114,7 +115,7 @@ export class FixerManager {
             }
 
             if (!allowRisky && fixer.isRisky()) {
-                issue.addResolvedNote('skipped ' + fixer?.getName() + ' fixer (risky)');
+                skippedFixers.push(fixer.getName());
                 fixer = fixers.shift() ?? undefined;
 
                 continue;
@@ -125,6 +126,18 @@ export class FixerManager {
             }
 
             fixer = fixers.shift() ?? undefined;
+        }
+
+        skippedFixers = uniqueArray(skippedFixers);
+
+        if (skippedFixers.length > 1) {
+            issue.addResolvedNote(`skipped ${skippedFixers.length} fixers (risky)`);
+        } else if (skippedFixers.length === 1) {
+            issue.addResolvedNote(`skipped ${skippedFixers[0]} (risky)`);
+        }
+
+        if (!issue.resolved) {
+            issue.addResolvedNote(`unresolved`, true);
         }
     }
 }

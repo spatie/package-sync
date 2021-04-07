@@ -90,7 +90,12 @@ export class RepositoryIssue {
         return this;
     }
 
-    public addResolvedNote(note: string) {
+    public addResolvedNote(note: string, prepend = false) {
+        if (prepend) {
+            this.resolvedNotes.unshift(note);
+            return this;
+        }
+
         this.resolvedNotes.push(note);
 
         return this;
