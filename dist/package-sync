@@ -3,4 +3,12 @@
 THISDIR=$(dirname $0)
 NODE=$(which node)
 
-$NODE "$THISDIR/../package-sync/dist/package-sync.js"
+if [ -e "$THISDIR/../package-sync/dist/package-sync.js" ]; then
+    $NODE "$THISDIR/../package-sync/dist/package-sync.js" $*
+    exit 0
+fi
+
+if [ -e "$THISDIR/package-sync.js" ]; then
+    $NODE "$THISDIR/package-sync.js" $*
+    exit 0
+fi
