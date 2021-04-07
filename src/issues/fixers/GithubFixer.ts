@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
-
-import { existsSync, writeFileSync } from 'fs';
-import { basename, sep } from 'path';
+import { sep } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
 import { DirectoryNotFoundFixer } from './DirectoryNotFoundFixer';
@@ -48,7 +45,6 @@ export class GithubFixer extends Fixer {
         }
 
         this.issue.resolve(GithubFixer.prettyName());
-        //this.issue.resolvedNotes.push(`fixed '${this.issue.kind}' for '${this.issue.name}`);
 
         console.log(`GITHUB FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 

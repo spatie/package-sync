@@ -66,3 +66,7 @@ export function runCommand(cmd: string, args: string[], cwd: string | undefined 
 }
 
 export const last = (arr: any[]) => arr[arr.length - 1] ?? undefined;
+
+export function classOf<T>(o: T): any {
+    return (o as any).constructor;
+}

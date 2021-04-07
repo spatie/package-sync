@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-//import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { basename } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
@@ -13,17 +11,13 @@ export class PackageNotUsedFixer extends Fixer {
             return false;
         }
 
-        const relativeFn: string = this.issue.name;
+        const pkg = this.issue.skeleton.composer.package(this.issue.name);
 
-        console.log(
-            `action: copy '${basename(this.issue.skeleton.path)}/${relativeFn}' over existing file ` +
-                `'${basename(this.issue.repository.path)}/${relativeFn}'`,
-        );
+        this.issue.repository.composer.addPackage(pkg)
+            .save();
 
-        //console.log(`action: run git add '${relativeFn}'`);
-
-        //this.issue.resolve(OptionalPackagesFixer.prettyName());
-        //this.issue.resolvedNotes.push(`skipped '${this.issue.name}'`);
+        this.issue.resolve(PackageNotUsedFixer.prettyName());
+        this.issue.resolvedNotes.push(`added package dependency '${this.issue.name}'`);
 
         return true;
     }

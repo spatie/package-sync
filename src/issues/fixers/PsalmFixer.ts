@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
-import { existsSync, writeFileSync } from 'fs';
-import { basename } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
+import { FileNotFoundFixer } from './FileNotFoundFixer';
+import { PackageScriptNotFoundFixer } from './PackageScriptNotFoundFixer';
+import { PackageNotUsedFixer } from './PackageNotUsedFixer';
+import { classOf } from '../../lib/helpers';
 
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
@@ -25,7 +27,7 @@ export class PsalmFixer extends Fixer {
             }
 
             if (issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
-                return issue.result.name === 'vimeo/psalm';
+                return issue.name === 'vimeo/psalm';
             }
 
             if (issue.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
@@ -36,48 +38,28 @@ export class PsalmFixer extends Fixer {
         return false;
     }
 
-    protected copyComposerScript(name: string) {
-        const script = this.issue.skeleton.composer.script(name);
-
-        this.issue.repository.composer.addScript(script)
-            .save();
-    }
-
-    protected copyComposerPackage(name: string) {
-        const pkg = this.issue.skeleton.composer.package(name);
-
-        this.issue.repository.composer.addPackage(pkg)
-            .save();
-    }
-
     public fix(): boolean {
         if (this.issue.resolved) {
             return false;
         }
 
         if (this.issue.kind === ComparisonKind.PACKAGE_NOT_USED) {
-            this.issue.resolved = true;
-
-            this.copyComposerPackage(this.issue.name);
+            new PackageNotUsedFixer(this.issue)
+                .fix();
         }
 
         if (this.issue.kind === ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND) {
-            this.issue.resolved = true;
-
-            this.copyComposerScript(this.issue.name);
+            new PackageScriptNotFoundFixer(this.issue)
+                .fix();
         }
 
         if (this.issue.kind === ComparisonKind.FILE_NOT_FOUND) {
-            if (!existsSync(`${this.issue.repository.path}/${this.issue.name}`)) {
-                const data = File.read(this.issue.sourcefile.filename)
-                    .processTemplate(basename(this.issue.repository.path));
-
-                writeFileSync(`${this.issue.repository.path}/${this.issue.name}`, data, { encoding: 'utf-8' });
-            }
+            new FileNotFoundFixer(this.issue)
+                .fix();
         }
 
-        this.issue.resolve(PsalmFixer.prettyName());
-        this.issue.resolvedNotes.push(`fixed '${this.issue.kind}' for '${this.issue.name}`);
+        this.issue.resolve(classOf(this)
+            .prettyName());
 
         console.log(`PSALM FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 
