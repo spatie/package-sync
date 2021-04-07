@@ -6,10 +6,6 @@
 
 compares the contents of a package repo against a package skeleton repo, displaying out-of-sync files and other issues.
 
-> 
-> **Warning**: this application is under development and may break things!
->
-
 ## Requirements
 
 `package-sync` targets node v14+.
@@ -19,55 +15,28 @@ compares the contents of a package repo against a package skeleton repo, display
 ```bash
 npm install
 
-npm run dev
+npm run build:dev
 ```
 
-## Analyzing packages
-
-After running an analysis, you'll see a list of issues discovered with the package repository and the fixers available for each issue.
-
-Make sure you've modified the configuration file `dist/index.yml`, specifically the `packagesPath` and `templatesPath` settings.  If the directories don't exist, they will be created for you.
+Make sure you've modified the configuration file `dist/package-sync.yml`, specifically the `packagesPath` and `templatesPath` settings.  If the directories don't exist, they will be created for you.
 
 You can use the placeholder `{{__dirname}}` in the values of either setting and it will be replaced with the directory that the config file is in.  
 
 > Make sure to quote the yaml value if you use the `{{__dirname}}` placeholder to ensure valid YAML.
 
-Example analyzing of `spatie/regex` using the `spatie/package-skeleton-php` repository as a template:
+## Analyzing packages
+
+After running an analysis, you'll see a list of issues discovered with the package repository and the fixes available for each issue _(not all issues have automated fixes available)_.  Issues include out-of-sync files, missing composer dependencies, required version updates, missing files and more.
+
+Analyze the `spatie/regex` package using the `spatie/package-skeleton-php` repository as a template:
 
 ```bash
-# compare package repository against the skeleton repository and
-# display out-of-sync files and other issues
-npm run dev analyze regex
+./dist/package-sync analyze regex
 ```
 
 You should see something similar to the following:
 
-<!--https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png-->
-
 ![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
-
-
-## Manually pulling repositories
-
-You can manually update your local copy of either a skeleton or package git repository.  If the repository already exists locally, the `pull-*` commands will run `git pull` instead of `git clone`.
-
-> It's usually not necessary to run `pull-*` commands manually
-
-> Repositories are cloned/updated automatically when running `analyze` or `fix`.
-
-```bash
-# pull an individual skeleton repo by name:
-npm run dev pull-template php
-npm run dev pull-template laravel
-
-# or pull all skeleton repos:
-npm run dev pull-template
-```
-
-```bash
-npm run dev pull-package array-to-xml
-npm run dev pull-package laravel-sluggable
-```
 
 ## Fixing package issues
 
@@ -80,44 +49,46 @@ Issues are resolved by 'fixers', which perform various actions, such as copying 
 
 You can fix all package issues with the `fix` command.  By default, fixers considered "risky" _(meaning they modify existing files)_ are skipped unless the `--risky` flag is provided when running `fix`.
 
-```bash
-npm run dev fix array-to-xml all
-```
+If multiple fixers are listed for an issue, you may specify both the fixer name and the `--file` flag to apply the fixer to the given file.  
 
+If the fixer name is not specified, the first fixer listed will be used to resolve the issue.
+
+```bash
+# fix all issues except for those with "risky" fixes
+./dist/package-sync fix array-to-xml
+
+# fix all issues
+./dist/package-sync fix array-to-xml --risky
+
+# only fix a specific file
+./dist/package-sync fix array-to-xml --file psalm.xml.dist
+
+# apply the 'psalm' fixer to only the specified filename
+./dist/package-sync fix array-to-xml psalm --file psalm.xml.dist
+```
 ![image](https://user-images.githubusercontent.com/5508707/113923782-f37f9980-97b6-11eb-8b29-9c6ae04c6e03.png)
+
+![image](https://user-images.githubusercontent.com/5508707/113930020-c1723580-97be-11eb-9c02-be3b94cf033b.png)
 
 Fix only certian issue types:
 
 ```bash
-npm run dev fix array-to-xml missing_pkg
+./dist/package-sync fix array-to-xml missing_pkg
 ```
 
 Run a specific fixer by name:
 
 ```bash
-npm run dev fix array-to-xml psalm
+./dist/package-sync fix array-to-xml psalm
 ```
+Apply a specific fixer to a specific file:
 
+```bash
+./dist/package-sync fix array-to-xml psalm --file psalm.xml.dist
+```
 ![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
 
 ### Fixers
-<!--
-| name | Description |
-| --- | --- |
-| `add-dep` | adds a new package dependency to the package composer.json file |
-| `bump-version` | merges a newer dependency version into the older one |
-| `copy-script` | adds a missing composer script to the package composer.json file |
-| `create-dir` | creates a missing directory |
-| `create-file` | creates a missing file |
-| `github` | creates all files/directories in the `.github` directory  |
-| `merge-files` | updates a package file with a merged copy of both file versions |
-| `merge-version` | updates a composer dependency version |
-│ `overwrite-file` │ overwrite a file with the skeleton version to force an exact match. │
-| `psalm` | installs all psalm-related files, scripts, packages |
-| `rewrite-file` | overwrites a file in the package with the skeleton's version of the file |
-│ `skip-dep` │ skips the installation of a dependency. │
-| `user-review` | asks the user whether or not a file should be fixed automatically |
--->
 
 | name | note | description |
 | --- | --- | --- |
@@ -134,6 +105,27 @@ npm run dev fix array-to-xml psalm
 | `skip-dep` | | skips the installation of a dependency. |
 | `user-review` | | file is out of sync with the skeleton version and user action is required. |
 
+## Manually pulling repositories
+
+You can manually update your local copy of either a skeleton or package git repository.  If the repository already exists locally, the `pull-*` commands will run `git pull` instead of `git clone`.
+
+> It's usually not necessary to run `pull-*` commands manually
+
+> Repositories are cloned/updated automatically when running `analyze` or `fix`.
+
+```bash
+# pull an individual skeleton repo by name:
+./dist/package-sync pull-template php
+./dist/package-sync pull-template laravel
+
+# or pull all skeleton repos:
+./dist/package-sync pull-template
+```
+
+```bash
+./dist/package-sync pull-package array-to-xml
+./dist/package-sync pull-package laravel-sluggable
+```
 
 ## Commands
 
@@ -141,6 +133,7 @@ npm run dev fix array-to-xml psalm
 | --- | --- | --- |
 | `analyze <packageName>` | `a`, `an` | Compare a package against a template/skeleton repository |
 | `fix <packageName> [type]` | _--_ | Fix a package's issues, optionally only fixing issues of the specified type |
+| `fixers` | _--_ | List all fixers and their descriptions |
 | `pull-template [name]` | `pt` | Update/retrieve the named skeleton repository, or all if no name specified |
 | `pull-package <name>` | `pp` | Update/retrieve the named package repository |
 
