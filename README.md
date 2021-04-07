@@ -75,32 +75,29 @@ Issues are resolved by 'fixers', which perform various actions, such as copying 
 
 After an analysis, you'll see a list of the available fixers for each issue.  Note that the `user-review` fixer will prompt you to run other fixers for a given issue, ensuring that only issues that can fixed safely are automated.
 
-To fix all issues with the `regex` package from above, run:
+You can fix all package issues with the `fix` command.
 
 ```bash
-npm run dev fix regex all
+npm run dev fix array-to-xml all
 ```
 
-![image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)
+<!--[image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)-->
+![image](https://user-images.githubusercontent.com/5508707/113923782-f37f9980-97b6-11eb-8b29-9c6ae04c6e03.png)
 
-You can also only fix certian issues or run specific fixers.
+You can fix only certian issue types:
 
 ```bash
-# only fix the 'missing_pkg' issues:
-npm run dev fix regex missing_pkg
+npm run dev fix array-to-xml missing_pkg
 ```
 
-Run just a specific fixer by name:
+Run a specific fixer by name:
 
 ```bash
-# only run the 'github' fixer:
-npm run dev fix array-functions github
+npm run dev fix array-to-xml psalm
 ```
 
-![image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)
-
-
-Note that this command will make modifications to the package's files, so be careful!
+<!--[image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)-->
+![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
 
 ### Fixers
 <!--
