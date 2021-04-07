@@ -22,32 +22,23 @@ beforeEach(() => {
 
     fixer = new PackageVersionFixer(issue);
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 });
 
 it('updates a dependency version', () => {
-    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3')
-        .save();
+    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3').save();
 
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.3');
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.5');
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.3');
+    expect(fixer.fix()).toBeTruthy();
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.5');
 
-    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3')
-        .save();
+    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3').save();
 });
 
 it("doesn't update a dependency version if the issue is resolved", () => {
     issue.resolve('test');
 
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.3');
-    expect(fixer.fix())
-        .toBeFalsy();
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.3');
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.3');
+    expect(fixer.fix()).toBeFalsy();
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.3');
 });
