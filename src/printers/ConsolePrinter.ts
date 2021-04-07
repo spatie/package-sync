@@ -35,7 +35,7 @@ export class ConsolePrinter {
     }
 
     public static printTable(table: Table.Table) {
-        process.stdout.write(table.toString() + '\n');
+        process.stdout.write(table.toString() + '\n\n');
     }
 
     public static kindColor(kind: ComparisonKind) {
@@ -93,7 +93,7 @@ export class ConsolePrinter {
             score: 10,
             filename: 50,
             fixers: 30,
-            notes: 30,
+            //notes: 30,
         });
 
         repo.issues
@@ -123,7 +123,7 @@ export class ConsolePrinter {
                     issue.score,
                     colorText(issue.name, issue.kind),
                     fixers,
-                    issue.note?.toString() ?? '',
+                    //issue.note?.toString() ?? '',
                 ]);
             });
 

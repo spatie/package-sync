@@ -50,6 +50,10 @@ export class FixerManager {
         return matches([name, shortName], disabledFixers);
     }
 
+    public isIssueIgnored(issue: RepositoryIssue): boolean {
+        return app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? false;
+    }
+
     public static getFixerClass(name: string): any | null {
         const result = FixerManager.fixers()
             .find(fixer => fixer.prettyName() === name);
@@ -73,29 +77,54 @@ export class FixerManager {
         return null;
     }
 
-    public fixIssues(issues: RepositoryIssue[]) {
-        issues.forEach(async issue => this.fixIssue(issue));
+    public fixIssues(issues: RepositoryIssue[], issueTypeOrFixer: string) {
+        issues.filter(issue => !this.isIssueIgnored(issue))
+            .forEach(issue => this.fixIssue(issue, issueTypeOrFixer));
     }
 
-    public fixIssue(issue: RepositoryIssue) {
-        issue.fixers
+    public fixIssue(issue: RepositoryIssue, issueTypeOrFixer: string, allowRisky = false) {
+        const fixers = issue.fixers
             .filter(fixer => !this.isFixerDisabled(fixer.getClass()))
             .filter(fixer => fixer.getClass()
                 .canFix(issue))
-            .sort(a => (a.runsFixers() ? -1 : 0))
-            .forEach(fixer => {
-                console.log('trying fixer ' + fixer.getName());
+            .slice(0);
 
-                if (issue.resolved) {
-                    return;
-                }
+        let fixer = fixers.find(fixer => fixer.getName() === issueTypeOrFixer);
+        const onlyRunOnce = fixer === undefined;
 
-                if (fixer.isRisky()) {
-                    console.log('skipping risky fixer ' + fixer.getName());
-                    return;
-                }
+        if (fixer === undefined) {
+            fixer = fixers.shift() ?? undefined;
+        }
 
-                fixer.fix();
-            });
+        let counter = 0;
+
+        while (!issue.resolved && fixer !== undefined) {
+            counter++;
+
+            if (onlyRunOnce && counter > 1) {
+                return;
+            }
+
+            if (fixer === undefined) {
+                return;
+            }
+
+            if (issue.resolved) {
+                return;
+            }
+
+            if (!allowRisky && fixer.isRisky()) {
+                issue.addResolvedNote('skipped ' + fixer?.getName() + ' fixer (risky)');
+                fixer = fixers.shift() ?? undefined;
+
+                continue;
+            }
+
+            if (fixer.fix()) {
+                return issue.resolve(fixer);
+            }
+
+            fixer = fixers.shift() ?? undefined;
+        }
     }
 }
