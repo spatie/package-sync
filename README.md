@@ -24,9 +24,13 @@ npm run dev
 
 ## Analyzing packages
 
-Make sure you've modified the configuration file `dist/index.yml`, specifically the `packagesPath` and `templatesPath` settings and that these directories exist.
-These settings determine where the repositories are located, and will be cloned into the directory if not already there.
-You can use the placeholder `{{__dirname}}` in the values of either setting and it will be replaced with the directory that the config file is in.  Make sure to quote the value if you do this so it's valid YAML!
+After running an analysis, you'll see a list of issues discovered with the package repository and the fixers available for each issue.
+
+Make sure you've modified the configuration file `dist/index.yml`, specifically the `packagesPath` and `templatesPath` settings.  If the directories don't exist, they will be created for you.
+
+You can use the placeholder `{{__dirname}}` in the values of either setting and it will be replaced with the directory that the config file is in.  
+
+> Make sure to quote the yaml value if you use the `{{__dirname}}` placeholder to ensure valid YAML.
 
 Example analyzing of `spatie/regex` using the `spatie/package-skeleton-php` repository as a template:
 
@@ -73,18 +77,16 @@ npm run dev pull-package laravel-sluggable
 
 Issues are resolved by 'fixers', which perform various actions, such as copying a missing file from the skeleton to the package repository.
 
-After an analysis, you'll see a list of the available fixers for each issue.  Note that the `user-review` fixer will prompt you to run other fixers for a given issue, ensuring that only issues that can fixed safely are automated.
 
-You can fix all package issues with the `fix` command.
+You can fix all package issues with the `fix` command.  By default, fixers considered "risky" _(meaning they modify existing files)_ are skipped unless the `--risky` flag is provided when running `fix`.
 
 ```bash
 npm run dev fix array-to-xml all
 ```
 
-<!--[image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)-->
 ![image](https://user-images.githubusercontent.com/5508707/113923782-f37f9980-97b6-11eb-8b29-9c6ae04c6e03.png)
 
-You can fix only certian issue types:
+Fix only certian issue types:
 
 ```bash
 npm run dev fix array-to-xml missing_pkg
@@ -96,7 +98,6 @@ Run a specific fixer by name:
 npm run dev fix array-to-xml psalm
 ```
 
-<!--[image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)-->
 ![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
 
 ### Fixers
