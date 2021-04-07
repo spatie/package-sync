@@ -38,7 +38,10 @@ npm run dev analyze regex
 
 You should see something similar to the following:
 
-![image](https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png)
+<!--https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png-->
+
+![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
+
 
 ## Manually pulling repositories
 
@@ -100,20 +103,39 @@ npm run dev fix array-functions github
 Note that this command will make modifications to the package's files, so be careful!
 
 ### Fixers
-
+<!--
 | name | Description |
 | --- | --- |
+| `add-dep` | adds a new package dependency to the package composer.json file |
+| `bump-version` | merges a newer dependency version into the older one |
 | `copy-script` | adds a missing composer script to the package composer.json file |
-| `copy-version` | merges a newer dependency version into the older one |
 | `create-dir` | creates a missing directory |
 | `create-file` | creates a missing file |
-| `install-dep` | adds a new package dependency to the package composer.json file |
 | `github` | creates all files/directories in the `.github` directory  |
 | `merge-files` | updates a package file with a merged copy of both file versions |
 | `merge-version` | updates a composer dependency version |
-| `psalm-setup` | installs all psalm-related files, scripts, packages |
+│ `overwrite-file` │ overwrite a file with the skeleton version to force an exact match. │
+| `psalm` | installs all psalm-related files, scripts, packages |
 | `rewrite-file` | overwrites a file in the package with the skeleton's version of the file |
+│ `skip-dep` │ skips the installation of a dependency. │
 | `user-review` | asks the user whether or not a file should be fixed automatically |
+-->
+
+| name | note | description |
+| --- | --- | --- |
+| `add-dep` | | adds a dependency to the package's composer.json file. |
+| `bump-version` | | updates the version of a dependency in the package repository. |
+| `copy-script` | | adds a missing composer script to the package's composer.json file. |
+| `create-dir` | | creates a missing directory |
+| `create-file` | | copies a file from the skeleton repository into the package repository. |
+| `github` | multi  | recreates all missing directories and files under the '.github' directory. |
+| `merge-files` | risky  | merges the contents of both the skeleton and package versions of a file. |
+| `overwrite-file` | risky  | overwrite a file with the skeleton version to force an exact match. |
+| `psalm` | multi  | creates all missing psalm-related files and installs all psalm composer scripts and dependencies. |
+| `rewrite-file` | risky  | overwrites an existing file with a newer version from the skeleton. |
+| `skip-dep` | | skips the installation of a dependency. |
+| `user-review` | | file is out of sync with the skeleton version and user action is required. |
+
 
 ## Commands
 
