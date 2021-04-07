@@ -38,7 +38,10 @@ npm run dev analyze regex
 
 You should see something similar to the following:
 
-![image](https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png)
+<!--https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png-->
+
+![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
+
 
 ## Manually pulling repositories
 
@@ -72,48 +75,64 @@ Issues are resolved by 'fixers', which perform various actions, such as copying 
 
 After an analysis, you'll see a list of the available fixers for each issue.  Note that the `user-review` fixer will prompt you to run other fixers for a given issue, ensuring that only issues that can fixed safely are automated.
 
-To fix all issues with the `regex` package from above, run:
+You can fix all package issues with the `fix` command.
 
 ```bash
-npm run dev fix regex all
+npm run dev fix array-to-xml all
 ```
 
-![image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)
+<!--[image](https://user-images.githubusercontent.com/5508707/113719038-38bea100-96bb-11eb-8836-47223c6c1be5.png)-->
+![image](https://user-images.githubusercontent.com/5508707/113923782-f37f9980-97b6-11eb-8b29-9c6ae04c6e03.png)
 
-You can also only fix certian issues or run specific fixers.
+You can fix only certian issue types:
 
 ```bash
-# only fix the 'missing_pkg' issues:
-npm run dev fix regex missing_pkg
+npm run dev fix array-to-xml missing_pkg
 ```
 
-Run just a specific fixer by name:
+Run a specific fixer by name:
 
 ```bash
-# only run the 'github' fixer:
-npm run dev fix array-functions github
+npm run dev fix array-to-xml psalm
 ```
 
-![image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)
-
-
-Note that this command will make modifications to the package's files, so be careful!
+<!--[image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)-->
+![image](https://user-images.githubusercontent.com/5508707/113923468-91bf2f80-97b6-11eb-807d-cfaee1b107af.png)
 
 ### Fixers
-
+<!--
 | name | Description |
 | --- | --- |
+| `add-dep` | adds a new package dependency to the package composer.json file |
+| `bump-version` | merges a newer dependency version into the older one |
 | `copy-script` | adds a missing composer script to the package composer.json file |
-| `copy-version` | merges a newer dependency version into the older one |
 | `create-dir` | creates a missing directory |
 | `create-file` | creates a missing file |
-| `install-dep` | adds a new package dependency to the package composer.json file |
 | `github` | creates all files/directories in the `.github` directory  |
 | `merge-files` | updates a package file with a merged copy of both file versions |
 | `merge-version` | updates a composer dependency version |
-| `psalm-setup` | installs all psalm-related files, scripts, packages |
+│ `overwrite-file` │ overwrite a file with the skeleton version to force an exact match. │
+| `psalm` | installs all psalm-related files, scripts, packages |
 | `rewrite-file` | overwrites a file in the package with the skeleton's version of the file |
+│ `skip-dep` │ skips the installation of a dependency. │
 | `user-review` | asks the user whether or not a file should be fixed automatically |
+-->
+
+| name | note | description |
+| --- | --- | --- |
+| `add-dep` | | adds a dependency to the package's composer.json file. |
+| `bump-version` | | updates the version of a dependency in the package repository. |
+| `copy-script` | | adds a missing composer script to the package's composer.json file. |
+| `create-dir` | | creates a missing directory |
+| `create-file` | | copies a file from the skeleton repository into the package repository. |
+| `github` | multi  | recreates all missing directories and files under the '.github' directory. |
+| `merge-files` | risky  | merges the contents of both the skeleton and package versions of a file. |
+| `overwrite-file` | risky  | overwrite a file with the skeleton version to force an exact match. |
+| `psalm` | multi  | creates all missing psalm-related files and installs all psalm composer scripts and dependencies. |
+| `rewrite-file` | risky  | overwrites an existing file with a newer version from the skeleton. |
+| `skip-dep` | | skips the installation of a dependency. |
+| `user-review` | | file is out of sync with the skeleton version and user action is required. |
+
 
 ## Commands
 
