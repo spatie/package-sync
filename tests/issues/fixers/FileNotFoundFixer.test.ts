@@ -25,15 +25,11 @@ it('copies a missing file from skeleton to package', () => {
     const fixer = new FileNotFoundFixer(issue);
     const targetFile = `${issue.repository.path}/${issue.name}`;
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 
-    expect(existsSync(targetFile))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(existsSync(targetFile))
-        .toBeTruthy();
+    expect(existsSync(targetFile)).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(existsSync(targetFile)).toBeTruthy();
 
     unlinkSync(targetFile);
 });

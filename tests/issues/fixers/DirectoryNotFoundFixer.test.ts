@@ -24,17 +24,13 @@ it('creates a missing directory', () => {
     );
     const fixer = new DirectoryNotFoundFixer(issue);
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 
     const targetPath = `${issue.repository.path}/${issue.name}`;
 
-    expect(existsSync(targetPath))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(existsSync(targetPath))
-        .toBeTruthy();
+    expect(existsSync(targetPath)).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(existsSync(targetPath)).toBeTruthy();
 
     rmdirSync(targetPath);
 });
