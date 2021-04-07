@@ -6,7 +6,36 @@ import { ComparisonKind } from '../types/FileComparisonResult';
 
 const chalk = require('chalk');
 
+const colorText = (text: string, kind: ComparisonKind) => ConsolePrinter.kindColor(kind)(text);
+
 export class ConsolePrinter {
+    protected static makeTable(columns: Record<string, number>): Table.Table {
+        const headerSep: string[] = [];
+
+        const table = new Table({
+            head: Object.keys(columns),
+            chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+            style: {
+                head: [], //disable colors in header cells
+                border: [], //disable colors for the border
+            },
+            colWidths: Object.values(columns),
+        });
+
+        Object.values(columns)
+            .forEach(w => {
+                headerSep.push('-'.padEnd(w > 4 ? w - 4 : w, '-'));
+            });
+
+        table.push(headerSep);
+
+        return table;
+    }
+
+    public static printTable(table: Table.Table) {
+        process.stdout.write(table.toString() + '\n');
+    }
+
     public static kindColor(kind: ComparisonKind) {
         const colors = {
             [ComparisonKind.DIRECTORY_NOT_FOUND]: '#7DD3FC', //#3B82F6',
@@ -25,17 +54,13 @@ export class ConsolePrinter {
     }
 
     public static printRepositoryIssues(repo: Repository) {
-        const table = new Table({
-            head: ['issue', 'score', 'filename', 'fixers', 'notes'],
-            chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-            style: {
-                head: [], //disable colors in header cells
-                border: [], //disable colors for the border
-            },
-            colWidths: [15, 10, 50, 30, 30],
+        const table = this.makeTable({
+            issue: 15,
+            score: 10,
+            filename: 50,
+            fixers: 30,
+            notes: 30,
         });
-
-        table.push(['-'.padEnd(12, '-'), '-'.padEnd(8, '-'), '-'.padEnd(45, '-'), '-'.padEnd(25, '-'), '-'.padEnd(25, '-')]);
 
         repo.issues
             .filter(issue => !issue.resolved)
@@ -44,43 +69,37 @@ export class ConsolePrinter {
             .filter(issue => !app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? true)
             .sort((a, b) => (a.kind + a.score).localeCompare(b.kind + b.score))
             .forEach(issue => {
-                const fixers = issue.fixers.map(fixer => {
-                    if (fixer.isRisky()) {
-                        return chalk.hex('#FCA5A5')(fixer.getName());
-                    }
-                    if (fixer.runsFixers()) {
-                        return chalk.hex('#60A5FA')(fixer.getName());
-                    }
-                    return chalk.hex('#4ADE80')(fixer.getName());
-                });
+                const fixers = issue.fixers
+                    .map(fixer => {
+                        // display risky fixers in red
+                        if (fixer.isRisky()) {
+                            return chalk.hex('#FCA5A5')(fixer.getName());
+                        }
+                        // multi fixers in blue
+                        if (fixer.runsFixers()) {
+                            return chalk.hex('#60A5FA')(fixer.getName());
+                        }
+                        // safe fixer in green
+                        return chalk.hex('#4ADE80')(fixer.getName());
+                    })
+                    .join(', ');
 
                 table.push([
-                    this.kindColor(issue.kind)(issue.kind),
+                    colorText(issue.kind, issue.kind),
                     issue.score,
-                    this.kindColor(issue.kind)(issue.name),
-                    fixers.join(', '),
+                    colorText(issue.name, issue.kind),
+                    fixers,
                     issue.note?.toString() ?? '',
                 ]);
             });
 
-        process.stdout.write(table.toString() + '\n');
+        this.printTable(table);
     }
 
     public static printRepositoryFixerResults(repo: Repository) {
-        const table = new Table({
-            head: ['filename', 'fixer', 'status'],
-            chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-            style: {
-                head: [], //disable colors in header cells
-                border: [], //disable colors for the border
-            },
-            colWidths: [40, 15, 65],
-        });
-
-        table.push(['-'.padEnd(35, '-'), '-'.padEnd(12, '-'), '-'.padEnd(55, '-')]);
+        const table = this.makeTable({ filename: 40, fixer: 15, status: 65 });
 
         repo.issues
-            //.filter(issue => issue.resolved)
             .filter(issue => !app.config.ignoreNames.includes(issue.name))
             .filter(issue => !app.config.skipComparisons.includes(issue.name))
             .filter(issue => !app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? true)
@@ -91,9 +110,9 @@ export class ConsolePrinter {
                     issue.addResolvedNote('issue unresolved');
                 }
 
-                table.push([this.kindColor(issue.kind)(issue.name), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);
+                table.push([colorText(issue.name, issue.kind), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);
             });
 
-        process.stdout.write(table.toString() + '\n');
+        this.printTable(table);
     }
 }
