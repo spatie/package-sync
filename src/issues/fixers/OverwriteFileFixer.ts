@@ -10,6 +10,10 @@ import { classOf } from '../../lib/helpers';
 export class OverwriteFileFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
+    public isRisky(): boolean {
+        return true;
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix() || this.issue.pending) {
             return false;

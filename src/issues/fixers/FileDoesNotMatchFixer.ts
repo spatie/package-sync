@@ -7,6 +7,10 @@ import { Fixer } from './Fixer';
 export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
 
+    public isRisky(): boolean {
+        return true;
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix()) {
             return false;

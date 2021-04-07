@@ -26,11 +26,9 @@ export class Fixer {
         return false;
     }
 
-    // static config() {
-    //     const thisName = (Object.getOwnPropertyDescriptor(this, 'name')?.value ?? 'Fixer').replace(/Fixer$/, '');
-
-    //     return [];//config.fixers[thisName] || null;
-    // }
+    public isRisky(): boolean {
+        return false;
+    }
 
     public static canFix(issue: RepositoryIssue): boolean {
         return !issue.resolved;
