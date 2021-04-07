@@ -4,6 +4,7 @@ import { app } from '../Application';
 import { Command, createOption } from './Command';
 import { FixerManager } from '../issues/FixerManager';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
+import { matches } from '../lib/helpers';
 
 const micromatch = require('micromatch');
 
@@ -13,13 +14,11 @@ export default class FixCommand extends Command {
     public static description = "Fix a package's issues";
     public static exports = exports;
 
-    public static options = [
-        createOption('file', null, { alias: 'f', type: 'string' }),
-        //createOption('risky', false, { alias: 'r' }),
-    ];
+    public static options = [createOption('file', null, { alias: 'f', type: 'string' })];
 
     static handle(argv: any): void {
-        let issueType: string = argv['issueType'] ?? 'all';
+        let issueType: string = (argv['issueType'] ?? 'all').trim()
+            .toLowerCase();
         const allowRisky: boolean = argv['risky'] ?? false;
 
         if (issueType.trim().length === 0) {
@@ -31,10 +30,7 @@ export default class FixCommand extends Command {
         }
 
         const { repo } = app.analyzePackage(argv.packageName);
-
-        // if (argv.file !== null) {
-        //     issues = issues.filter(issue => issue.name === argv.file);
-        // }
+        const nameMap = fixers => fixers.map(fixer => fixer.getName());
 
         FixerManager.create()
             .fixIssues(
@@ -43,13 +39,10 @@ export default class FixCommand extends Command {
                     .filter(
                         issue =>
                             issueType === '*' ||
-                        issue.fixers.map(fixer => fixer.getName())
+                        nameMap(issue.fixers)
                             .includes(issueType) ||
-                        micromatch.isMatch(issueType, issue.kind) ||
-                        micromatch.isMatch(
-                            issueType,
-                            issue.fixers.map(fixer => fixer.getName()),
-                        ),
+                        matches(issueType, issue.kind) ||
+                        matches(issueType, nameMap(issue.fixers)),
                     ),
                 issueType,
                 allowRisky,

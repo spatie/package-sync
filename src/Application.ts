@@ -55,6 +55,14 @@ export class Application {
         );
     }
 
+    public shouldIgnoreIssue(issue: RepositoryIssue): boolean {
+        if (typeof this.config.issues.ignored[issue.kind] !== 'undefined') {
+            return micromatch.isMatch(issue.name, this.config.issues.ignored[issue.kind]);
+        }
+
+        return false;
+    }
+
     public shouldCompareFile(fn: string): boolean {
         return !this.config.skipComparisons.includes(basename(fn));
     }
@@ -187,7 +195,7 @@ export class Application {
         repo.issues.forEach(issue => {
             FixerManager.fixers()
                 .forEach(fixer => {
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.shouldIgnoreIssue(issue)) {
                         issue.availableFixers.push(fixer.prettyName());
 
                         issue.addFixer(new fixer(issue));
