@@ -17,12 +17,16 @@ npm install
 
 npm run build:dev
 ```
+## Configuration
 
-Make sure you've modified the configuration file `dist/package-sync.yml`, specifically the `packagesPath` and `templatesPath` settings.  If the directories don't exist, they will be created for you.
+Make sure you've modified the configuration file `dist/package-sync.yml`, specifically the `paths.packages` and `paths.templates` settings.
+If the directories don't exist, they will be created for you when you run `package-sync`.
 
 You can use the placeholder `{{__dirname}}` in the values of either setting and it will be replaced with the directory that the config file is in.  
 
 > Make sure to quote the yaml value if you use the `{{__dirname}}` placeholder to ensure valid YAML.
+
+See the configuration file comments for more information on the various options.
 
 ## Analyzing packages
 
@@ -37,6 +41,12 @@ Analyze the `spatie/regex` package using the `spatie/package-skeleton-php` repos
 You should see something similar to the following:
 
 ![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
+
+Fixers are color-coded:
+
+- `green`: considered safe to run automatically
+- `blue`: considered 'multi' fixers, these apply to groups of related files
+- `red`: considered risky - these fixers make _(possibly significant)_ modifications to existing files
 
 ## Fixing package issues
 
