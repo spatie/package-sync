@@ -11,7 +11,8 @@ it('loads a repository directory', () => {
     repo.composer.filename = basename(repo.composer.filename);
     repo.path = basename(repo.path);
 
-    expect(repo).toMatchSnapshot();
+    expect(repo)
+        .toMatchSnapshot();
 });
 
 it('gets a file object by name', () => {
@@ -20,12 +21,15 @@ it('gets a file object by name', () => {
     const file = repo.getFile('composer.json');
 
     expect(file).not.toBeNull();
-    expect(repo.files.find(f => f.relativeName === file?.relativeName)).toBeInstanceOf(RepositoryFile);
+    expect(repo.files.find(f => f.relativeName === file?.relativeName))
+        .toBeInstanceOf(RepositoryFile);
 });
 
 it('checks if it has a file object', () => {
     const repo = Repository.create(__dirname + '/../data/test-package', RepositoryKind.PACKAGE);
 
-    expect(repo.hasFile(<RepositoryFile>repo.getFile('composer.json'))).toBeTruthy();
-    expect(repo.hasFile(<RepositoryFile>RepositoryFile.create('missing.txt'))).toBeFalsy();
+    expect(repo.hasFile(<RepositoryFile>repo.getFile('composer.json')))
+        .toBeTruthy();
+    expect(repo.hasFile(<RepositoryFile>RepositoryFile.create('missing.txt')))
+        .toBeFalsy();
 });

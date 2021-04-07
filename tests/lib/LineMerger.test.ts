@@ -34,5 +34,6 @@ it('merges lines into a single array', () => {
 
     //     console.log(lm.merge());
 
-    expect(lm.merge()).toStrictEqual(['one', 'two', 'three', 'four']);
+    expect(lm.merge())
+        .toStrictEqual(['one', 'two', 'three', 'four']);
 });
