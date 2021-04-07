@@ -136,6 +136,16 @@ export class Composer {
         return this;
     }
 
+    public removePackage(pkg: ComposerPackage) {
+        this.ensureSectionExists(pkg.section);
+
+        if (typeof this.data[pkg.section][pkg.name] !== 'undefined') {
+            delete this.data[pkg.section][pkg.name];
+        }
+
+        return this;
+    }
+
     public setPackageVersion(pkg: ComposerPackage, version: string) {
         this.ensureSectionExists(pkg.section);
 
