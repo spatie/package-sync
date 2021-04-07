@@ -17,6 +17,7 @@ export default class FixCommand extends Command {
     static handle(argv: any): void {
         let issueType: string = (argv['issueType'] ?? 'all').trim()
             .toLowerCase();
+
         const allowRisky: boolean = argv['risky'] ?? false;
 
         if (issueType.trim().length === 0) {
