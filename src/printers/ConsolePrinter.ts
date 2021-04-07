@@ -90,8 +90,8 @@ export class ConsolePrinter {
     public static printRepositoryIssues(repo: Repository) {
         const table = this.makeTable({
             issue: 15,
-            score: 10,
-            filename: 50,
+            score: 8,
+            filename: 45,
             fixers: 30,
             //notes: 30,
         });
