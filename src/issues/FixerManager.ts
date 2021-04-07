@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../Application';
+import { matches } from '../lib/helpers';
 import { DirectoryNotFoundFixer } from './fixers/DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './fixers/FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './fixers/FileIsNotSimilarEnoughFixer';
@@ -18,12 +19,15 @@ import { RepositoryIssue } from './RepositoryIssue';
 
 const micromatch = require('micromatch');
 
-// test comment
-
 export class FixerManager {
-    public static fixers() {
+    public static fixers(): any[] {
         return [
-            ...this.namedFixers(),
+            // specific fixers:
+            GitFileFixer,
+            GithubFixer,
+            PsalmFixer,
+            OptionalPackagesFixer,
+            // generic fixers:
             DirectoryNotFoundFixer,
             FileIsNotSimilarEnoughFixer,
             OverwriteFileFixer,
@@ -35,10 +39,6 @@ export class FixerManager {
         ];
     }
 
-    public static namedFixers() {
-        return [GitFileFixer, GithubFixer, PsalmFixer, OptionalPackagesFixer];
-    }
-
     static create() {
         return new FixerManager();
     }
@@ -48,7 +48,14 @@ export class FixerManager {
         const shortName = name.replace(/Fixer$/, '');
         const disabledFixers = app.config.fixers?.disabled ?? [];
 
-        return micromatch.isMatch(name, disabledFixers) || micromatch.isMatch(shortName, disabledFixers);
+        return matches([name, shortName], disabledFixers);
+    }
+
+    public static getFixerClass(name: string): any | null {
+        const result = this.fixers()
+            .find(fixer => fixer.prettyName() === name);
+
+        return result ?? null;
     }
 
     public getFixerForIssue(name: string, issue: RepositoryIssue): Fixer | null {
@@ -62,31 +69,11 @@ export class FixerManager {
         return null;
     }
 
-    public runNamedFixers(issues: RepositoryIssue[]) {
-        const namedFixers = FixerManager.namedFixers();
-
-        // check every issue against each fixer so fixers have a chance to fix multiple related issues
-        namedFixers
-            .filter(fixer => !this.isFixerDisabled(fixer))
-            .forEach(fixer => {
-                issues.forEach(async issue => {
-                    if (issue.availableFixers.length && !issue.availableFixers.includes(fixer.prettyName())) {
-                        return;
-                    }
-
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue)) {
-                        new fixer(issue)
-                            .fix();
-                    }
-                });
-            });
+    public fixIssues(issues: RepositoryIssue[]) {
+        issues.forEach(async issue => this.fixIssue(issue));
     }
 
-    public async fixIssues(issues: RepositoryIssue[]) {
-        issues.forEach(async issue => await this.fixIssue(issue));
-    }
-
-    public async fixIssue(issue: RepositoryIssue) {
+    public fixIssue(issue: RepositoryIssue) {
         const fixers = FixerManager.fixers();
         const fixerObjs: Fixer[] = [];
 

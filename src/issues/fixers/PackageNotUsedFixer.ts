@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
@@ -7,7 +8,7 @@ export class PackageNotUsedFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED];
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
@@ -16,8 +17,9 @@ export class PackageNotUsedFixer extends Fixer {
         this.issue.repository.composer.addPackage(pkg)
             .save();
 
-        this.issue.resolve(PackageNotUsedFixer.prettyName());
-        this.issue.resolvedNotes.push(`added package dependency '${this.issue.name}'`);
+        this.issue.resolve(classOf(this)
+            .prettyName())
+            .addResolvedNote(`added package dependency '${this.issue.name}'`);
 
         return true;
     }

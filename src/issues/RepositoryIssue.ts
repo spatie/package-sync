@@ -6,6 +6,7 @@ import { RepositoryFile } from '../lib/RepositoryFile';
 
 export class RepositoryIssue {
     protected _availableFixers: string[] = [];
+    protected _disabledFixers: string[] = [];
 
     public resolvedByFixer = 'none';
     public resolvedNotes: string[] = [];
@@ -27,7 +28,12 @@ export class RepositoryIssue {
     }
 
     get availableFixers() {
-        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0));
+        return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0))
+            .filter(name => !this.disabledFixers.includes(name));
+    }
+
+    get disabledFixers() {
+        return this._disabledFixers;
     }
 
     get kind(): ComparisonKind {
@@ -57,6 +63,34 @@ export class RepositoryIssue {
     public resolve(resolvedByFixer: string) {
         this.resolvedByFixer = resolvedByFixer;
         this.resolved = true;
+
+        return this;
+    }
+
+    public addResolvedNote(note: string) {
+        this.resolvedNotes.push(note);
+
+        return this;
+    }
+
+    public disableFixers(names: string[] | null = null) {
+        if (names === null) {
+            this._disabledFixers = this._availableFixers.slice(0);
+            return this;
+        }
+
+        names.forEach(name => this._disabledFixers.push(name));
+
+        return this;
+    }
+
+    public enableFixers(names: string[] | null = null) {
+        if (names === null) {
+            this._disabledFixers = [];
+            return this;
+        }
+
+        this._disabledFixers = this._disabledFixers.filter(name => !names.includes(name));
 
         return this;
     }

@@ -5,6 +5,7 @@ import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
 import { DirectoryNotFoundFixer } from './DirectoryNotFoundFixer';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
+import { classOf } from '../../lib/helpers';
 
 export class GithubFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
@@ -14,7 +15,7 @@ export class GithubFixer extends Fixer {
     }
 
     public static canFix(issue: RepositoryIssue): boolean {
-        if (issue.resolved) {
+        if (!super.canFix(issue)) {
             return false;
         }
 
@@ -30,7 +31,7 @@ export class GithubFixer extends Fixer {
     }
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
@@ -44,7 +45,8 @@ export class GithubFixer extends Fixer {
                 .fix();
         }
 
-        this.issue.resolve(GithubFixer.prettyName());
+        this.issue.resolve(classOf(this)
+            .prettyName());
 
         console.log(`GITHUB FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 

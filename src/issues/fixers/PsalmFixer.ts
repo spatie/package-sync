@@ -17,7 +17,7 @@ export class PsalmFixer extends Fixer {
     }
 
     public static canFix(issue: RepositoryIssue): boolean {
-        if (issue.resolved) {
+        if (!super.canFix(issue)) {
             return false;
         }
 
@@ -39,7 +39,7 @@ export class PsalmFixer extends Fixer {
     }
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
@@ -60,8 +60,6 @@ export class PsalmFixer extends Fixer {
 
         this.issue.resolve(classOf(this)
             .prettyName());
-
-        console.log(`PSALM FIXER: fixed '${this.issue.kind}' issue for '${this.issue.name}'`);
 
         return true;
     }

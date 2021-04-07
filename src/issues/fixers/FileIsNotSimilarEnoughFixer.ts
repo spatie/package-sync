@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { FixerManager } from '../FixerManager';
 import { Fixer } from './Fixer';
@@ -36,15 +37,17 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
 
             if ((input.trim()
                 .toLowerCase()[0] ?? 'n') !== 'y') {
-                this.issue.resolve(FileIsNotSimilarEnoughFixer.prettyName());
+                this.issue.resolve(classOf(this)
+                    .prettyName())
+                    .addResolvedNote('rejected running more fixers');
 
-                this.issue.resolvedNotes.push('rejected running more fixers');
-                this.issue.availableFixers.splice(0, this.issue.availableFixers.length);
+                this.issue.disableFixers();
+
+                //this.issue.availableFixers.splice(0, this.issue.availableFixers.length);
 
                 return;
             }
 
-            this.issue.resolvedNotes.push(`fixer approved: ${fixers[0]}`);
             this.issue.pending = false;
 
             FixerManager.create()
@@ -57,7 +60,7 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
     }
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return true;
         }
 

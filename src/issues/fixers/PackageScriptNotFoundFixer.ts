@@ -6,7 +6,7 @@ export class PackageScriptNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND];
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
@@ -17,8 +17,9 @@ export class PackageScriptNotFoundFixer extends Fixer {
 
         console.log(`* PACKAGE SCRIPT FIXER: add composer script '${this.issue.name}'`);
 
-        this.issue.resolve(PackageScriptNotFoundFixer.prettyName());
-        this.issue.resolvedNotes.push(`added composer script '${this.issue.name}'`);
+        this.issue.resolve(this.getClass()
+            .prettyName())
+            .addResolvedNote(`added composer script '${this.issue.name}'`);
 
         return true;
     }

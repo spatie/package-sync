@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 
 import { app } from '../../Application';
+import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { RepositoryIssue } from '../RepositoryIssue';
-
 export abstract class Fixer {
+    public enabled = true;
+
     public static handles: ComparisonKind[] = [];
 
     public constructor(public issue: RepositoryIssue) {
@@ -15,6 +17,9 @@ export abstract class Fixer {
         return Fixer.prettyName();
     }
 
+    getClass() {
+        return classOf(this);
+    }
     public abstract fix(): boolean;
 
     static config() {
@@ -35,7 +40,22 @@ export abstract class Fixer {
         return this.name;
     }
 
+    public disable() {
+        this.enabled = false;
+    }
+
+    public enable() {
+        this.enabled = true;
+    }
+
     public fixesIssue(issue: RepositoryIssue) {
-        return Fixer.fixes(issue.kind) && Fixer.canFix(issue);
+        return this.getClass()
+            .fixes(issue.kind) && this.getClass()
+            .canFix(issue) && this.enabled;
+    }
+
+    protected shouldPerformFix() {
+        return !this.issue.resolved && this.enabled && this.issue.availableFixers.includes(this.getClass()
+            .prettyName());
     }
 }

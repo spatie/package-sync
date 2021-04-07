@@ -5,12 +5,13 @@ import { basename } from 'path';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
+import { classOf } from '../../lib/helpers';
 
 export class OverwriteFileFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
     public fix(): boolean {
-        if (this.issue.resolved || this.issue.pending) {
+        if (!this.shouldPerformFix() || this.issue.pending) {
             return false;
         }
 
@@ -24,8 +25,10 @@ export class OverwriteFileFixer extends Fixer {
 
             writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
 
-            this.issue.resolve(OverwriteFileFixer.prettyName());
-            this.issue.resolvedNotes.push(`overwrite file '${relativeFn}' with version from '${this.issue.skeleton.name}'`);
+            this.issue
+                .resolve(classOf(this)
+                    .prettyName())
+                .addResolvedNote(`overwrite file '${relativeFn}' with version from '${this.issue.skeleton.name}'`);
         }
 
         return true;

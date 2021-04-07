@@ -3,6 +3,8 @@ import { lstatSync, readdirSync } from 'fs';
 import { basename } from 'path';
 import { File } from './File';
 
+const micromatch = require('micromatch');
+
 export function isDirectory(path: string): boolean {
     try {
         const stat = lstatSync(path);
@@ -69,4 +71,18 @@ export const last = (arr: any[]) => arr[arr.length - 1] ?? undefined;
 
 export function classOf<T>(o: T): any {
     return (o as any).constructor;
+}
+
+export function matches(str: string | string[], patterns: string | string[]): boolean {
+    if (!Array.isArray(str)) {
+        str = [str];
+    }
+
+    for (const s of str) {
+        if (micromatch.isMatch(s, patterns)) {
+            return true;
+        }
+    }
+
+    return false;
 }

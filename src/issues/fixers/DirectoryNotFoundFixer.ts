@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { mkdirSync } from 'fs';
+import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
@@ -8,18 +9,15 @@ export class DirectoryNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND];
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
-        const relativeFn: string = this.issue.name;
+        mkdirSync(`${this.issue.repository.path}/${this.issue.name}`, { recursive: true });
 
-        //console.log(`* action: create directory '${basename(this.issue.repository.path)}/${relativeFn}'`);
-
-        mkdirSync(`${this.issue.repository.path}/${relativeFn}`, { recursive: true });
-
-        this.issue.resolve(DirectoryNotFoundFixer.prettyName());
-        this.issue.resolvedNotes.push(`created directory '${relativeFn}'`);
+        this.issue.resolve(classOf(this)
+            .prettyName())
+            .addResolvedNote(`created directory '${this.issue.name}'`);
 
         return true;
     }

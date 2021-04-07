@@ -29,7 +29,7 @@ export class PackageVersionFixer extends Fixer {
     }
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 

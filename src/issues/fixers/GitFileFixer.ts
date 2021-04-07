@@ -4,12 +4,13 @@ import { ComparisonKind } from '../../types/FileComparisonResult';
 import { FileMerger } from '../../lib/FileMerger';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../RepositoryIssue';
+import { classOf } from '../../lib/helpers';
 
 export class GitFileFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED, ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
     public static canFix(issue: RepositoryIssue): boolean {
-        if (issue.resolved) {
+        if (!super.canFix(issue)) {
             return false;
         }
 
@@ -17,7 +18,7 @@ export class GitFileFixer extends Fixer {
     }
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
@@ -27,8 +28,10 @@ export class GitFileFixer extends Fixer {
 
         console.log(`GIT FILE FIXER: merged '${this.issue.sourcefile.relativeName}'`);
 
-        this.issue.resolve(GitFileFixer.prettyName());
-        this.issue.resolvedNotes.push(`merged '${this.issue.sourcefile.relativeName}' from skeleton and package`);
+        this.issue
+            .resolve(classOf(this)
+                .prettyName())
+            .addResolvedNote(`merged '${this.issue.sourcefile.relativeName}' from skeleton and package`);
 
         return true;
     }

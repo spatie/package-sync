@@ -3,22 +3,22 @@
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
+import { classOf } from '../../lib/helpers';
 
 export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
 
     public fix(): boolean {
-        if (this.issue.resolved) {
+        if (!this.shouldPerformFix()) {
             return false;
         }
 
         File.read(this.issue.srcFile?.filename ?? '')
             .saveAs(this.issue.destFile?.filename ?? '');
 
-        //console.log(`FILE MISMATCH FIXER: overwrote the package file '${this.issue.name}' with the template repo file`);
-
-        this.issue.resolve(FileDoesNotMatchFixer.prettyName());
-        this.issue.resolvedNotes.push(`overwrote existing file '${this.issue.name}'`);
+        this.issue.resolve(classOf(this)
+            .prettyName())
+            .addResolvedNote(`overwrote existing file '${this.issue.name}'`);
 
         return true;
     }
