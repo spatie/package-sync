@@ -15,8 +15,11 @@ compares the contents of a package repo against a package skeleton repo, display
 ```bash
 npm install
 
-npm run build:dev
+npm run build:prod
+
+./dist/package-sync --help
 ```
+
 ## Configuration
 
 Make sure you've modified the configuration file `dist/package-sync.yml`, specifically the `paths.packages` and `paths.templates` settings.
