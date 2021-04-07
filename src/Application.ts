@@ -32,20 +32,20 @@ export class Application {
     }
 
     public ensureStoragePathsExist() {
-        if (!existsSync(this.config.templatesPath)) {
-            mkdirSync(this.config.templatesPath, { recursive: true });
+        if (!existsSync(this.config.paths.templates)) {
+            mkdirSync(this.config.paths.templates, { recursive: true });
         }
-        if (!existsSync(this.config.packagesPath)) {
-            mkdirSync(this.config.packagesPath, { recursive: true });
+        if (!existsSync(this.config.paths.packages)) {
+            mkdirSync(this.config.paths.packages, { recursive: true });
         }
     }
 
     public templatePath(templateName: string): string {
-        return `${this.config.templatesPath}/${templateName}`;
+        return `${this.config.paths.templates}/${templateName}`;
     }
 
     public packagePath(packageName: string): string {
-        return `${this.config.packagesPath}/${packageName}`;
+        return `${this.config.paths.packages}/${packageName}`;
     }
 
     public shouldIgnoreFile(fn: string): boolean {

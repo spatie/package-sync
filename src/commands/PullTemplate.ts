@@ -24,7 +24,7 @@ export default class PullTemplateCommand extends Command {
             .forEach(name => {
                 GitUtilties.displayStatusMessages = true;
 
-                GitUtilties.cloneRepo(app.configuration.qualifiedTemplateName(name), app.config.templatesPath);
+                GitUtilties.cloneRepo(app.configuration.qualifiedTemplateName(name), app.config.paths.templates);
                 GitUtilties.pullRepo(name, app.templatePath(name));
             });
     }

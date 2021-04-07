@@ -17,7 +17,7 @@ export default class PullPackageCommand extends Command {
 
         GitUtilties.displayStatusMessages = true;
 
-        GitUtilties.cloneRepo(app.configuration.qualifiedPackageName(name), app.config.packagesPath);
+        GitUtilties.cloneRepo(app.configuration.qualifiedPackageName(name), app.config.paths.packages);
         GitUtilties.pullRepo(name, app.packagePath(name));
     }
 }

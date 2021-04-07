@@ -7,13 +7,13 @@ import { RepositoryKind } from './Repository';
 export class RepositoryValidator {
     static ensureExists(name: string, kind: RepositoryKind) {
         if (kind === RepositoryKind.PACKAGE) {
-            this.ensurePathExists(app.config.packagesPath);
+            this.ensurePathExists(app.config.paths.packages);
             PullPackageCommand.handle({ name });
             return true;
         }
 
         if (kind === RepositoryKind.SKELETON) {
-            this.ensurePathExists(app.config.templatesPath);
+            this.ensurePathExists(app.config.paths.templates);
             PullTemplateCommand.handle({ name });
             return true;
         }

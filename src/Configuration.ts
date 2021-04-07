@@ -14,8 +14,10 @@ export interface ConfigurationRecord {
     scoreRequirements: ScoreRequirements;
     ignoreNames: Array<string>;
     skipComparisons: Array<string>;
-    templatesPath: string;
-    packagesPath: string;
+    paths: {
+        templates: string;
+        packages: string;
+    };
     templates: {
         vendor: string;
         names: string[];
