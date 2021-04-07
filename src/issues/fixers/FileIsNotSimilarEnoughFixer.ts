@@ -69,10 +69,6 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
         this.issue.resolve(this);
 
         return false;
-
-        // this.run();
-
-        // return true;
     }
 
     public async run() {

@@ -66,8 +66,13 @@ export class Fixer {
     }
 
     protected shouldPerformFix() {
-        return !this.issue.resolved && this.enabled && this.issue.availableFixers.includes(this.getClass()
-            .prettyName());
+        return (
+            !this.issue.resolved &&
+            this.enabled &&
+            this.issue.fixers.map(fixer => fixer.getName())
+                .includes(this.getClass()
+                    .prettyName())
+        );
     }
 }
 
