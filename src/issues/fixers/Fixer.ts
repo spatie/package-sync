@@ -31,6 +31,10 @@ export class Fixer {
         return false;
     }
 
+    public runsFixers(): boolean {
+        return false;
+    }
+
     public static canFix(issue: RepositoryIssue): boolean {
         return !issue.resolved;
     }

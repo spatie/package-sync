@@ -86,6 +86,7 @@ export class FixerManager {
             //.filter(fixer => fixer.fixes(issue.result.kind))
             .filter(fixer => fixer.getClass()
                 .canFix(issue))
+            .sort(a => (a.runsFixers() ? -1 : 0))
             .forEach(fixer => {
                 console.log('trying fixer ' + fixer.getName());
 

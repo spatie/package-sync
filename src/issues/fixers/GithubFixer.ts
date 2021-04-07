@@ -9,6 +9,10 @@ import { FileNotFoundFixer } from './FileNotFoundFixer';
 export class GithubFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
 
+    public runsFixers(): boolean {
+        return true;
+    }
+
     public fixesIssue(issue: RepositoryIssue): boolean {
         return GithubFixer.canFix(issue);
     }

@@ -12,6 +12,10 @@ import { classOf } from '../../lib/helpers';
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
 
+    public runsFixers(): boolean {
+        return true;
+    }
+
     public fixesIssue(issue: RepositoryIssue): boolean {
         return PsalmFixer.canFix(issue);
     }

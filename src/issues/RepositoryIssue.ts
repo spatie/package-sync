@@ -31,7 +31,21 @@ export class RepositoryIssue {
     }
 
     get fixers() {
-        return this._fixers; //.filter(fixer => fixer.enabled);
+        const same = (a, b, method) => (a[method]() && b[method]()) || (!a[method]() && !b[method]());
+
+        return this._fixers
+            .sort((a, b) => {
+                if (same(a, b, 'runsFixers')) {
+                    return 0;
+                }
+                return a.runsFixers() ? 1 : -1;
+            })
+            .sort((a, b) => {
+                if (same(a, b, 'isRisky')) {
+                    return 0;
+                }
+                return a.isRisky() ? 1 : -1;
+            });
     }
 
     get availableFixers() {
