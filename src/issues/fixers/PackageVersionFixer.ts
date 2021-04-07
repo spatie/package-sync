@@ -39,9 +39,7 @@ export class PackageVersionFixer extends Fixer {
         this.issue.repository.composer.setPackageVersion(repoPkg, this.mergeVersions(repoPkg.version, newPkg.version))
             .save();
 
-        console.log(`* PACKAGE VERSION FIXER: copy version from skeleton for package '${this.issue.name}'`);
-
-        this.issue.resolve(PackageVersionFixer.prettyName()).resolvedNotes.push(`updated version to '${repoPkg.version}'`);
+        this.issue.resolve(this).resolvedNotes.push(`updated version to '${repoPkg.version}'`);
 
         return true;
     }

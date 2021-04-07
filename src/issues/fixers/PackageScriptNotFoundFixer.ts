@@ -15,10 +15,7 @@ export class PackageScriptNotFoundFixer extends Fixer {
         this.issue.repository.composer.addScript(script)
             .save();
 
-        console.log(`* PACKAGE SCRIPT FIXER: add composer script '${this.issue.name}'`);
-
-        this.issue.resolve(this.getClass()
-            .prettyName())
+        this.issue.resolve(this)
             .addResolvedNote(`added composer script '${this.issue.name}'`);
 
         return true;

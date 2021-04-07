@@ -137,6 +137,8 @@ export class Composer {
     }
 
     public setPackageVersion(pkg: ComposerPackage, version: string) {
+        this.ensureSectionExists(pkg.section);
+
         this.rawData[pkg.section][pkg.name] = version;
         pkg.version = version;
 
@@ -161,6 +163,16 @@ export class Composer {
     public addScript(script: ComposerScript) {
         this.ensureSectionExists('scripts');
         this.data.scripts[script.name] = script.command;
+
+        return this;
+    }
+
+    public removeScript(name: string) {
+        this.ensureSectionExists('scripts');
+
+        if (typeof this.data.scripts[name] !== 'undefined') {
+            delete this.data.scripts[name];
+        }
 
         return this;
     }

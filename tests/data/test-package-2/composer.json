@@ -8,12 +8,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2|^8.0",
-        "psr/http-message": "^1.5",
-        "spatie/macroable": "^1.0.1"
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0|^9.5",
-        "vimeo/psalm": "^4.3"
+        "phpunit/phpunit": "^8.0|^9.3"
     },
     "autoload": {
         "psr-4": {
@@ -27,8 +25,6 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
-        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
         "psalm": "vendor/bin/psalm"
     },
     "config": {
