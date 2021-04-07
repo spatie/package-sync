@@ -1,7 +1,8 @@
 config:
 
-  templatesPath: '{{__dirname}}/temp'
-  packagesPath: /development/repositories/spatie
+  paths:
+    templates: '{{__dirname}}/temp/spatie/templates'
+    packages: '{{__dirname}}/temp/spatie/packages'
 
   fixers:
     # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
@@ -11,22 +12,25 @@ config:
 #      - GitFile
 #      - FileDoesNotMatch
 
-    OptionalPackages:
-      - spatie/ray
-      - friendsofphp/php-cs-fixer
-
   issues:
     ignored:
+      # don't install these dependencies:
       missing_pkg:
         - spatie/ray
         - friendsofphp/php-cs-fixer
+      # don't copy these composer scripts:
       pkg_script:
         - format
+      # don't list 'extra_file' issues with these filenames:
       extra_file:
         - .scrutinizer.yml
 
   templates:
+    # github organization name
     vendor: spatie
+    # skeleton repositories, must be named *-php and *-laravel.
+    # the laravel skeleton is used automatically if the package being analyzed or fixed
+    # starts with 'laravel-', otherwise the php skeleton is used.
     names:
       - package-skeleton-php
       - package-skeleton-laravel
