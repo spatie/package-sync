@@ -44,11 +44,21 @@ export class ConsolePrinter {
             .filter(issue => !app.config.issues.ignored[issue.kind]?.includes(issue.name) ?? true)
             .sort((a, b) => (a.kind + a.score).localeCompare(b.kind + b.score))
             .forEach(issue => {
+                const fixers = issue.fixers.map(fixer => {
+                    if (fixer.isRisky()) {
+                        return chalk.hex('#FCA5A5')(fixer.getName());
+                    }
+                    if (fixer.runsFixers()) {
+                        return chalk.hex('#60A5FA')(fixer.getName());
+                    }
+                    return chalk.hex('#4ADE80')(fixer.getName());
+                });
+
                 table.push([
                     this.kindColor(issue.kind)(issue.kind),
                     issue.score,
                     this.kindColor(issue.kind)(issue.name),
-                    issue.availableFixers.join(', '),
+                    fixers.join(', '),
                     issue.note?.toString() ?? '',
                 ]);
             });
