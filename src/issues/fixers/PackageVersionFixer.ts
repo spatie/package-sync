@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { last, uniqueArray } from '../../lib/helpers';
+import { uniqueArray } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
