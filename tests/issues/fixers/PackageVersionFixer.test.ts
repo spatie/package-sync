@@ -23,25 +23,19 @@ it('copies a missing composer script from skeleton to package', () => {
     );
     const fixer = new PackageVersionFixer(issue);
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 
-    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3')
-        .save();
+    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3').save();
 
     // repo.composer.load();
 
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.3');
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.3');
 
-    expect(fixer.fix())
-        .toBeTruthy();
+    expect(fixer.fix()).toBeTruthy();
 
     //repo.composer.load();
 
-    expect(repo.composer.package('phpunit/phpunit').version)
-        .toBe('^8.0|^9.5');
+    expect(repo.composer.package('phpunit/phpunit').version).toBe('^8.0|^9.5');
 
-    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3')
-        .save();
+    repo.composer.setPackageVersion({ name: 'phpunit/phpunit', section: 'require-dev', version: '^8.0|^9.3' }, '^8.0|^9.3').save();
 });

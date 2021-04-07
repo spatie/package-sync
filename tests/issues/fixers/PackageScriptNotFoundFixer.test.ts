@@ -23,16 +23,11 @@ it('copies a missing composer script from skeleton to package', () => {
     );
     const fixer = new PackageScriptNotFoundFixer(issue);
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 
-    expect(repo.composer.hasScript('format'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(repo.composer.hasScript('format'))
-        .toBeTruthy();
+    expect(repo.composer.hasScript('format')).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(repo.composer.hasScript('format')).toBeTruthy();
 
-    repo.composer.removeScript('format')
-        .save();
+    repo.composer.removeScript('format').save();
 });

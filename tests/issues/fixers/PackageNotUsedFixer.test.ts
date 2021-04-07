@@ -16,16 +16,11 @@ it('copies a missing composer package dependency from skeleton to package', () =
     const issue = new RepositoryIssue({ kind: ComparisonKind.PACKAGE_NOT_USED, score: 0 }, 'vimeo/psalm', null, null, skeleton, repo);
     const fixer = new PackageNotUsedFixer(issue);
 
-    issue.availableFixers.push(fixer.getClass()
-        .prettyName());
+    issue.availableFixers.push(fixer.getClass().prettyName());
 
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeTruthy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeTruthy();
 
-    repo.composer.removePackage({ name: 'vimeo/psalm', section: 'require-dev', version: '' })
-        .save();
+    repo.composer.removePackage({ name: 'vimeo/psalm', section: 'require-dev', version: '' }).save();
 });
