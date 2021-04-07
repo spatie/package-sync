@@ -31,22 +31,36 @@ You can use the placeholder `{{__dirname}}` in the values of either setting and 
 Example analyzing of `spatie/regex` using the `spatie/package-skeleton-php` repository as a template:
 
 ```bash
-# retrieve the php package skeleton
-npm run dev pull-template php
-
-# this is called automatically if required
-# npm run dev pull-package regex
-
 # compare package repository against the skeleton repository and
 # display out-of-sync files and other issues
 npm run dev analyze regex
 ```
 
-The `pull-*` commands clone the repositories to the local file system _(or run `git pull` if they already exist locally)_.
-
 You should see something similar to the following:
 
 ![image](https://user-images.githubusercontent.com/5508707/113720708-e8484300-96bc-11eb-9a24-d5a59d95ae21.png)
+
+## Manually pulling repositories
+
+You can manually update your local copy of either a skeleton or package git repository.  If the repository already exists locally, the `pull-*` commands will run `git pull` instead of `git clone`.
+
+> It's usually not necessary to run `pull-*` commands manually
+
+> Repositories are cloned/updated automatically when running `analyze` or `fix`.
+
+```bash
+# pull an individual skeleton repo by name:
+npm run dev pull-template php
+npm run dev pull-template laravel
+
+# or pull all skeleton repos:
+npm run dev pull-template
+```
+
+```bash
+npm run dev pull-package array-to-xml
+npm run dev pull-package laravel-sluggable
+```
 
 ## Fixing package issues
 
@@ -94,8 +108,11 @@ Note that this command will make modifications to the package's files, so be car
 | `create-dir` | creates a missing directory |
 | `create-file` | creates a missing file |
 | `install-dep` | adds a new package dependency to the package composer.json file |
-| `merge-files` | updaates a package file with a merged copy of both file versions |
+| `github` | creates all files/directories in the `.github` directory  |
+| `merge-files` | updates a package file with a merged copy of both file versions |
+| `merge-version` | updates a composer dependency version |
 | `psalm-setup` | installs all psalm-related files, scripts, packages |
+| `rewrite-file` | overwrites a file in the package with the skeleton's version of the file |
 | `user-review` | asks the user whether or not a file should be fixed automatically |
 
 ## Commands
