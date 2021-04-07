@@ -17,8 +17,6 @@ import { PackageVersionFixer } from './fixers/PackageVersionFixer';
 import { PsalmFixer } from './fixers/PsalmFixer';
 import { RepositoryIssue } from './RepositoryIssue';
 
-const micromatch = require('micromatch');
-
 export class FixerManager {
     public static fixers(): any[] {
         return [
