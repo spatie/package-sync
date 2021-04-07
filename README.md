@@ -68,13 +68,20 @@ npm run dev fix regex all
 
 You can also only fix certian issues or run specific fixers.
 
-```bashprocessed
+```bash
 # only fix the 'missing_pkg' issues:
 npm run dev fix regex missing_pkg
-
-# only run the 'create-file' fixer:
-npm run dev fix regex create-file
 ```
+
+Run just a specific fixer by name:
+
+```bash
+# only run the 'github' fixer:
+npm run dev fix array-functions github
+```
+
+![image](https://user-images.githubusercontent.com/5508707/113785803-d63ec280-9705-11eb-86ab-793a9ad359a8.png)
+
 
 Note that this command will make modifications to the package's files, so be careful!
 
