@@ -8,6 +8,10 @@ const semver = require('semver');
 export class PackageVersionFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_VERSION_MISMATCH];
 
+    public description() {
+        return 'updates the version of a dependency in the package repository.';
+    }
+
     public mergeVersions(repoVersion: string, newVersion: string) {
         const repoVersionParts = repoVersion.split('|');
         const newVersionParts = newVersion.split('|');
@@ -45,6 +49,6 @@ export class PackageVersionFixer extends Fixer {
     }
 
     public static prettyName(): string {
-        return 'merge-version';
+        return 'bump-version';
     }
 }

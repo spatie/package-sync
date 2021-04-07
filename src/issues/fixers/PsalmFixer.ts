@@ -7,10 +7,13 @@ import { RepositoryIssue } from '../RepositoryIssue';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
 import { PackageScriptNotFoundFixer } from './PackageScriptNotFoundFixer';
 import { PackageNotUsedFixer } from './PackageNotUsedFixer';
-import { classOf } from '../../lib/helpers';
 
 export class PsalmFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
+
+    public description() {
+        return 'creates all missing psalm-related files and installs all psalm composer scripts and dependencies.';
+    }
 
     public runsFixers(): boolean {
         return true;
@@ -62,13 +65,12 @@ export class PsalmFixer extends Fixer {
                 .fix();
         }
 
-        this.issue.resolve(classOf(this)
-            .prettyName());
+        this.issue.resolve(this);
 
         return true;
     }
 
     public static prettyName(): string {
-        return 'psalm-setup';
+        return 'psalm';
     }
 }

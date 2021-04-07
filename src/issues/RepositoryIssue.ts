@@ -9,7 +9,6 @@ import { classOf } from '../lib/helpers';
 export class RepositoryIssue {
     protected _fixers: Fixer[] = [];
     protected _availableFixers: string[] = [];
-    protected _disabledFixers: string[] = [];
 
     public resolvedByFixer = 'none';
     public resolvedNotes: string[] = [];
@@ -32,28 +31,15 @@ export class RepositoryIssue {
 
     get fixers() {
         const same = (a, b, method) => (a[method]() && b[method]()) || (!a[method]() && !b[method]());
+        const isTrue = (a, method) => (a[method]() ? 1 : -1);
+        const methodCompare = (a, b, method) => (same(a, b, method) ? 0 : isTrue(a, method));
 
-        return this._fixers
-            .sort((a, b) => {
-                if (same(a, b, 'runsFixers')) {
-                    return 0;
-                }
-                return a.runsFixers() ? 1 : -1;
-            })
-            .sort((a, b) => {
-                if (same(a, b, 'isRisky')) {
-                    return 0;
-                }
-                return a.isRisky() ? 1 : -1;
-            });
+        return this._fixers.sort((a, b) => methodCompare(a, b, 'runsFixers'))
+            .sort((a, b) => methodCompare(a, b, 'isRisky'));
     }
 
     get availableFixers() {
         return this._availableFixers.sort(a => (a === 'user-review' ? -1 : 0));
-    }
-
-    get disabledFixers() {
-        return this._disabledFixers;
     }
 
     get kind(): ComparisonKind {
@@ -112,22 +98,28 @@ export class RepositoryIssue {
 
     public disableFixers(names: string[] | null = null) {
         if (names === null) {
-            this._disabledFixers = this._availableFixers.slice(0);
-            return this;
+            names = this.fixers.map(fixer => fixer.getName());
         }
 
-        names.forEach(name => this._disabledFixers.push(name));
+        this.fixers.forEach(fixer => {
+            if (names?.includes(fixer.getName())) {
+                fixer.disable();
+            }
+        });
 
         return this;
     }
 
     public enableFixers(names: string[] | null = null) {
         if (names === null) {
-            this._disabledFixers = [];
-            return this;
+            names = this.fixers.map(fixer => fixer.getName());
         }
 
-        this._disabledFixers = this._disabledFixers.filter(name => !names.includes(name));
+        this.fixers.forEach(fixer => {
+            if (names?.includes(fixer.getName())) {
+                fixer.enable();
+            }
+        });
 
         return this;
     }

@@ -8,6 +8,10 @@ import { classOf } from '../../lib/helpers';
 export class OptionalPackagesFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND];
 
+    public description() {
+        return 'skips the installation of a dependency.';
+    }
+
     public static canFix(issue: RepositoryIssue): boolean {
         if (!super.canFix(issue)) {
             return false;

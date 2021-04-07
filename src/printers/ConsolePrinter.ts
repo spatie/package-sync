@@ -3,6 +3,7 @@ import { Repository } from '../lib/Repository';
 
 import Table from 'cli-table3';
 import { ComparisonKind } from '../types/FileComparisonResult';
+import Fixer from '../issues/fixers/Fixer';
 
 const chalk = require('chalk');
 
@@ -20,11 +21,12 @@ export class ConsolePrinter {
                 border: [], //disable colors for the border
             },
             colWidths: Object.values(columns),
+            //rowHeights: Object.keys(columns).map(c => { return 2; }),
         });
 
         Object.values(columns)
             .forEach(w => {
-                headerSep.push('-'.padEnd(w > 4 ? w - 4 : w, '-'));
+                headerSep.push('-'.padEnd(w > 3 ? w - 3 : w, '-'));
             });
 
         table.push(headerSep);
@@ -51,6 +53,38 @@ export class ConsolePrinter {
         const color = colors[kind] ?? '#FAFAF9';
 
         return chalk.hex(color);
+    }
+
+    public static printFixerSummary(fixers: Fixer[]) {
+        const table = this.makeTable({
+            'fixer name': 18,
+            type: 8,
+            description: 75,
+        });
+
+        fixers
+            .sort((a, b) => a.getName()
+                .localeCompare(b.getName()))
+            .forEach(fixer => {
+                let type = '',
+                    name = fixer.getName();
+                const desc = fixer.description()
+                    .replace(/(?![^\n]{1,73}$)([^\n]{1,73})\s/g, '$1\n'); // wrap at 73 chars
+
+                if (fixer.runsFixers()) {
+                    name = chalk.hex('#60A5FA')(name);
+                    type = chalk.hex('#60A5FA')('multi');
+                }
+
+                if (fixer.isRisky()) {
+                    name = chalk.hex('#FCA5A5')(name);
+                    type = chalk.hex('#FCA5A5')('risky');
+                }
+
+                table.push([name, type, desc]);
+            });
+
+        this.printTable(table);
     }
 
     public static printRepositoryIssues(repo: Repository) {

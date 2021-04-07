@@ -7,6 +7,10 @@ import { Fixer } from './Fixer';
 export class FileDoesNotMatchFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_DOES_NOT_MATCH];
 
+    public description() {
+        return 'overwrite a file with the skeleton version to force an exact match.';
+    }
+
     public isRisky(): boolean {
         return true;
     }

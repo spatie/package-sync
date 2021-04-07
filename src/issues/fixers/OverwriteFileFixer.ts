@@ -1,14 +1,16 @@
 /* eslint-disable no-unused-vars */
 
-import { existsSync, writeFileSync } from 'fs';
-import { basename } from 'path';
+import { existsSync } from 'fs';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { File } from '../../lib/File';
 import { Fixer } from './Fixer';
-import { classOf } from '../../lib/helpers';
 
 export class OverwriteFileFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
+
+    public description() {
+        return 'overwrites an existing file with a newer version from the skeleton.';
+    }
 
     public isRisky(): boolean {
         return true;
@@ -21,18 +23,14 @@ export class OverwriteFileFixer extends Fixer {
 
         const relativeFn: string = this.issue.srcFile?.relativeName ?? this.issue.name;
 
-        console.log(`* action: copy file '${relativeFn}' into '${basename(this.issue.repository.path)}'`);
-
         if (existsSync(`${this.issue.repository.path}/${relativeFn}`)) {
-            const data = File.read(`${this.issue.skeleton.path}/${relativeFn}`)
-                .processTemplate(basename(this.issue.repository.path));
+            const file = File.read(`${this.issue.skeleton.path}/${relativeFn}`);
 
-            writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
+            file.setContents(file.processTemplate(this.issue.repository.name))
+                .saveAs(`${this.issue.repository.path}/${relativeFn}`);
 
-            this.issue
-                .resolve(classOf(this)
-                    .prettyName())
-                .addResolvedNote(`overwrite file '${relativeFn}' with version from '${this.issue.skeleton.name}'`);
+            this.issue.resolve(this)
+                .addResolvedNote(`overwrite file '${relativeFn}' with latest`);
         }
 
         return true;

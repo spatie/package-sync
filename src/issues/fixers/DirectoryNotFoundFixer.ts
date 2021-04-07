@@ -7,6 +7,10 @@ import Fixer from './Fixer';
 export class DirectoryNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND];
 
+    public description() {
+        return 'creates a missing directory';
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix()) {
             return false;

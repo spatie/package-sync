@@ -8,6 +8,10 @@ import { RepositoryIssue } from '../RepositoryIssue';
 export class GitFileFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED, ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
+    public description() {
+        return 'merges the contents of both the skeleton and package versions of a file.';
+    }
+
     public isRisky(): boolean {
         return true;
     }

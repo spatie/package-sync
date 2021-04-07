@@ -11,6 +11,10 @@ const util = require('util');
 export class FileIsNotSimilarEnoughFixer extends Fixer {
     public static handles = []; //ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
+    public description() {
+        return 'file is out of sync with the skeleton version and user action is required.';
+    }
+
     public async promptUser(fixers: string[]) {
         const rl = readline.createInterface({
             input: process.stdin,
@@ -42,9 +46,6 @@ export class FileIsNotSimilarEnoughFixer extends Fixer {
                     .addResolvedNote('rejected running more fixers');
 
                 this.issue.disableFixers();
-
-                //this.issue.availableFixers.splice(0, this.issue.availableFixers.length);
-
                 return;
             }
 

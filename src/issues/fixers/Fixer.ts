@@ -14,6 +14,10 @@ export class Fixer {
         //
     }
 
+    description() {
+        return '';
+    }
+
     getName() {
         return this.getClass()
             .prettyName();

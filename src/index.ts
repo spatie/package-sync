@@ -14,6 +14,7 @@ yargs(process.argv.slice(2))
     .command(loadCommand(require('./commands/Fix')))
     .command(loadCommand(require('./commands/PullTemplate')))
     .command(loadCommand(require('./commands/PullPackage')))
+    .command(loadCommand(require('./commands/ListFixers')))
     .demandCommand()
     .help()
     .wrap(120).argv;

@@ -7,6 +7,10 @@ import { Fixer } from './Fixer';
 export class PackageNotUsedFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED];
 
+    public description() {
+        return "adds a dependency to the package's composer.json file.";
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix()) {
             return false;
@@ -17,14 +21,13 @@ export class PackageNotUsedFixer extends Fixer {
         this.issue.repository.composer.addPackage(pkg)
             .save();
 
-        this.issue.resolve(classOf(this)
-            .prettyName())
+        this.issue.resolve(this)
             .addResolvedNote(`added package dependency '${this.issue.name}'`);
 
         return true;
     }
 
     public static prettyName(): string {
-        return 'install-dep';
+        return 'add-dep';
     }
 }

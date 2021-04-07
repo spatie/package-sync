@@ -5,6 +5,10 @@ import { Fixer } from './Fixer';
 export class PackageScriptNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND];
 
+    public description() {
+        return "adds a missing composer script to the package's composer.json file.";
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix()) {
             return false;

@@ -9,6 +9,10 @@ import { Fixer } from './Fixer';
 export class FileNotFoundFixer extends Fixer {
     public static handles = [ComparisonKind.FILE_NOT_FOUND];
 
+    public description() {
+        return 'copies a file from the skeleton repository into the package repository.';
+    }
+
     public fix(): boolean {
         if (!this.shouldPerformFix()) {
             return false;
@@ -17,10 +21,10 @@ export class FileNotFoundFixer extends Fixer {
         const relativeFn: string = this.issue.srcFile?.relativeName ?? this.issue.name;
 
         if (!existsSync(`${this.issue.repository.path}/${relativeFn}`)) {
-            const data = File.read(`${this.issue.skeleton.path}/${relativeFn}`)
-                .processTemplate(basename(this.issue.repository.path));
+            const file = File.read(`${this.issue.skeleton.path}/${relativeFn}`);
 
-            writeFileSync(`${this.issue.repository.path}/${relativeFn}`, data, { encoding: 'utf-8' });
+            file.setContents(file.processTemplate(this.issue.repository.name))
+                .saveAs(`${this.issue.repository.path}/${relativeFn}`);
         }
 
         this.issue.resolve(this)

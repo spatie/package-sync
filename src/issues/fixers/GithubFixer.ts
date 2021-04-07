@@ -9,6 +9,10 @@ import { FileNotFoundFixer } from './FileNotFoundFixer';
 export class GithubFixer extends Fixer {
     public static handles = [ComparisonKind.DIRECTORY_NOT_FOUND, ComparisonKind.FILE_NOT_FOUND];
 
+    public description() {
+        return `recreates all missing directories and files under the '.github' directory.`;
+    }
+
     public runsFixers(): boolean {
         return true;
     }
@@ -19,10 +23,6 @@ export class GithubFixer extends Fixer {
 
     public static canFix(issue: RepositoryIssue): boolean {
         if (!super.canFix(issue)) {
-            return false;
-        }
-
-        if (issue.availableFixers.includes('user-review')) {
             return false;
         }
 
