@@ -39,15 +39,16 @@ See the configuration file comments for more information on the various options.
 
 After running an analysis, you'll see a list of issues discovered with the package repository and the fixes available for each issue _(not all issues have automated fixes available)_.  Issues include out-of-sync files, missing composer dependencies, required version updates, missing files and more.
 
-Analyze the `spatie/regex` package using the `spatie/package-skeleton-php` repository as a template:
+Analyze the `spatie/array-to-xml` package using the `spatie/package-skeleton-php` repository as a template:
 
 ```bash
-./dist/package-sync analyze regex
+./dist/package-sync analyze array-to-xml
 ```
 
-You should see something similar to the following:
+You will see something similar to the following:
 
-![image](https://user-images.githubusercontent.com/5508707/113916224-bd89e780-97ad-11eb-91f4-dee813cf1807.png)
+![image](https://user-images.githubusercontent.com/5508707/113942438-c808a900-97ce-11eb-8546-4d160ccd3e58.png)
+
 
 Fixers are color-coded:
 
