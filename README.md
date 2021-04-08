@@ -72,16 +72,26 @@ Analyze the `spatie/array-to-xml` package using the `spatie/package-skeleton-php
 ./dist/package-sync analyze array-to-xml
 ```
 
-You will see something similar to the following:
-
 ![image](https://user-images.githubusercontent.com/5508707/113942438-c808a900-97ce-11eb-8546-4d160ccd3e58.png)
-
 
 Fixers are color-coded:
 
 - `green`: considered safe to run without major file changes
 - `blue`: 'multi' fixers run safe fixers on groups of related files _(such as all psalm-related files, etc.)_
 - `red`: considered risky - these fixers make _(possibly significant)_ modifications to existing files
+
+#### Issue Scores
+
+The values in the `score` column indicate how similar the package copy of a file is to the skeleton's copy.
+
+For decimal values, the closer to `1.0`, the more similar the files are: `0.75` means the files are somewhat similar, and `0.89` means they are very similar.
+Percentages indicate how different the files are: a value of `8.5%` would mean the files are fairly similar, differing by only that much.
+
+If an issue lists a filename but no value, the file only exists in either the skeleton or the package, but not both.
+
+Dependency version issues list a score of `major` or `minor`, indicating the part of the semver version that needs to be upgraded.
+
+Other issues not related to files, such as missing dependencies, do not have a score.
 
 ## Fixing package issues
 
