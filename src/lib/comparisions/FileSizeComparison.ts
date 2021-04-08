@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-export class FileSizePercentageComparison {
+export class FileSizeComparison {
     static create(filesize1: number, filesize2: number) {
-        return new FileSizePercentageComparison(filesize1, filesize2);
+        return new FileSizeComparison(filesize1, filesize2);
     }
 
     constructor(public filesize1: number, public filesize2: number) {
@@ -36,6 +36,6 @@ export class FileSizePercentageComparison {
     }
 }
 
-export function compareFileSizes(filesize1: number, filesize2: number): FileSizePercentageComparison {
-    return FileSizePercentageComparison.create(filesize1, filesize2);
+export function compareFileSizes(filesize1: number, filesize2: number): FileSizeComparison {
+    return FileSizeComparison.create(filesize1, filesize2);
 }
