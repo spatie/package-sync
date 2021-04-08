@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { basename } from 'path';
-import { app } from '../Application';
+import { config } from '../Configuration';
 import { RepositoryIssue } from '../issues/RepositoryIssue';
-import { Composer, ComposerPackage } from './composer/Composer';
+import { Composer } from './composer/Composer';
 import { getFileList } from './helpers';
 import { RepositoryFile } from './RepositoryFile';
 
@@ -59,7 +59,7 @@ export class Repository {
         const result: RepositoryFile[] = [];
 
         getFileList(directory, basePath, true)
-            .filter(fn => !app.shouldIgnoreFile(fn.replace(`${basePath}/`, '')))
+            .filter(fn => !config.shouldIgnoreFile(fn.replace(`${basePath}/`, '')))
             .forEach(fqName => {
                 const rfile = new RepositoryFile(this, fqName);
                 const relativeName = basePath ? fqName.replace(`${basePath}/`, '') : fqName;
@@ -67,9 +67,9 @@ export class Repository {
                 if (!result.find(item => item.relativeName === relativeName)) {
                     result.push(
                         rfile.withOptions(
-                            app.shouldIgnoreFile(relativeName),
-                            rfile.isFile() && app.shouldCompareFile(fqName),
-                            app.getFileScoreRequirements(fqName),
+                            config.shouldIgnoreFile(relativeName),
+                            rfile.isFile() && config.shouldCompareFile(fqName),
+                            config.getFileScoreRequirements(fqName),
                         ),
                     );
 

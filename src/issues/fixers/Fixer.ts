@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-//import { app } from '../../Application';
 import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { RepositoryIssue } from '../RepositoryIssue';

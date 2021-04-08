@@ -2,8 +2,13 @@ import { readFileSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { PackageIssue } from './issues/PackageIssue';
 import { ScoreRequirements } from './types/ScoreRequirements';
+import { FileScoreRequirements } from './types/FileScoreRequirements';
+import { sep, basename } from 'path';
+//import { RepositoryIssue } from './issues/RepositoryIssue';
+import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 
 const yaml = require('js-yaml');
+const micromatch = require('micromatch');
 
 export interface ConfigurationRecord {
     fixers: {
@@ -82,6 +87,44 @@ export class Configuration {
 
     public packagePath(packageName: string): string {
         return `${this.conf.paths.packages}/${packageName}`;
+    }
+
+    public shouldIgnoreFile(fn: string): boolean {
+        return (
+            micromatch.isMatch(fn, config.conf.ignoreNames) ||
+            micromatch.isMatch(fn.replace(process.cwd() + sep, ''), config.conf.ignoreNames)
+        );
+    }
+
+    public shouldIgnoreIssue(issue: any): boolean {
+        if (typeof config.conf.issues.ignored[issue.kind] !== 'undefined') {
+            return micromatch.isMatch(issue.name, config.conf.issues.ignored[issue.kind]);
+        }
+
+        return false;
+    }
+
+    public shouldCompareFile(fn: string): boolean {
+        return !config.conf.skipComparisons.includes(basename(fn));
+    }
+
+    public getSimilarScoreRequirement(fn: string): number {
+        const reqs = config.conf.scoreRequirements;
+
+        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
+    }
+
+    public getMaxAllowedSizeDifferenceScore(fn: string): number {
+        const reqs = config.conf.scoreRequirements;
+
+        return reqs.files.find(req => req.name === basename(fn))?.scores?.size ?? reqs.defaults.size;
+    }
+
+    public getFileScoreRequirements(fn: string): ComparisonScoreRequirements {
+        return {
+            similar: this.getSimilarScoreRequirement(fn),
+            size: this.getMaxAllowedSizeDifferenceScore(fn),
+        };
     }
 }
 

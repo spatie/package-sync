@@ -5,12 +5,9 @@ config:
     packages: '{{__dirname}}/temp/spatie/packages'
 
   fixers:
-    # list of disabled issue fixer names; items can be either a name of a fixer or a wildcard match,
-    # such as 'File*', which would disable all fixers starting with 'File'.
-    # names must be the classname, with or without the suffix 'Fixer', so 'Blah' is the same as 'BlahFixer'.
+    # list of disabled fixer names; items can be either a name of a fixer or a wildcard match.
     disabled:
-#      - GitFile
-#      - FileDoesNotMatch
+      - rewrite-file
 
   issues:
     ignored:

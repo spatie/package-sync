@@ -21,7 +21,6 @@ export class ConsolePrinter {
                 border: [], //disable colors for the border
             },
             colWidths: Object.values(columns),
-            //rowHeights: Object.keys(columns).map(c => { return 2; }),
         });
 
         Object.values(columns)

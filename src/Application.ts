@@ -1,18 +1,16 @@
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
-import { basename, sep } from 'path';
+import { sep } from 'path';
 import { ComparisonKind } from './types/FileComparisonResult';
-import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { config, Configuration } from './Configuration';
-import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { Repository, RepositoryKind } from './lib/Repository';
 import { RepositoryIssue } from './issues/RepositoryIssue';
-import { FixerManager } from './issues/FixerManager';
 import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './lib/RepositoryFile';
 import { RepositoryValidator } from './lib/RepositoryValidator';
+import { FixerRepository } from './issues/FixerRepository';
 
 const micromatch = require('micromatch');
 
@@ -40,14 +38,6 @@ export class Application {
         }
     }
 
-    public templatePath(templateName: string): string {
-        return this.configuration.templatePath(templateName);
-    }
-
-    public packagePath(packageName: string): string {
-        return this.configuration.packagePath(packageName);
-    }
-
     public shouldIgnoreFile(fn: string): boolean {
         return (
             micromatch.isMatch(fn, this.config.ignoreNames) || // || micromatch.contains(fn, this.config.ignoreNames);
@@ -61,29 +51,6 @@ export class Application {
         }
 
         return false;
-    }
-
-    public shouldCompareFile(fn: string): boolean {
-        return !this.config.skipComparisons.includes(basename(fn));
-    }
-
-    public getSimilarScoreRequirement(fn: string): number {
-        const reqs = this.config.scoreRequirements;
-
-        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
-    }
-
-    public getMaxAllowedSizeDifferenceScore(fn: string): number {
-        const reqs = this.config.scoreRequirements;
-
-        return reqs.files.find(req => req.name === basename(fn))?.scores?.size ?? reqs.defaults.size;
-    }
-
-    public getFileScoreRequirements(fn: string): ComparisonScoreRequirements {
-        return {
-            similar: this.getSimilarScoreRequirement(fn),
-            size: this.getMaxAllowedSizeDifferenceScore(fn),
-        };
     }
 
     performStringComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
@@ -177,8 +144,8 @@ export class Application {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
         const templateName = this.configuration.getFullTemplateName(skeletonType);
 
-        const skeletonPath = this.templatePath(templateName);
-        const repositoryPath = this.packagePath(packageName);
+        const skeletonPath = config.templatePath(templateName);
+        const repositoryPath = config.packagePath(packageName);
         const validator = new RepositoryValidator(app.config.paths.packages, app.config.paths.templates);
 
         validator.ensurePackageExists(packageName);
@@ -194,10 +161,9 @@ export class Application {
         this.compareRepositories(skeleton, repo);
 
         repo.issues.forEach(issue => {
-            FixerManager.fixers()
+            FixerRepository.all()
                 .forEach(fixer => {
                     if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.shouldIgnoreIssue(issue)) {
-                    //issue.availableFixers.push(fixer.prettyName());
                         issue.addFixer(new fixer(issue));
                     }
                 });

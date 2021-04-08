@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 
 import { Command } from './Command';
-import { FixerManager } from '../issues/FixerManager';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { RepositoryIssue } from '../issues/RepositoryIssue';
+import { FixerRepository } from '../issues/FixerRepository';
 
 export default class ListFixersCommand extends Command {
     public static command = 'fixers';
@@ -14,7 +14,7 @@ export default class ListFixersCommand extends Command {
     public static options = [];
 
     static handle(): void {
-        const fixers = FixerManager.fixers()
+        const fixers = FixerRepository.all()
             .map(fixer => new fixer(<RepositoryIssue>(<unknown>null)));
 
         ConsolePrinter.printFixerSummary(fixers);
