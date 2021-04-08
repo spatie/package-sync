@@ -25,13 +25,16 @@ You can install this application using npm:
 ```bash
 npm install package-sync-cli
 
-./node_modules/.bin/package-sync
+./node_modules/.bin/package-sync analyze array-to-xml
 ```
 
 or run using `npx`:
 
 ```bash
-npx package-sync-cli
+npx package-sync-cli analyze array-to-xml
+
+# with a specific config file
+npx package-sync-cli --config myconfig.yml analyze array-to-xml
 ```
 
 ## Local Setup
