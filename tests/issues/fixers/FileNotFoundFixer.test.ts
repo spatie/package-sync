@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import { existsSync, unlinkSync } from 'fs';
-import { FileNotFoundFixer } from '../../../src/issues/fixers/FileNotFoundFixer';
+import { FileNotFoundFixer } from '../../../src/fixers/FileNotFoundFixer';
 import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
 import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
 import { ComparisonKind } from '../../../src/types/FileComparisonResult';

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
 export class PackageNotUsedFixer extends Fixer {

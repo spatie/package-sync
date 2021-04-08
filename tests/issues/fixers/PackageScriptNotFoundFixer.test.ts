@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import { PackageScriptNotFoundFixer } from '../../../src/issues/fixers/PackageScriptNotFoundFixer';
+import { PackageScriptNotFoundFixer } from '../../../src/fixers/PackageScriptNotFoundFixer';
 import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
 import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
 import { ComparisonKind } from '../../../src/types/FileComparisonResult';

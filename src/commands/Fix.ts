@@ -2,7 +2,7 @@
 
 import { app } from '../Application';
 import { Command, createOption } from './Command';
-import { FixerManager } from '../issues/FixerManager';
+import { FixerManager } from '../fixers/FixerManager';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { matches } from '../lib/helpers';
 

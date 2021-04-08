@@ -9,7 +9,7 @@ import { RepositoryIssue } from './repositories/RepositoryIssue';
 import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './repositories/RepositoryFile';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
-import { FixerRepository } from './issues/FixerRepository';
+import { FixerRepository } from './fixers/FixerRepository';
 
 export class Application {
     public configuration: Configuration;

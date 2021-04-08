@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import { ComparisonKind } from '../../types/FileComparisonResult';
-import { File } from '../../lib/File';
+import { ComparisonKind } from '../types/FileComparisonResult';
+import { File } from '../lib/File';
 import { Fixer } from './Fixer';
 
 export class FileDoesNotMatchFixer extends Fixer {

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { mkdirSync } from 'fs';
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import Fixer from './Fixer';
 
 export class DirectoryNotFoundFixer extends Fixer {

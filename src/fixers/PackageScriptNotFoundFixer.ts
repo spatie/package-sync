@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
 export class PackageScriptNotFoundFixer extends Fixer {

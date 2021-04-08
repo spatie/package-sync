@@ -3,7 +3,7 @@ import { Repository } from '../repositories/Repository';
 
 import Table from 'cli-table3';
 import { ComparisonKind } from '../types/FileComparisonResult';
-import Fixer from '../issues/fixers/Fixer';
+import Fixer from '../fixers/Fixer';
 
 const chalk = require('chalk');
 

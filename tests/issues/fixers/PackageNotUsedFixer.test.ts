@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import { PackageNotUsedFixer } from '../../../src/issues/fixers/PackageNotUsedFixer';
+import { PackageNotUsedFixer } from '../../../src/fixers/PackageNotUsedFixer';
 import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
 import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
 import { ComparisonKind } from '../../../src/types/FileComparisonResult';

@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
-import { RepositoryIssue } from '../../repositories/RepositoryIssue';
-import { classOf } from '../../lib/helpers';
+import { RepositoryIssue } from '../repositories/RepositoryIssue';
+import { classOf } from '../lib/helpers';
 
 export class OptionalPackagesFixer extends Fixer {
     public static handles = [ComparisonKind.PACKAGE_NOT_USED, ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND];

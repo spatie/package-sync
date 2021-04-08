@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { classOf } from '../../lib/helpers';
+import { classOf } from '../lib/helpers';
 import { Fixer } from './Fixer';
 
 const readline = require('readline');

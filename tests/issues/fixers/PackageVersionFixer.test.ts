@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import { PackageVersionFixer } from '../../../src/issues/fixers/PackageVersionFixer';
+import { PackageVersionFixer } from '../../../src/fixers/PackageVersionFixer';
 import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
 import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
 import { ComparisonKind } from '../../../src/types/FileComparisonResult';

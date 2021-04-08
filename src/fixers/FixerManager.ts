@@ -3,7 +3,7 @@
 
 import { config } from '../Configuration';
 import { matches, uniqueArray } from '../lib/helpers';
-import { Fixer } from './fixers/Fixer';
+import { Fixer } from './Fixer';
 import { FixerRepository } from './FixerRepository';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { uniqueArray } from '../../lib/helpers';
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { uniqueArray } from '../lib/helpers';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 
 const semver = require('semver');

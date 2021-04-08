@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-import { classOf } from '../../lib/helpers';
-import { ComparisonKind } from '../../types/FileComparisonResult';
-import { RepositoryIssue } from '../../repositories/RepositoryIssue';
+import { classOf } from '../lib/helpers';
+import { ComparisonKind } from '../types/FileComparisonResult';
+import { RepositoryIssue } from '../repositories/RepositoryIssue';
 
 export class Fixer {
     public enabled = true;

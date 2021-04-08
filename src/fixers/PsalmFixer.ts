@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
-import { ComparisonKind } from '../../types/FileComparisonResult';
+import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
-import { RepositoryIssue } from '../../repositories/RepositoryIssue';
+import { RepositoryIssue } from '../repositories/RepositoryIssue';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
 import { PackageScriptNotFoundFixer } from './PackageScriptNotFoundFixer';
 import { PackageNotUsedFixer } from './PackageNotUsedFixer';

@@ -3,7 +3,7 @@
 import { Command } from './Command';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';
-import { FixerRepository } from '../issues/FixerRepository';
+import { FixerRepository } from '../fixers/FixerRepository';
 
 export default class ListFixersCommand extends Command {
     public static command = 'fixers';
