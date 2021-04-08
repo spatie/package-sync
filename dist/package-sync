@@ -5,8 +5,8 @@ THISDIR=$(dirname $THISFILE)
 NODE=$(which node)
 
 # support for being run with npx or npm
-if [ -f "$THISDIR/../package-sync/dist/package-sync.js" ]; then
-    $NODE "$THISDIR/../package-sync/dist/package-sync.js" $*
+if [ -f "$THISDIR/../package-sync-cli/dist/package-sync.js" ]; then
+    $NODE "$THISDIR/../package-sync-cli/dist/package-sync.js" $*
     exit $?
 fi
 
