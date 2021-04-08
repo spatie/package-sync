@@ -1,6 +1,6 @@
 {
     "name": "pkg-sync",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "keep package repositories in sync with a master template repository",
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",
