@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { sep } from 'path';
+
 import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';

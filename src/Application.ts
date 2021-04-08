@@ -11,7 +11,6 @@ import { RepositoryFile } from './repositories/RepositoryFile';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
 import { FixerRepository } from './fixers/FixerRepository';
 import { matches } from './lib/helpers';
-import { sep } from 'path';
 
 export class Application {
     public configuration: Configuration;
