@@ -10,14 +10,10 @@ it('gets the class of a fixer based on its name', () => {
         FixerManager.getFixerClass(DirectoryNotFoundFixer.prettyName()),
     ];
 
-    expect(fixers[0])
-        .toBe(FileNotFoundFixer);
-    expect(fixers[1])
-        .toBe(DirectoryNotFoundFixer);
-    expect(FixerManager.getFixerClass('missing'))
-        .toBeNull();
-    expect(FixerManager.getFixerClass(''))
-        .toBeNull();
+    expect(fixers[0]).toBe(FileNotFoundFixer);
+    expect(fixers[1]).toBe(DirectoryNotFoundFixer);
+    expect(FixerManager.getFixerClass('missing')).toBeNull();
+    expect(FixerManager.getFixerClass('')).toBeNull();
 });
 
 it('correctly checks if a fixer is disabled', () => {
@@ -26,8 +22,6 @@ it('correctly checks if a fixer is disabled', () => {
 
     const fm = new FixerManager(config);
 
-    expect(fm.isFixerDisabled(FileNotFoundFixer))
-        .toBeTruthy();
-    expect(fm.isFixerDisabled(DirectoryNotFoundFixer))
-        .toBeFalsy();
+    expect(fm.isFixerDisabled(FileNotFoundFixer)).toBeTruthy();
+    expect(fm.isFixerDisabled(DirectoryNotFoundFixer)).toBeFalsy();
 });
