@@ -37,6 +37,10 @@ npx package-sync-cli analyze array-to-xml
 npx package-sync-cli --config myconfig.yml analyze array-to-xml
 ```
 
+## Standalone releases
+
+Each release also has a standalone version released as an archive that can be extracted and run without the need for `npm`, `npx`, or `git clone`.  See the [latest release](https://github.com/spatie/package-sync/releases/latest) to download the most recent standalone version.
+
 ## Local Setup
 
 If you instead prefer to clone the repository, clone with `git clone` and then run:
