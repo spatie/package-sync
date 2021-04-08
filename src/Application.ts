@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
-import { sep } from 'path';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { config, Configuration } from './Configuration';
@@ -11,8 +10,6 @@ import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './lib/RepositoryFile';
 import { RepositoryValidator } from './lib/RepositoryValidator';
 import { FixerRepository } from './issues/FixerRepository';
-
-const micromatch = require('micromatch');
 
 export class Application {
     public configuration: Configuration;
