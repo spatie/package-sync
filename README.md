@@ -60,6 +60,8 @@ You can use the placeholder `{{__dirname}}` in the values of either setting and 
 
 To configure the github user/organization name packages are pulled from, set the `config.packages.vendor` key.
 
+> Not maintaining Spatie packages? make sure to customize the `config.packages.email` and `config.packages.homepage` properties.
+
 See the configuration file comments for more information on the various options.
 
 ## Analyzing packages
