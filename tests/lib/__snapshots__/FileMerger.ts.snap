@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`merges two text files together 1`] = `
+"one
+abc
+two
+def"
+`;
