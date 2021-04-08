@@ -1,32 +1,44 @@
 /* eslint-disable no-undef */
 
-// import { basename } from 'path';
-// //import { Application } from '../src/Application';
-// import { Repository, RepositoryKind } from '../src/lib/Repository';
-// import { RepositoryFile } from '../src/lib/RepositoryFile';
+import { Application } from '../src/Application';
+import { Configuration } from '../src/Configuration';
+import { Repository, RepositoryKind } from '../src/repositories/Repository';
+import { RepositoryFile } from '../src/repositories/RepositoryFile';
+import { ComparisonKind } from '../src/types/FileComparisonResult';
 
-// it('compares a package repository and a skeleton repository', () => {
-//     const skeleton = Repository.create(__dirname+'/data/test-skeleton', RepositoryKind.SKELETON);
-//     const repo = Repository.create(__dirname+'/data/test-package', RepositoryKind.PACKAGE);
+let conf: Configuration, app: Application, skeleton: Repository, repo: Repository;
 
-//     skeleton.fileList = <RepositoryFile[]>skeleton.files.map(f => RepositoryFile.create(f.relativeName, '--'));
-//     skeleton.composer.fromJson(skeleton.composer.toJson().replace(new RegExp(process.cwd(), 'g'), ''));
-//     skeleton.composer.filename = basename(skeleton.composer.filename);
-//     skeleton.path = basename(skeleton.path);
+beforeEach(() => {
+    conf = new Configuration(__dirname + '/../data/index.yml');
+    app = new Application(conf);
 
-//     repo.fileList = <RepositoryFile[]>repo.files.map(f => RepositoryFile.create(f.relativeName, '--'));
-//     repo.composer.fromJson(repo.composer.toJson().replace(new RegExp(process.cwd(), 'g'), ''));
-//     repo.composer.filename = basename(repo.composer.filename);
-//     repo.path = basename(repo.path);
+    skeleton = Repository.create(__dirname + '/data/test-skeleton', RepositoryKind.SKELETON);
+    repo = Repository.create(__dirname + '/data/test-package-2', RepositoryKind.PACKAGE);
 
-//     //app.compareRepositories(skeleton, repo)
-
-//     //expect(repo).toMatchSnapshot();
-
-// });
-
-it('does nothing', () => {
-    expect(1).toBe(1);
+    skeleton.loadFiles();
+    repo.loadFiles();
 });
 
-export {};
+it('performs a file exists comparison', () => {
+    const file = <RepositoryFile>skeleton.getFile('testfile1.txt');
+    const result = app.performFileExistsComparison(skeleton, repo, file);
+
+    expect(result)
+        .toBeTruthy();
+    expect(repo.issues)
+        .toHaveLength(1);
+    expect(repo.issues[0].kind)
+        .toBe(ComparisonKind.FILE_NOT_FOUND);
+});
+
+it('performs a dir exists comparison', () => {
+    const file = <RepositoryFile>skeleton.getFile('SOME_DIR');
+    const result = app.performFileExistsComparison(skeleton, repo, file);
+
+    expect(result)
+        .toBeTruthy();
+    expect(repo.issues)
+        .toHaveLength(1);
+    expect(repo.issues[0].kind)
+        .toBe(ComparisonKind.DIRECTORY_NOT_FOUND);
+});

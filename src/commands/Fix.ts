@@ -47,6 +47,6 @@ export default class FixCommand extends Command {
                 allowRisky,
             );
 
-        ConsolePrinter.printRepositoryFixerResults(repo);
+        ConsolePrinter.printTable(ConsolePrinter.printRepositoryFixerResults(repo));
     }
 }

@@ -4,6 +4,7 @@ import { ScoreRequirements } from './types/ScoreRequirements';
 import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { sep, basename } from 'path';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
+import { existsSync } from 'fs';
 
 const yaml = require('js-yaml');
 const micromatch = require('micromatch');
@@ -39,6 +40,41 @@ export interface ConfigurationRecord {
     };
 }
 
+const defaultConfig = {
+    fixers: {
+        disabled: [],
+    },
+    scoreRequirements: {
+        defaults: {
+            similar: 0.5,
+            size: 20,
+        },
+        files: [],
+    },
+    ignoreNames: [],
+    skipComparisons: [],
+    paths: {
+        templates: `${__dirname}/templates`,
+        packages: `${__dirname}/packages`,
+    },
+    templates: {
+        vendor: 'spatie',
+        names: ['package-skeleton-php', 'package-skeleton-laravel'],
+    },
+    issues: {
+        ignored: {
+            [ComparisonKind.DIRECTORY_NOT_FOUND]: [],
+            [ComparisonKind.DIRECTORY_NOT_IN_SKELETON]: [],
+            [ComparisonKind.FILE_DOES_NOT_MATCH]: [],
+            [ComparisonKind.FILE_NOT_IN_SKELETON]: [],
+            [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH]: [],
+            [ComparisonKind.PACKAGE_NOT_USED]: [],
+            [ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND]: [],
+            [ComparisonKind.PACKAGE_VERSION_MISMATCH]: [],
+        },
+    },
+};
+
 export class Configuration {
     public conf: ConfigurationRecord;
     public filename: string;
@@ -57,6 +93,10 @@ export class Configuration {
     }
 
     public loadConfigurationFile(filename: string) {
+        if (!existsSync(filename)) {
+            return { config: defaultConfig };
+        }
+
         const content = readFileSync(filename, { encoding: 'utf-8' })
             .replace(/\{\{__dirname\}\}/g, __dirname);
 

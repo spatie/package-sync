@@ -15,8 +15,12 @@ import { matches } from './lib/helpers';
 export class Application {
     public configuration: Configuration;
 
-    constructor() {
-        this.configuration = config;
+    constructor(configuration: Configuration | null = null) {
+        this.configuration = configuration ?? config;
+
+        if (typeof config === 'undefined') {
+            new Configuration();
+        }
 
         this.ensureStoragePathsExist();
     }

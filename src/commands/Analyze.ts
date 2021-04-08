@@ -16,6 +16,6 @@ export default class AnalyzeCommand extends Command {
     static handle(argv: any): void {
         const { repo } = app.analyzePackage(argv.packageName);
 
-        ConsolePrinter.printRepositoryIssues(repo);
+        ConsolePrinter.printTable(ConsolePrinter.printRepositoryIssues(repo));
     }
 }
