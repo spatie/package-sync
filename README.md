@@ -54,15 +54,15 @@ You will see something similar to the following:
 
 Fixers are color-coded:
 
-- `green`: considered safe to run automatically
-- `blue`: considered 'multi' fixers, these apply to groups of related files
+- `green`: considered safe to run without major file changes
+- `blue`: 'multi' fixers run safe fixers on groups of related files _(such as all psalm-related files, etc.)_
 - `red`: considered risky - these fixers make _(possibly significant)_ modifications to existing files
 
 ## Fixing package issues
 
 Issues are resolved by `fixers`, which are utilities that perform a various action, such as copying a missing file from the skeleton to the package repository.  The available fixers for an issue are listed in the output of the `analyze` command. 
 
-> If there are multiple fixers listed for an issue, the first one is when running `fix`.
+> If there are multiple fixers listed for an issue, the first one is used when running `fix`.
 
 Some fixers are considered "risky" - meaning they modify existing files.  By default, these fixers will not run automatically when running the `fix` command.  In order to permit risky fixers to run, you must call `fix` with the `--risky` flag.
 
@@ -122,7 +122,6 @@ Apply a specific fixer to a specific file:
 | `psalm` | multi  | creates all missing psalm-related files and installs all psalm composer scripts and dependencies. |
 | `rewrite-file` | risky  | overwrites an existing file with a newer version from the skeleton. |
 | `skip-dep` | | skips the installation of a dependency. |
-| `user-review` | | file is out of sync with the skeleton version and user action is required. |
 
 ## Manually pulling repositories
 
@@ -142,7 +141,10 @@ You can manually update your local copy of either a skeleton or package git repo
 ```
 
 ```bash
+# pull the spatie/array-to-xml package repo
 ./dist/package-sync pull-package array-to-xml
+
+# pull spatie/laravel-sluggable
 ./dist/package-sync pull-package laravel-sluggable
 ```
 
@@ -160,7 +162,9 @@ You can manually update your local copy of either a skeleton or package git repo
 
 `package-sync` uses Jest for unit tests.  To run the test suite:
 
-`npm run test`
+```bash
+npm run test
+```
 
 ---
 
