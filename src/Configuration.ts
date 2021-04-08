@@ -44,6 +44,8 @@ export interface ConfigurationRecord {
 
     packages: {
         vendor: string;
+        email: string;
+        homepage: string;
     };
 
     issues: {

@@ -24,7 +24,9 @@ config:
       
   packages:
     vendor: spatie
-    
+    email: freek@spatie.be
+    homepage: https://spatie.be/open-source/support-us
+
   scoreRequirements:
     defaults:
       similar: 0.75

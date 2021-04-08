@@ -30,6 +30,8 @@ config:
 
   packages:
     vendor: spatie
+    email: freek@spatie.be
+    homepage: https://spatie.be/open-source/support-us
     
   templates:
     # github organization name
