@@ -4,6 +4,7 @@
 /.vscode
 /dist/temp
 /node_modules
+/scripts
 /src
 /tests
 .gitattributes
