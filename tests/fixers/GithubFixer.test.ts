@@ -4,7 +4,7 @@ import { GithubFixer } from '../../src/fixers/GithubFixer';
 import { RepositoryIssue } from '../../src/repositories/RepositoryIssue';
 import { Repository, RepositoryKind } from '../../src/repositories/Repository';
 import { ComparisonKind } from '../../src/types/FileComparisonResult';
-import { rmSync } from 'fs';
+import { rmdirSync, rmSync } from 'fs';
 
 let skeleton: Repository, repo: Repository, issues: RepositoryIssue[], fixers: GithubFixer[];
 
@@ -29,17 +29,27 @@ beforeEach(() => {
 });
 
 it('creates a missing .github directory and files', () => {
-    expect(repo.getFile('.github')).toBeNull();
-    expect(fixers[0].fix()).toBeTruthy();
+    expect(repo.getFile('.github'))
+        .toBeNull();
+    expect(fixers[0].fix())
+        .toBeTruthy();
     repo.loadFiles();
     expect(repo.getFile('.github')).not.toBeNull();
 
-    expect(repo.getFile('.github/some-config-file.yml')).toBeNull();
-    expect(fixers[1].fix()).toBeTruthy();
+    expect(repo.getFile('.github/some-config-file.yml'))
+        .toBeNull();
+    expect(fixers[1].fix())
+        .toBeTruthy();
     repo.loadFiles();
     expect(repo.getFile('.github/some-config-file.yml')).not.toBeNull();
 
-    rmSync(`${repo.path}/.github`, { force: true, recursive: true, maxRetries: 3, retryDelay: 50 });
+    if (process.version.startsWith('v12') || process.version.startsWith('12')) {
+        repo.getFile('.github/some-config-file.yml')
+            ?.delete();
+        rmdirSync(`${repo.path}/.github`, { recursive: true, maxRetries: 3, retryDelay: 50 });
+    } else {
+        rmSync(`${repo.path}/.github`, { force: true, recursive: true, maxRetries: 3, retryDelay: 50 });
+    }
 });
 
 it("doesn't create a .github directory or files if the issue is resolved", () => {
@@ -48,8 +58,11 @@ it("doesn't create a .github directory or files if the issue is resolved", () =>
 
     issue.resolve('test');
 
-    expect(repo.getFile('.github')).toBeNull();
-    expect(fixer.fix()).toBeFalsy();
+    expect(repo.getFile('.github'))
+        .toBeNull();
+    expect(fixer.fix())
+        .toBeFalsy();
     repo.loadFiles();
-    expect(repo.getFile('.github')).toBeNull();
+    expect(repo.getFile('.github'))
+        .toBeNull();
 });
