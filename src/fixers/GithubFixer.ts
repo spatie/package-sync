@@ -26,7 +26,7 @@ export class GithubFixer extends Fixer {
             return false;
         }
 
-        if (!issue.name.startsWith('.github' + sep)) {
+        if (!issue.name.startsWith('.github')) {
             return false;
         }
 
