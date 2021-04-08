@@ -29,6 +29,7 @@
         "fix": "npm run fmt && ./node_modules/.bin/concurrently npm:lint:fix npm:lint:fix-tests",
         "build:dev": "node scripts/build.js --development",
         "build:prod": "node scripts/build.js --production",
+        "build:verify": "./scripts/verify-build.sh",
         "dev": "npm run build:dev && node dist/package-sync.js",
         "prepare": "is-ci || husky install",
         "check:circular": "npx madge --circular --extensions ts ./src",
