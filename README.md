@@ -4,6 +4,8 @@
 
 # package-sync
 
+![version](https://shields.io/npm/v/package-sync-cli) ![Run Tests](https://github.com/spatie/package-sync/actions/workflows/run-tests.yml/badge.svg)
+
 ---
 
 `package-sync` helps package repository maintainers keep their package files and settings in sync with a skeleton/template repository.
