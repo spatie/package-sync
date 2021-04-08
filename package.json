@@ -1,5 +1,5 @@
 {
-    "name": "pkg-sync",
+    "name": "package-sync-cli",
     "version": "1.0.0",
     "description": "keep package repositories in sync with a master template repository",
     "author": "Patrick Organ <patrick@permafrost.dev>",
@@ -79,7 +79,7 @@
         "yargs": "^16.0.0"
     },
     "bin": {
-        "pkg-sync": "dist/package-sync"
+        "package-sync": "dist/package-sync"
     },
     "engines": {
         "node": ">=12.0.0"
