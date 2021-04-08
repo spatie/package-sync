@@ -25,8 +25,6 @@ export class OptionalPackagesFixer extends Fixer {
             return false;
         }
 
-        console.log(`OPTIONAL PACKAGES FIXER: skipping '${this.issue.name}'`);
-
         this.issue.resolve(classOf(this)
             .prettyName())
             .addResolvedNote(`skipped '${this.issue.name}'`);
