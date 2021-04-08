@@ -38,21 +38,6 @@ export class Application {
         }
     }
 
-    public shouldIgnoreFile(fn: string): boolean {
-        return (
-            micromatch.isMatch(fn, this.config.ignoreNames) || // || micromatch.contains(fn, this.config.ignoreNames);
-            micromatch.isMatch(fn.replace(process.cwd() + sep, ''), this.config.ignoreNames)
-        );
-    }
-
-    public shouldIgnoreIssue(issue: RepositoryIssue): boolean {
-        if (typeof this.config.issues.ignored[issue.kind] !== 'undefined') {
-            return micromatch.isMatch(issue.name, this.config.issues.ignored[issue.kind]);
-        }
-
-        return false;
-    }
-
     performStringComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
         const strComparison = Comparisons.strings(file?.processTemplate(), repoFile?.contents);
 
@@ -163,7 +148,7 @@ export class Application {
         repo.issues.forEach(issue => {
             FixerRepository.all()
                 .forEach(fixer => {
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.shouldIgnoreIssue(issue)) {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !config.shouldIgnoreIssue(issue)) {
                         issue.addFixer(new fixer(issue));
                     }
                 });
