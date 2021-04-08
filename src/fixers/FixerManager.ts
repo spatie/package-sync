@@ -1,21 +1,27 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
-import { config } from '../Configuration';
+import { config, ConfigurationRecord } from '../Configuration';
 import { matches, uniqueArray } from '../lib/helpers';
 import { Fixer } from './Fixer';
 import { FixerRepository } from './FixerRepository';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';
 
 export class FixerManager {
-    static create() {
-        return new FixerManager();
+    public config: ConfigurationRecord;
+
+    constructor(conf: ConfigurationRecord | null = null) {
+        this.config = <ConfigurationRecord>(conf ?? config);
+    }
+
+    static create(config: ConfigurationRecord | null = null) {
+        return new FixerManager(config);
     }
 
     public isFixerDisabled(fixer: any): boolean {
         // const name = Object.getOwnPropertyDescriptor(fixer, 'name')?.value ?? '';
         // const shortName = name.replace(/Fixer$/, '');
-        const disabledFixers = config.conf.fixers?.disabled ?? [];
+        const disabledFixers = this.config.fixers?.disabled ?? [];
 
         return matches(fixer.prettyName(), disabledFixers);
     }

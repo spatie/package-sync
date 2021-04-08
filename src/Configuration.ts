@@ -41,14 +41,19 @@ export interface ConfigurationRecord {
 
 export class Configuration {
     public conf: ConfigurationRecord;
+    public filename: string;
 
-    constructor() {
-        if (process.env.NODE_ENV === 'test') {
-            this.conf = this.loadConfigurationFile(process.cwd() + '/tests/data/index.yml').config;
-            return;
+    constructor(filename: string | null = null) {
+        if (filename === null) {
+            filename = __filename.replace(/\.[tj]s$/, '.yml');
+
+            if (process.env.NODE_ENV === 'test') {
+                filename = process.cwd() + '/tests/data/index.yml';
+            }
         }
 
-        this.conf = this.loadConfigurationFile(__filename.replace(/\.[tj]s$/, '.yml')).config;
+        this.filename = filename;
+        this.conf = this.loadConfigurationFile(this.filename).config;
     }
 
     public loadConfigurationFile(filename: string) {
