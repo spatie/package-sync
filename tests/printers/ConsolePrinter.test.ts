@@ -28,33 +28,27 @@ beforeEach(() => {
 });
 
 it('prints a summary of fixers', () => {
-    const output = ConsolePrinter.printFixerSummary(issue.fixers)
-        .toString()
+    const output = ConsolePrinter.printFixerSummary(issue.fixers).toString()
         .toLowerCase()
         .trim();
 
-    expect(stripAnsi(output))
-        .toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
 
 it("prints a repository's issues", () => {
-    const output = ConsolePrinter.printRepositoryIssues(repo)
-        .toString()
+    const output = ConsolePrinter.printRepositoryIssues(repo).toString()
         .toLowerCase()
         .trim();
 
-    expect(stripAnsi(output))
-        .toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
 
 it("prints repository's fixed issues", () => {
     repo.issues[0].resolve(repo.issues[0].fixers[0]);
 
-    const output = ConsolePrinter.printRepositoryFixerResults(repo)
-        .toString()
+    const output = ConsolePrinter.printRepositoryFixerResults(repo).toString()
         .toLowerCase()
         .trim();
 
-    expect(stripAnsi(output))
-        .toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
