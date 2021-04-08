@@ -1,16 +1,16 @@
 /* eslint-disable no-undef */
 
 import { existsSync, rmdirSync } from 'fs';
-import { DirectoryNotFoundFixer } from '../../../src/fixers/DirectoryNotFoundFixer';
-import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
-import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
-import { ComparisonKind } from '../../../src/types/FileComparisonResult';
+import { DirectoryNotFoundFixer } from '../../src/fixers/DirectoryNotFoundFixer';
+import { RepositoryIssue } from '../../src/repositories/RepositoryIssue';
+import { Repository, RepositoryKind } from '../../src/repositories/Repository';
+import { ComparisonKind } from '../../src/types/FileComparisonResult';
 
 let skeleton: Repository, repo: Repository, issue: RepositoryIssue, fixer: DirectoryNotFoundFixer;
 
 beforeEach(() => {
-    skeleton = Repository.create(__dirname + '/../../data/test-skeleton', RepositoryKind.SKELETON);
-    repo = Repository.create(__dirname + '/../../data/test-package', RepositoryKind.PACKAGE);
+    skeleton = Repository.create(__dirname + '/../data/test-skeleton', RepositoryKind.SKELETON);
+    repo = Repository.create(__dirname + '/../data/test-package', RepositoryKind.PACKAGE);
 
     issue = new RepositoryIssue(
         { kind: ComparisonKind.DIRECTORY_NOT_FOUND, score: 0 },

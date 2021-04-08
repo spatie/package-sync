@@ -1,15 +1,15 @@
 /* eslint-disable no-undef */
 
-import { PackageVersionFixer } from '../../../src/fixers/PackageVersionFixer';
-import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
-import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
-import { ComparisonKind } from '../../../src/types/FileComparisonResult';
+import { PackageVersionFixer } from '../../src/fixers/PackageVersionFixer';
+import { RepositoryIssue } from '../../src/repositories/RepositoryIssue';
+import { Repository, RepositoryKind } from '../../src/repositories/Repository';
+import { ComparisonKind } from '../../src/types/FileComparisonResult';
 
 let skeleton: Repository, repo: Repository, issue: RepositoryIssue, fixer: PackageVersionFixer;
 
 beforeEach(() => {
-    skeleton = Repository.create(__dirname + '/../../data/test-skeleton', RepositoryKind.SKELETON);
-    repo = Repository.create(__dirname + '/../../data/test-package-2', RepositoryKind.PACKAGE);
+    skeleton = Repository.create(__dirname + '/../data/test-skeleton', RepositoryKind.SKELETON);
+    repo = Repository.create(__dirname + '/../data/test-package-2', RepositoryKind.PACKAGE);
 
     issue = new RepositoryIssue(
         { kind: ComparisonKind.PACKAGE_VERSION_MISMATCH, score: 0 },
