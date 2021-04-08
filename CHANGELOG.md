@@ -4,6 +4,10 @@ All notable changes to `package-sync` will be documented in this file.
 
 ---
 
+## 1.2.0 - 2021-04-08
+
+- add config options to define the values used when replacing template variables
+
 ## 1.1.0 - 2021-04-08
 
 - add config option to define the package vendor name
