@@ -36,6 +36,10 @@
         "postversion": "npm run build:prod"
     },
     "lint-staged": {
+        "tests/**/*.{js,ts}": [
+            "./node_modules/.bin/prettier --config .prettierrc --write",
+            "./node_modules/.bin/eslint --ext ts,js --config ./.eslintrc.test.js --fix"
+        ],
         "*.{js,ts}": [
             "./node_modules/.bin/prettier --config .prettierrc --write",
             "./node_modules/.bin/eslint --ext ts,js --fix"
