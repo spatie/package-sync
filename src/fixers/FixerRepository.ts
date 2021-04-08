@@ -3,7 +3,7 @@ import { DirectoryNotFoundFixer } from './DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './FileDoesNotMatchFixer';
 import { FileIsNotSimilarEnoughFixer } from './FileIsNotSimilarEnoughFixer';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
-import { GitFileFixer } from './GitFileFixer';
+import { MergeFilesFixer } from './MergeFilesFixer';
 import { GithubFixer } from './GithubFixer';
 import { OptionalPackagesFixer } from './OptionalPackagesFixer';
 import { OverwriteFileFixer } from './OverwriteFileFixer';
@@ -16,7 +16,7 @@ export class FixerRepository {
     public static all() {
         return [
             // specific fixers:
-            GitFileFixer,
+            MergeFilesFixer,
             GithubFixer,
             PsalmFixer,
             OptionalPackagesFixer,

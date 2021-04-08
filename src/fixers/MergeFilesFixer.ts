@@ -5,7 +5,7 @@ import { FileMerger } from '../lib/FileMerger';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';
 
-export class GitFileFixer extends Fixer {
+export class MergeFilesFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED, ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];
 
     public description() {
