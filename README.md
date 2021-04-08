@@ -58,6 +58,8 @@ You can use the placeholder `{{__dirname}}` in the values of either setting and 
 
 > Make sure to quote the yaml value if you use the `{{__dirname}}` placeholder to ensure valid YAML.
 
+To configure the github user/organization name packages are pulled from, set the `config.packages.vendor` key.
+
 See the configuration file comments for more information on the various options.
 
 ## Analyzing packages
