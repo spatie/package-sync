@@ -1,7 +1,6 @@
 import { config } from '../Configuration';
 import { DirectoryNotFoundFixer } from './DirectoryNotFoundFixer';
 import { FileDoesNotMatchFixer } from './FileDoesNotMatchFixer';
-import { FileIsNotSimilarEnoughFixer } from './FileIsNotSimilarEnoughFixer';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
 import { MergeFilesFixer } from './MergeFilesFixer';
 import { GithubFixer } from './GithubFixer';
@@ -22,7 +21,6 @@ export class FixerRepository {
             OptionalPackagesFixer,
             // generic fixers:
             DirectoryNotFoundFixer,
-            FileIsNotSimilarEnoughFixer,
             OverwriteFileFixer,
             FileDoesNotMatchFixer,
             FileNotFoundFixer,
