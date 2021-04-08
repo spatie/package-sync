@@ -10,6 +10,8 @@ import { Comparisons } from './lib/comparisions/Comparisons';
 import { RepositoryFile } from './repositories/RepositoryFile';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
 import { FixerRepository } from './fixers/FixerRepository';
+import { matches } from './lib/helpers';
+import { sep } from 'path';
 
 export class Application {
     public configuration: Configuration;
@@ -111,6 +113,8 @@ export class Application {
 
     checkRepoForFilesNotInSkeleton(repo: Repository, skeleton: Repository) {
         repo.files
+            .filter(file => !matches(file.relativeName, config.conf.ignoreNames))
+            .filter(file => !config.conf.ignoreNames.includes(file.relativeName))
             .filter(file => !file.shouldIgnore)
             .filter(file => !skeleton.hasFile(file))
             .forEach(file => {

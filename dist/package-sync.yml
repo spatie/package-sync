@@ -77,23 +77,31 @@ config:
     - .vscode/*
     - README.md
     - CHANGELOG.md
-    - art/*
+    - art/**/*
+    - (art)
     - build/**/*
+    - (build)
     - composer.lock
     - config/**/*
-    - (config)+
+    - (config)
     - coverage/
+    - (coverage)
     - database/**/*
-    - database
-    - docs/*
+    - (database)
+    - docs/**/*
+    - (docs)
     - node_modules/
     - package-lock.json
-    - resources/*
+    - resources/**/*
+    - (resources)
     - src/**/*
+    - (src)
     - stubs/*
+    - (stubs)
     - tests/**/*
-    - (tests)+
+    - (tests)
     - vendor/*
+    - (vendor)
     - '*.sh'
     - '*.cache'
     - '*.lock'
