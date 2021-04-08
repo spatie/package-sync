@@ -74,7 +74,8 @@ config:
   ignoreNames:
     - .git/*
     - .idea/*
-    - .vscode/*
+    - .vscode/*    
+    - '*/.gitkeep'
     - README.md
     - CHANGELOG.md
     - art/**/*
