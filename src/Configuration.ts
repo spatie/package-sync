@@ -9,23 +9,43 @@ import { existsSync } from 'fs';
 const yaml = require('js-yaml');
 const micromatch = require('micromatch');
 
+export enum PackageSyncAction {
+    FIX = 'fix', // eslint-disable-line no-unused-vars
+    ANALYZE = 'analyze', // eslint-disable-line no-unused-vars
+}
+
 export interface ConfigurationRecord {
+    paths: {
+        templates: string;
+        packages: string;
+    };
+
     fixers: {
         disabled?: string[];
         OptionalPackages: string[];
     };
 
+    git: {
+        branches: {
+            default: string;
+            format: string;
+            createOn: Set<PackageSyncAction>;
+        };
+    };
+
     scoreRequirements: ScoreRequirements;
     ignoreNames: Array<string>;
     skipComparisons: Array<string>;
-    paths: {
-        templates: string;
-        packages: string;
-    };
+
     templates: {
         vendor: string;
         names: string[];
     };
+
+    packages: {
+        vendor: string;
+    };
+
     issues: {
         ignored: {
             [ComparisonKind.DIRECTORY_NOT_FOUND]?: string[];
@@ -108,7 +128,7 @@ export class Configuration {
     }
 
     public qualifiedPackageName(name: string): string {
-        return `${this.conf.templates.vendor}/${name}`;
+        return `${this.conf.packages.vendor}/${name}`;
     }
 
     public getFullTemplateName(shortName: string): string {

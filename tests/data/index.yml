@@ -22,6 +22,9 @@ config:
       - package-skeleton-php
       - package-skeleton-laravel
       
+  packages:
+    vendor: spatie
+    
   scoreRequirements:
     defaults:
       similar: 0.75

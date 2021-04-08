@@ -9,6 +9,12 @@ config:
     disabled:
       - rewrite-file
 
+  git:
+    branches:
+      default: master
+      format: 'package-sync-{{hash}}'
+      createOn: [fix]
+
   issues:
     ignored:
       # don't install these dependencies:
@@ -22,6 +28,9 @@ config:
       extra_file:
         - .scrutinizer.yml
 
+  packages:
+    vendor: spatie
+    
   templates:
     # github organization name
     vendor: spatie
