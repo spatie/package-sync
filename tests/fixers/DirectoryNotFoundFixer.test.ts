@@ -27,12 +27,9 @@ beforeEach(() => {
 it('creates a missing directory', () => {
     const targetPath = `${issue.repository.path}/${issue.name}`;
 
-    expect(existsSync(targetPath))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(existsSync(targetPath))
-        .toBeTruthy();
+    expect(existsSync(targetPath)).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(existsSync(targetPath)).toBeTruthy();
 
     rmdirSync(targetPath);
 });
@@ -42,10 +39,7 @@ it("doesn't create a missing directory if the issue is resolved", () => {
 
     issue.resolve('test');
 
-    expect(existsSync(targetPath))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeFalsy();
-    expect(existsSync(targetPath))
-        .toBeFalsy();
+    expect(existsSync(targetPath)).toBeFalsy();
+    expect(fixer.fix()).toBeFalsy();
+    expect(existsSync(targetPath)).toBeFalsy();
 });

@@ -17,24 +17,17 @@ beforeEach(() => {
 });
 
 it('copies a missing composer script from skeleton to package', () => {
-    expect(repo.composer.hasScript('format'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(repo.composer.hasScript('format'))
-        .toBeTruthy();
+    expect(repo.composer.hasScript('format')).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(repo.composer.hasScript('format')).toBeTruthy();
 
-    repo.composer.removeScript('format')
-        .save();
+    repo.composer.removeScript('format').save();
 });
 
 it("doesn't add a missing composer script if the issue is resolved", () => {
     issue.resolve('test');
 
-    expect(repo.composer.hasScript('format'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeFalsy();
-    expect(repo.composer.hasScript('format'))
-        .toBeFalsy();
+    expect(repo.composer.hasScript('format')).toBeFalsy();
+    expect(fixer.fix()).toBeFalsy();
+    expect(repo.composer.hasScript('format')).toBeFalsy();
 });

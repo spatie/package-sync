@@ -16,24 +16,17 @@ beforeEach(() => {
 });
 
 it('copies a missing composer package dependency from skeleton to package', () => {
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeTruthy();
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeTruthy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeFalsy();
+    expect(fixer.fix()).toBeTruthy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeTruthy();
 
-    repo.composer.removePackage({ name: 'vimeo/psalm', section: 'require-dev', version: '' })
-        .save();
+    repo.composer.removePackage({ name: 'vimeo/psalm', section: 'require-dev', version: '' }).save();
 });
 
 it("doesn't add a missing composer package dependency if the issue is resolved", () => {
     issue.resolve('test');
 
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeFalsy();
-    expect(fixer.fix())
-        .toBeFalsy();
-    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev'))
-        .toBeFalsy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeFalsy();
+    expect(fixer.fix()).toBeFalsy();
+    expect(repo.composer.hasPackage('vimeo/psalm', 'require-dev')).toBeFalsy();
 });
