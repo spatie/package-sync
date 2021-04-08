@@ -7,8 +7,7 @@ it('merges two text files together', () => {
         .add(`${__dirname}/../data/test-package-2/one.txt`)
         .add(`${__dirname}/../data/test-package-2/two.txt`);
 
-    expect(fm.merge())
-        .toMatchSnapshot();
+    expect(fm.merge()).toMatchSnapshot();
 });
 
 it('merges the same text file twice correctly', () => {
@@ -16,6 +15,5 @@ it('merges the same text file twice correctly', () => {
         .add(`${__dirname}/../data/test-package-2/one.txt`)
         .add(`${__dirname}/../data/test-package-2/one.txt`);
 
-    expect(fm.merge())
-        .toBe(`one\nabc`);
+    expect(fm.merge()).toBe(`one\nabc`);
 });

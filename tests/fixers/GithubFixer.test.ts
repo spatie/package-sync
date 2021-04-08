@@ -29,17 +29,13 @@ beforeEach(() => {
 });
 
 it('creates a missing .github directory and files', () => {
-    expect(repo.getFile('.github'))
-        .toBeNull();
-    expect(fixers[0].fix())
-        .toBeTruthy();
+    expect(repo.getFile('.github')).toBeNull();
+    expect(fixers[0].fix()).toBeTruthy();
     repo.loadFiles();
     expect(repo.getFile('.github')).not.toBeNull();
 
-    expect(repo.getFile('.github/some-config-file.yml'))
-        .toBeNull();
-    expect(fixers[1].fix())
-        .toBeTruthy();
+    expect(repo.getFile('.github/some-config-file.yml')).toBeNull();
+    expect(fixers[1].fix()).toBeTruthy();
     repo.loadFiles();
     expect(repo.getFile('.github/some-config-file.yml')).not.toBeNull();
 
@@ -52,11 +48,8 @@ it("doesn't create a .github directory or files if the issue is resolved", () =>
 
     issue.resolve('test');
 
-    expect(repo.getFile('.github'))
-        .toBeNull();
-    expect(fixer.fix())
-        .toBeFalsy();
+    expect(repo.getFile('.github')).toBeNull();
+    expect(fixer.fix()).toBeFalsy();
     repo.loadFiles();
-    expect(repo.getFile('.github'))
-        .toBeNull();
+    expect(repo.getFile('.github')).toBeNull();
 });
