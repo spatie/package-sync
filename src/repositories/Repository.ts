@@ -3,9 +3,9 @@
 
 import { basename } from 'path';
 import { config } from '../Configuration';
-import { RepositoryIssue } from '../issues/RepositoryIssue';
-import { Composer } from './composer/Composer';
-import { getFileList } from './helpers';
+import { RepositoryIssue } from './RepositoryIssue';
+import { Composer } from '../lib/composer/Composer';
+import { getFileList } from '../lib/helpers';
 import { RepositoryFile } from './RepositoryFile';
 
 export enum RepositoryKind {

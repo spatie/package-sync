@@ -3,7 +3,7 @@
 
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
-import { RepositoryIssue } from '../RepositoryIssue';
+import { RepositoryIssue } from '../../repositories/RepositoryIssue';
 import { FileNotFoundFixer } from './FileNotFoundFixer';
 import { PackageScriptNotFoundFixer } from './PackageScriptNotFoundFixer';
 import { PackageNotUsedFixer } from './PackageNotUsedFixer';

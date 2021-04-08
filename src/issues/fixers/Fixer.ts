@@ -2,7 +2,7 @@
 
 import { classOf } from '../../lib/helpers';
 import { ComparisonKind } from '../../types/FileComparisonResult';
-import { RepositoryIssue } from '../RepositoryIssue';
+import { RepositoryIssue } from '../../repositories/RepositoryIssue';
 
 export class Fixer {
     public enabled = true;

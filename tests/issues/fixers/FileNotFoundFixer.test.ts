@@ -2,8 +2,8 @@
 
 import { existsSync, unlinkSync } from 'fs';
 import { FileNotFoundFixer } from '../../../src/issues/fixers/FileNotFoundFixer';
-import { RepositoryIssue } from '../../../src/issues/RepositoryIssue';
-import { Repository, RepositoryKind } from '../../../src/lib/Repository';
+import { RepositoryIssue } from '../../../src/repositories/RepositoryIssue';
+import { Repository, RepositoryKind } from '../../../src/repositories/Repository';
 import { ComparisonKind } from '../../../src/types/FileComparisonResult';
 
 let skeleton: Repository, repo: Repository, issue: RepositoryIssue, fixer: FileNotFoundFixer;
@@ -27,9 +27,12 @@ beforeEach(() => {
 it('copies a missing file from skeleton to package', () => {
     const targetFile = `${issue.repository.path}/${issue.name}`;
 
-    expect(existsSync(targetFile)).toBeFalsy();
-    expect(fixer.fix()).toBeTruthy();
-    expect(existsSync(targetFile)).toBeTruthy();
+    expect(existsSync(targetFile))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeTruthy();
+    expect(existsSync(targetFile))
+        .toBeTruthy();
 
     unlinkSync(targetFile);
 });
@@ -39,7 +42,10 @@ it("doesn't copy a missing file if the issue is resolved", () => {
 
     issue.resolve('test');
 
-    expect(existsSync(targetPath)).toBeFalsy();
-    expect(fixer.fix()).toBeFalsy();
-    expect(existsSync(targetPath)).toBeFalsy();
+    expect(existsSync(targetPath))
+        .toBeFalsy();
+    expect(fixer.fix())
+        .toBeFalsy();
+    expect(existsSync(targetPath))
+        .toBeFalsy();
 });

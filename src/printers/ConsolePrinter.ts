@@ -1,5 +1,5 @@
 import { app } from '../Application';
-import { Repository } from '../lib/Repository';
+import { Repository } from '../repositories/Repository';
 
 import Table from 'cli-table3';
 import { ComparisonKind } from '../types/FileComparisonResult';

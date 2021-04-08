@@ -2,7 +2,7 @@
 
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { Fixer } from './Fixer';
-import { RepositoryIssue } from '../RepositoryIssue';
+import { RepositoryIssue } from '../../repositories/RepositoryIssue';
 import { classOf } from '../../lib/helpers';
 
 export class OptionalPackagesFixer extends Fixer {

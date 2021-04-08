@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 import { ComparisonKind } from '../types/FileComparisonResult';
-import { Repository } from '../lib/Repository';
-import { RepositoryFile } from '../lib/RepositoryFile';
+import { Repository } from './Repository';
+import { RepositoryFile } from './RepositoryFile';
 //import Fixer from './fixers/Fixer';
 import { classOf } from '../lib/helpers';
 

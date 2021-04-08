@@ -1,15 +1,20 @@
 /* eslint-disable no-unused-vars */
 
 import { ComparisonScoreRequirements } from '../types/ComparisonScoreRequirements';
-import { File } from './File';
-import { Repository } from './Repository';
+import { File } from '../lib/File';
 
 export class RepositoryFile extends File {
     public shouldIgnore = false;
     public shouldCompare = false;
     public requiredScores: ComparisonScoreRequirements = { similar: 0, size: 0 };
 
-    constructor(public repository: Repository, protected fn: string, contents: string | null = null) {
+    /**
+     *
+     * @param repository Repository class
+     * @param fn string
+     * @param contents string | null
+     */
+    constructor(public repository: any, protected fn: string, contents: string | null = null) {
         super(fn, contents);
     }
 

@@ -2,7 +2,7 @@
 
 import { Command } from './Command';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
-import { RepositoryIssue } from '../issues/RepositoryIssue';
+import { RepositoryIssue } from '../repositories/RepositoryIssue';
 import { FixerRepository } from '../issues/FixerRepository';
 
 export default class ListFixersCommand extends Command {

@@ -5,7 +5,7 @@ import { config } from '../Configuration';
 import { matches, uniqueArray } from '../lib/helpers';
 import { Fixer } from './fixers/Fixer';
 import { FixerRepository } from './FixerRepository';
-import { RepositoryIssue } from './RepositoryIssue';
+import { RepositoryIssue } from '../repositories/RepositoryIssue';
 
 export class FixerManager {
     static create() {

@@ -3,7 +3,7 @@
 import { ComparisonKind } from '../../types/FileComparisonResult';
 import { FileMerger } from '../../lib/FileMerger';
 import { Fixer } from './Fixer';
-import { RepositoryIssue } from '../RepositoryIssue';
+import { RepositoryIssue } from '../../repositories/RepositoryIssue';
 
 export class GitFileFixer extends Fixer {
     public static handles = [ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED, ComparisonKind.FILE_NOT_SIMILAR_ENOUGH];

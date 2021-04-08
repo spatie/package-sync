@@ -4,19 +4,17 @@ import { existsSync, mkdirSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { config, Configuration } from './Configuration';
-import { Repository, RepositoryKind } from './lib/Repository';
-import { RepositoryIssue } from './issues/RepositoryIssue';
+import { Repository, RepositoryKind } from './repositories/Repository';
+import { RepositoryIssue } from './repositories/RepositoryIssue';
 import { Comparisons } from './lib/comparisions/Comparisons';
-import { RepositoryFile } from './lib/RepositoryFile';
-import { RepositoryValidator } from './lib/RepositoryValidator';
+import { RepositoryFile } from './repositories/RepositoryFile';
+import { RepositoryValidator } from './repositories/RepositoryValidator';
 import { FixerRepository } from './issues/FixerRepository';
 
 export class Application {
     public configuration: Configuration;
-    public basePath: string;
 
-    constructor(basePath: string) {
-        this.basePath = basePath;
+    constructor() {
         this.configuration = config;
 
         this.ensureStoragePathsExist();
@@ -27,11 +25,11 @@ export class Application {
     }
 
     public ensureStoragePathsExist() {
-        if (!existsSync(this.config.paths.templates)) {
-            mkdirSync(this.config.paths.templates, { recursive: true });
+        if (!existsSync(config.conf.paths.templates)) {
+            mkdirSync(config.conf.paths.templates, { recursive: true });
         }
-        if (!existsSync(this.config.paths.packages)) {
-            mkdirSync(this.config.paths.packages, { recursive: true });
+        if (!existsSync(config.conf.paths.packages)) {
+            mkdirSync(config.conf.paths.packages, { recursive: true });
         }
     }
 
@@ -124,11 +122,11 @@ export class Application {
 
     analyzePackage(packageName: string) {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
-        const templateName = this.configuration.getFullTemplateName(skeletonType);
+        const templateName = config.getFullTemplateName(skeletonType);
 
         const skeletonPath = config.templatePath(templateName);
         const repositoryPath = config.packagePath(packageName);
-        const validator = new RepositoryValidator(app.config.paths.packages, app.config.paths.templates);
+        const validator = new RepositoryValidator(config.conf.paths.packages, config.conf.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
@@ -155,4 +153,4 @@ export class Application {
     }
 }
 
-export const app = new Application(process.cwd());
+export const app = new Application();
