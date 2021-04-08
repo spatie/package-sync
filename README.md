@@ -16,7 +16,25 @@ compares the contents of a package repo against a package skeleton repo, display
 - `node v12+`
 - `git`
 
-## Setup
+## Installation
+
+You can install this application using npm:
+
+```bash
+npm install package-sync-cli
+
+./node_modules/.bin/package-sync
+```
+
+or run using `npx`:
+
+```bash
+npx package-sync-cli
+```
+
+## Local Setup
+
+If you instead prefer to clone the repository, clone with `git clone` and then run:
 
 ```bash
 npm install
