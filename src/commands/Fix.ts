@@ -5,6 +5,7 @@ import { Command, createOption } from './Command';
 import { FixerManager } from '../fixers/FixerManager';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
 import { matches } from '../lib/helpers';
+import { config } from '../Configuration';
 
 export default class FixCommand extends Command {
     public static command = 'fix <packageName> [issueType]';
@@ -12,7 +13,10 @@ export default class FixCommand extends Command {
     public static description = "Fix a package's issues";
     public static exports = exports;
 
-    public static options = [createOption('file', null, { alias: 'f', type: 'string' })];
+    public static options = [
+        createOption('config', null, { alias: 'c', type: 'string' }),
+        createOption('file', null, { alias: 'f', type: 'string' }),
+    ];
 
     static handle(argv: any): void {
         let issueType: string = (argv['issueType'] ?? 'all').trim()
@@ -28,7 +32,9 @@ export default class FixCommand extends Command {
             issueType = '*';
         }
 
-        const { repo } = app.analyzePackage(argv.packageName);
+        const { repo } = app.loadConfigFile(argv.config || config.filename)
+            .analyzePackage(argv.packageName);
+
         const nameMap = fixers => fixers.map(fixer => fixer.getName());
 
         FixerManager.create()

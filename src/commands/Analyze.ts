@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { app } from '../Application';
-import { Command } from './Command';
+import { Command, createOption } from './Command';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
+import { config } from '../Configuration';
 
 export default class AnalyzeCommand extends Command {
     public static command = 'analyze <packageName>';
@@ -11,10 +12,11 @@ export default class AnalyzeCommand extends Command {
     public static description = 'Analyze a package using its template/skeleton repository';
     public static exports = exports;
 
-    public static options = [];
+    public static options = [createOption('config', null, { alias: 'c', type: 'string' })];
 
     static handle(argv: any): void {
-        const { repo } = app.analyzePackage(argv.packageName);
+        const { repo } = app.loadConfigFile(argv.config || config.filename)
+            .analyzePackage(argv.packageName);
 
         ConsolePrinter.printTable(ConsolePrinter.printRepositoryIssues(repo));
     }

@@ -29,6 +29,20 @@ export class Application {
         return this.configuration.conf;
     }
 
+    public loadConfigFile(filename: string) {
+        if (this.configuration.filename === filename) {
+            return this;
+        }
+
+        return this.useConfig(new Configuration(filename || config.filename));
+    }
+
+    public useConfig(configuration: Configuration) {
+        this.configuration = configuration;
+
+        return this;
+    }
+
     public ensureStoragePathsExist() {
         if (!existsSync(config.conf.paths.templates)) {
             mkdirSync(config.conf.paths.templates, { recursive: true });
