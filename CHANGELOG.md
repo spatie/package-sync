@@ -4,6 +4,10 @@ All notable changes to `package-sync` will be documented in this file.
 
 ---
 
+## 1.3.0 - unreleased
+
+- fix `dist/package-sync` script to work better with `npm` and `npx`
+
 ## 1.2.0 - 2021-04-08
 
 - add config options to define the values used when replacing template variables
