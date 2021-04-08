@@ -8,6 +8,7 @@ All notable changes to `package-sync` will be documented in this file.
 
 - add config option to define the package vendor name
 - use package vendor name when pulling packages
+- add `--config <filename>` flag to `analyze` and `fix` commands
 - minor fixes
 
 ## 1.0.1 - 2021-04-08
