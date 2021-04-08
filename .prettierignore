@@ -3,3 +3,4 @@ dist/*
 build/*
 *.yml
 *.yaml
+tests/**/*.json
