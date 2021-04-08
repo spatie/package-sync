@@ -4,6 +4,12 @@ All notable changes to `package-sync` will be documented in this file.
 
 ---
 
+## 1.1.0 - 2021-04-08
+
+- add config option to define the package vendor name
+- use package vendor name when pulling packages
+- minor fixes
+
 ## 1.0.1 - 2021-04-08
 
 - change npm package name
