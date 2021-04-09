@@ -4,7 +4,7 @@
 
 # package-sync
 
-![version](https://shields.io/npm/v/package-sync-cli) ![license](https://shields.io/github/license/spatie/package-sync) ![Run Tests](https://github.com/spatie/package-sync/actions/workflows/run-tests.yml/badge.svg)
+![version](https://shields.io/npm/v/package-sync-cli) ![license](https://shields.io/github/license/spatie/package-sync) ![downloads](https://shields.io/npm/dt/package-sync-cli?logo=npm) ![Run Tests](https://github.com/spatie/package-sync/actions/workflows/run-tests.yml/badge.svg)
 
 ---
 
