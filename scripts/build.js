@@ -59,7 +59,7 @@ const result = require('esbuild')
 const elapsed = new Date()
     .getTime() - start;
 
-if (typeof result['errors'] !== 'undefined') {
+if (typeof result['errors'] !== 'undefined' && result.errors.length) {
     if (!options.quiet) {
         console.log('* There were errors while building. Failed.');
         console.log(result['errors']);
