@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="image" height="200" src="https://user-images.githubusercontent.com/5508707/113939320-d902eb80-97c9-11eb-9626-bc159775bf4b.png">
+    <img alt="image" height="125" src="https://user-images.githubusercontent.com/5508707/113939320-d902eb80-97c9-11eb-9626-bc159775bf4b.png">
 </p>
 
 # package-sync
