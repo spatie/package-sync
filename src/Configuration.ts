@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ScoreRequirements } from './types/ScoreRequirements';
-import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { sep, basename } from 'path';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
 import { existsSync } from 'fs';
@@ -130,6 +129,9 @@ export class Configuration {
     }
 
     public qualifiedPackageName(name: string): string {
+        if (name.includes('/') && name.length > 2) {
+            return name;
+        }
         return `${this.conf.packages.vendor}/${name}`;
     }
 
@@ -176,7 +178,7 @@ export class Configuration {
     public getSimilarScoreRequirement(fn: string): number {
         const reqs = config.conf.scoreRequirements;
 
-        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
+        return reqs.files.find(req => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
     }
 
     public getMaxAllowedSizeDifferenceScore(fn: string): number {

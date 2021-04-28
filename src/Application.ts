@@ -11,6 +11,7 @@ import { RepositoryFile } from './repositories/RepositoryFile';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
 import { FixerRepository } from './fixers/FixerRepository';
 import { matches } from './lib/helpers';
+import { dirname } from 'path';
 
 export class Application {
     public configuration: Configuration;
@@ -147,7 +148,7 @@ export class Application {
 
         const skeletonPath = config.templatePath(templateName);
         const repositoryPath = config.packagePath(packageName);
-        const validator = new RepositoryValidator(config.conf.paths.packages, config.conf.paths.templates);
+        const validator = new RepositoryValidator(repositoryPath, config.conf.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
