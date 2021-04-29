@@ -7,13 +7,13 @@ import { ComparisonKind } from '../types/FileComparisonResult';
 
 export abstract class Comparison {
     protected comparisonPassed = false;
-    protected _score: number | null = null;
+    protected _score: number | string | null = null;
 
     get score() {
         return this._score;
     }
 
-    set score(value: number | null) {
+    set score(value: number | string | null) {
         this._score = value;
     }
 
@@ -43,6 +43,10 @@ export abstract class Comparison {
     public prettyScore(): string {
         if (this.score === null || this.score === 0) {
             return '-';
+        }
+
+        if (typeof this.score === 'string') {
+            return this.score;
         }
 
         return this.score?.toFixed(3) ?? '';

@@ -38,6 +38,10 @@ export class FileSizeComparison extends Comparison {
             return '';
         }
 
+        if (typeof this.score === 'string') {
+            return this.score;
+        }
+
         return (this.score?.toFixed(2) ?? '0.0') + '%';
     }
 

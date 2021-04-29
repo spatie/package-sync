@@ -15,6 +15,8 @@ import { StringComparison } from './comparisons/StringComparison';
 import { FileSizeComparison } from './comparisons/FileSizeComparison';
 import { ExtraFilesComparison } from './comparisons/ExtraFilesComparison';
 import { ComposerScriptsComparison } from './comparisons/ComposerScriptsComparison';
+import { ComposerPackagesComparison } from './comparisons/ComposerPackagesComparison';
+import { Comparison } from './comparisons/Comparison';
 
 export class Application {
     public configuration: Configuration;
@@ -63,7 +65,7 @@ export class Application {
                 StringComparison,
                 FileSizeComparison, //should come last to prioritize StringComparison
             ],
-            other: [ExtraFilesComparison, ComposerScriptsComparison],
+            other: [ExtraFilesComparison, ComposerScriptsComparison, ComposerPackagesComparison],
         };
 
         skeleton.files.forEach(file => {
@@ -72,23 +74,23 @@ export class Application {
             for (const comparisonClass of comparisons.files) {
                 const comparison = comparisonClass.create(skeleton, repo, file, repoFile);
 
-                if (!comparison.compare(null)
-                    .passed()) {
+                comparison.compare(null);
+
+                if (!comparison.passed()) {
                     return;
                 }
             }
         });
 
-        comparisons.other.forEach(comparisonClass => {
-            // @ts-ignore
+        comparisons.other.forEach((comparisonClass: any) => {
             comparisonClass.create(skeleton, repo, null, null)
                 .compare(null);
         });
 
-        ComposerComparer.comparePackages(skeleton.path, repo.path)
-            .forEach(r =>
-                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
-            );
+        // ComposerComparer.comparePackages(skeleton.path, repo.path)
+        //     .forEach(r =>
+        //         repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
+        //     );
     }
 
     checkRepoForFilesNotInSkeleton(repo: Repository, skeleton: Repository) {
