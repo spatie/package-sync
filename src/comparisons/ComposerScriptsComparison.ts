@@ -52,8 +52,8 @@ export class ComposerScriptsComparison extends Comparison {
 
         this.repo.issues.push(
             new RepositoryIssue(
-                // @ts-ignore
                 compareResult,
+                // @ts-ignore
                 compareResult.name,
                 this.file,
                 this.repoFile,
