@@ -8,7 +8,7 @@ import { ExtraFilesComparison } from './comparisons/ExtraFilesComparison';
 import { FileExistsComparison } from './comparisons/FileExistsComparison';
 import { FileSizeComparison } from './comparisons/FileSizeComparison';
 import { StringComparison } from './comparisons/StringComparison';
-import { config, Configuration } from './Configuration';
+import { Configuration } from './Configuration';
 import { FixerRepository } from './fixers/FixerRepository';
 import { Repository, RepositoryKind } from './repositories/Repository';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
@@ -17,11 +17,7 @@ export class Application {
     public configuration: Configuration;
 
     constructor(configuration: Configuration | null = null) {
-        this.configuration = configuration ?? config;
-
-        if (typeof config === 'undefined') {
-            new Configuration();
-        }
+        this.configuration = configuration ?? new Configuration();
 
         this.ensureStoragePathsExist();
     }
@@ -30,12 +26,12 @@ export class Application {
         return this.configuration.conf;
     }
 
-    public loadConfigFile(filename: string) {
-        if (this.configuration.filename === filename) {
+    public loadConfigFile(filename: string | null) {
+        if (this.configuration.filename === filename || filename === null) {
             return this;
         }
 
-        return this.useConfig(new Configuration(filename || config.filename));
+        return this.useConfig(new Configuration(filename ?? this.configuration.filename));
     }
 
     public useConfig(configuration: Configuration) {
@@ -45,21 +41,18 @@ export class Application {
     }
 
     public ensureStoragePathsExist() {
-        if (!existsSync(config.conf.paths.templates)) {
-            mkdirSync(config.conf.paths.templates, { recursive: true });
+        if (!existsSync(this.configuration.conf.paths.templates)) {
+            mkdirSync(this.configuration.conf.paths.templates, { recursive: true });
         }
-        if (!existsSync(config.conf.paths.packages)) {
-            mkdirSync(config.conf.paths.packages, { recursive: true });
+        if (!existsSync(this.configuration.conf.paths.packages)) {
+            mkdirSync(this.configuration.conf.paths.packages, { recursive: true });
         }
     }
 
     compareRepositories(skeleton: Repository, repo: Repository) {
         const comparisons = {
-            files: [
-                FileExistsComparison,
-                StringComparison,
-                FileSizeComparison, //should come last to prioritize StringComparison
-            ],
+            // FileSizeComparison should be last to prioritize StringComparison
+            files: [FileExistsComparison, StringComparison, FileSizeComparison],
             other: [ExtraFilesComparison, ComposerScriptsComparison, ComposerPackagesComparison],
         };
 
@@ -85,17 +78,15 @@ export class Application {
 
     analyzePackage(packageName: string) {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
-        const templateName = config.getFullTemplateName(skeletonType);
+        const templateName = this.configuration.getFullTemplateName(skeletonType);
 
-        const skeletonPath = config.templatePath(templateName);
-        const repositoryPath = config.packagePath(packageName);
-        const validator = new RepositoryValidator(config.conf.paths.packages, config.conf.paths.templates);
+        const validator = new RepositoryValidator(this.configuration.conf.paths.packages, this.configuration.conf.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
 
-        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
-        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+        const skeleton = Repository.create(this.configuration.templatePath(templateName), RepositoryKind.SKELETON);
+        const repo = Repository.create(this.configuration.packagePath(packageName), RepositoryKind.PACKAGE);
 
         return this.analyzeRepository(skeleton, repo);
     }
@@ -106,7 +97,7 @@ export class Application {
         repo.issues.forEach(issue => {
             FixerRepository.all()
                 .forEach(fixer => {
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !config.shouldIgnoreIssue(issue)) {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.configuration.shouldIgnoreIssue(issue)) {
                         issue.addFixer(new fixer(issue));
                     }
                 });

@@ -4,7 +4,6 @@
 import { app } from '../Application';
 import { Command, createOption } from './Command';
 import { ConsolePrinter } from '../printers/ConsolePrinter';
-import { config } from '../Configuration';
 
 export default class AnalyzeCommand extends Command {
     public static command = 'analyze <packageName>';
@@ -15,7 +14,7 @@ export default class AnalyzeCommand extends Command {
     public static options = [createOption('config', null, { alias: 'c', type: 'string' })];
 
     static handle(argv: any): void {
-        const { repo } = app.loadConfigFile(argv.config || config.filename)
+        const { repo } = app.loadConfigFile(argv.config || null)
             .analyzePackage(argv.packageName);
 
         ConsolePrinter.printTable(ConsolePrinter.printRepositoryIssues(repo));
