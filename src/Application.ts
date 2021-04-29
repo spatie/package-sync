@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
@@ -6,12 +7,14 @@ import { ComposerComparer } from './lib/composer/ComposerComparer';
 import { config, Configuration } from './Configuration';
 import { Repository, RepositoryKind } from './repositories/Repository';
 import { RepositoryIssue } from './repositories/RepositoryIssue';
-import { Comparisons } from './lib/comparisions/Comparisons';
-import { RepositoryFile } from './repositories/RepositoryFile';
 import { RepositoryValidator } from './repositories/RepositoryValidator';
 import { FixerRepository } from './fixers/FixerRepository';
 import { matches } from './lib/helpers';
-import { dirname } from 'path';
+import { FileExistsComparison } from './comparisons/FileExistsComparison';
+import { StringComparison } from './comparisons/StringComparison';
+import { FileSizeComparison } from './comparisons/FileSizeComparison';
+import { ExtraFilesComparison } from './comparisons/ExtraFilesComparison';
+import { ComposerScriptsComparison } from './comparisons/ComposerScriptsComparison';
 
 export class Application {
     public configuration: Configuration;
@@ -53,77 +56,36 @@ export class Application {
         }
     }
 
-    performStringComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
-        const strComparison = Comparisons.strings(file?.processTemplate(), repoFile?.contents);
-
-        if (!strComparison.meetsRequirement(file.requiredScores.similar)) {
-            const compareResult = {
-                kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
-                score: strComparison.similarityScore,
-            };
-
-            repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    performSizeComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
-        const sizeComparison = Comparisons.filesizes(file.sizeOnDisk, repoFile?.sizeOnDisk);
-
-        if (sizeComparison.meetsRequirement(file.requiredScores.size)) {
-            const result = {
-                kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
-                score: sizeComparison.format(2),
-            };
-
-            repo.issues.push(new RepositoryIssue(result, file.relativeName, file, repoFile, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    performFileExistsComparison(skeleton: Repository, repo: Repository, file: RepositoryFile) {
-        if (!file.shouldIgnore && !repo.hasFile(file)) {
-            const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-
-            repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
-    }
-
     compareRepositories(skeleton: Repository, repo: Repository) {
+        const comparisons = {
+            files: [
+                FileExistsComparison,
+                StringComparison,
+                FileSizeComparison, //should come last to prioritize StringComparison
+            ],
+            other: [ExtraFilesComparison, ComposerScriptsComparison],
+        };
+
         skeleton.files.forEach(file => {
             const repoFile = repo.getFile(file.relativeName);
 
-            if (this.performFileExistsComparison(skeleton, repo, file)) {
-                return;
-            }
+            for (const comparisonClass of comparisons.files) {
+                const comparison = comparisonClass.create(skeleton, repo, file, repoFile);
 
-            if (this.performStringComparison(skeleton, repo, file, repoFile)) {
-                return;
-            }
-
-            if (this.performSizeComparison(skeleton, repo, file, repoFile)) {
-                return;
+                if (!comparison.compare(null)
+                    .passed()) {
+                    return;
+                }
             }
         });
 
-        this.checkRepoForFilesNotInSkeleton(repo, skeleton);
+        comparisons.other.forEach(comparisonClass => {
+            // @ts-ignore
+            comparisonClass.create(skeleton, repo, null, null)
+                .compare(null);
+        });
 
         ComposerComparer.comparePackages(skeleton.path, repo.path)
-            .forEach(r =>
-                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
-            );
-
-        ComposerComparer.compareScripts(skeleton.path, repo.path)
             .forEach(r =>
                 repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
             );
@@ -148,7 +110,7 @@ export class Application {
 
         const skeletonPath = config.templatePath(templateName);
         const repositoryPath = config.packagePath(packageName);
-        const validator = new RepositoryValidator(repositoryPath, config.conf.paths.templates);
+        const validator = new RepositoryValidator(config.conf.paths.packages, config.conf.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
