@@ -80,7 +80,7 @@ export class Application {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
         const templateName = this.configuration.getFullTemplateName(skeletonType);
 
-        const validator = new RepositoryValidator(this.configuration.conf.paths.packages, this.configuration.conf.paths.templates);
+        const validator = new RepositoryValidator(this.config.paths.packages, this.config.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
