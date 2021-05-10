@@ -78,7 +78,7 @@
         "micromatch": "^4.0.2",
         "semver": "^7.3.5",
         "string-similarity": "^4.0.4",
-        "yargs": "^16.0.0"
+        "yargs": "^17.0.1"
     },
     "bin": {
         "package-sync": "dist/package-sync"
