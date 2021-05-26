@@ -55,6 +55,7 @@
         "@types/yargs": "^17.0.0",
         "@typescript-eslint/eslint-plugin": "^4.9.1",
         "@typescript-eslint/parser": "^4.9.1",
+        "better-strip-color": "^1.0.2",
         "concurrently": "^6.0.1",
         "esbuild": "^0.12.1",
         "eslint": "^7.15.0",

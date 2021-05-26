@@ -8,6 +8,8 @@ import { Repository, RepositoryKind } from '../../src/repositories/Repository';
 import { RepositoryIssue } from '../../src/repositories/RepositoryIssue';
 import { ComparisonKind } from '../../src/types/FileComparisonResult';
 
+const stripAnsi = require('better-strip-color');
+
 let skeleton: Repository, repo: Repository, issue: RepositoryIssue, fixer: FileNotFoundFixer;
 
 beforeEach(() => {
@@ -30,7 +32,7 @@ it('prints a summary of fixers', () => {
         .toLowerCase()
         .trim();
 
-    expect(output).toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
 
 it("prints a repository's issues", () => {
@@ -38,7 +40,7 @@ it("prints a repository's issues", () => {
         .toLowerCase()
         .trim();
 
-    expect(output).toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
 
 it("prints repository's fixed issues", () => {
@@ -48,5 +50,5 @@ it("prints repository's fixed issues", () => {
         .toLowerCase()
         .trim();
 
-    expect(output).toMatchSnapshot();
+    expect(stripAnsi(output)).toMatchSnapshot();
 });
