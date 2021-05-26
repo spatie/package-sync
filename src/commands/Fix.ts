@@ -44,8 +44,7 @@ export default class FixCommand extends Command {
                     .filter(
                         issue =>
                             issueType === '*' ||
-                        nameMap(issue.fixers)
-                            .includes(issueType) ||
+                        nameMap(issue.fixers).includes(issueType) ||
                         matches(issueType, issue.kind) ||
                         matches(issueType, nameMap(issue.fixers)),
                     ),
