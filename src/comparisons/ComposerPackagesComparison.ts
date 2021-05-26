@@ -12,6 +12,17 @@ const semver = require('semver');
 export class ComposerPackagesComparison extends Comparison {
     protected kind: ComparisonKind = ComparisonKind.PACKAGE_NOT_USED;
 
+    protected getVersionDiff(repoVersion: string, newVersion: string): string | null {
+        const newPart = newVersion.split('|')
+            .pop() ?? '0.0';
+        const repoPart = repoVersion.split('|')
+            .pop() ?? '0.0';
+
+        const diff = semver.diff(semver.coerce(newPart), semver.coerce(repoPart));
+
+        return ['major', 'minor', 'patch'].includes(diff) ? diff : null;
+    }
+
     public compare(requiredScore: number | null): Comparison {
         this.score = 0;
 
@@ -39,17 +50,14 @@ export class ComposerPackagesComparison extends Comparison {
                 }
 
                 const repositoryPackage = repositoryComposer.package(pkg.name);
-                const version1 = semver.coerce(pkg.version);
-                const version2 = semver.coerce(repositoryPackage.version);
+                const versionDiff = this.getVersionDiff(repositoryPackage.version, pkg.version);
 
                 // treat version strings like '^8.1|^9.5' and '^9.5' as a non-issue
                 if (repositoryPackage.version.includes(pkg.version)) {
                     return;
                 }
 
-                if (semver.gt(version1, version2)) {
-                    const versionDiff = semver.diff(version1, version2);
-
+                if (versionDiff !== null) {
                     this.kind = ComparisonKind.PACKAGE_VERSION_MISMATCH;
                     this.score = versionDiff;
 
