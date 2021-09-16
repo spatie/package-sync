@@ -27,6 +27,7 @@ export class PackageVersionFixer extends Fixer {
 
         const versions = Array(repoVersionParts.length);
         const newVersions: string[] = [];
+        let foundMinorDiff = false;
 
         for (let i = 0; i < versions.length; i++) {
             const newPart = newVersionParts[i] ?? newVersionParts[newVersionParts.length - 1];
@@ -38,6 +39,10 @@ export class PackageVersionFixer extends Fixer {
             }
 
             const diff = semver.diff(semver.coerce(newPart), semver.coerce(repoPart));
+
+            if (diff !== 'major') {
+                foundMinorDiff = true;
+            }
 
             if (diff === 'major') {
                 versions[i] = repoPart;
@@ -53,8 +58,18 @@ export class PackageVersionFixer extends Fixer {
             versions.push(...newVersionParts.slice(repoVersionParts.length - 1));
         }
 
+        //create a mapping of the coerced version numbers to the actual version string to allow for proper sorting
+        const versionMap = {};
+
+        uniqueArray(versions)
+            .forEach(version => {
+                versionMap[semver.coerce(version)] = version;
+            });
+
         return uniqueArray(versions)
+            .map(version => semver.coerce(version))
             .sort()
+            .map(version => versionMap[version])
             .join('|');
     }
 

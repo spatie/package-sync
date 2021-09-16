@@ -1,0 +1,18 @@
+┌──────────────────┬────────┬───────────────────────────────────────────────────────────────────────────┐
+│ fixer name       │ type   │ description                                                               │
+│ ---------------  │ -----  │ ------------------------------------------------------------------------  │
+│ add-dep          │        │ adds a dependency to the package's composer.json file.                    │
+│ bump-version     │        │ updates the version of a dependency in the package repository.            │
+│ copy-script      │        │ adds a missing composer script to the package's composer.json file.       │
+│ create-dir       │        │ creates a missing directory                                               │
+│ create-file      │        │ copies a file from the skeleton repository into the package repository.   │
+│ [38;2;96;165;250mgithub[39m           │ [38;2;96;165;250mmulti[39m  │ recreates all missing directories and files under the '.github'           │
+│                  │        │ directory.                                                                │
+│ [38;2;252;165;165mmerge-files[39m      │ [38;2;252;165;165mrisky[39m  │ merges the contents of both the skeleton and package versions of a file.  │
+│ [38;2;252;165;165moverwrite-file[39m   │ [38;2;252;165;165mrisky[39m  │ overwrite a file with the skeleton version to force an exact match.       │
+│ [38;2;96;165;250mpsalm[39m            │ [38;2;96;165;250mmulti[39m  │ creates all missing psalm-related files and installs all psalm composer   │
+│                  │        │ scripts and dependencies.                                                 │
+│ [38;2;252;165;165mrewrite-file[39m     │ [38;2;252;165;165mrisky[39m  │ overwrites an existing file with a newer version from the skeleton.       │
+│ skip-dep         │        │ skips the installation of a dependency.                                   │
+└──────────────────┴────────┴───────────────────────────────────────────────────────────────────────────┘
+

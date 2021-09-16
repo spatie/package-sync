@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prints a repository's issues 1`] = `
+"┌───────────────┬────────┬─────────────────────────────────────────────┬──────────────────────────────┐
+│ issue         │ score  │ filename                                    │ fixers                       │
+│ ------------  │ -----  │ ------------------------------------------  │ ---------------------------  │
+│ missing_file  │ -      │ testfile1.txt                               │ create-file, psalm, merge-f… │
+└───────────────┴────────┴─────────────────────────────────────────────┴──────────────────────────────┘"
+`;
+
+exports[`prints a summary of fixers 1`] = `
+"┌──────────────────┬────────┬───────────────────────────────────────────────────────────────────────────┐
+│ fixer name       │ type   │ description                                                               │
+│ ---------------  │ -----  │ ------------------------------------------------------------------------  │
+│ create-file      │        │ copies a file from the skeleton repository into the package repository.   │
+│ merge-files      │ risky  │ merges the contents of both the skeleton and package versions of a file.  │
+│ psalm            │ multi  │ creates all missing psalm-related files and installs all psalm composer   │
+│                  │        │ scripts and dependencies.                                                 │
+└──────────────────┴────────┴───────────────────────────────────────────────────────────────────────────┘"
+`;
+
+exports[`prints repository's fixed issues 1`] = `
+"┌────────────────────────────────────────┬───────────────┬─────────────────────────────────────────────────────────────────┐
+│ filename                               │ fixer         │ status                                                          │
+│ -------------------------------------  │ ------------  │ --------------------------------------------------------------  │
+│ testfile1.txt                          │ create-file   │                                                                 │
+└────────────────────────────────────────┴───────────────┴─────────────────────────────────────────────────────────────────┘"
+`;

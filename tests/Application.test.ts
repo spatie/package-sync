@@ -1,32 +1,31 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
-// import { basename } from 'path';
-// //import { Application } from '../src/Application';
-// import { Repository, RepositoryKind } from '../src/lib/Repository';
-// import { RepositoryFile } from '../src/lib/RepositoryFile';
+import { Application } from '../src/Application';
+import { Configuration } from '../src/Configuration';
+import { Repository, RepositoryKind } from '../src/repositories/Repository';
 
-// it('compares a package repository and a skeleton repository', () => {
-//     const skeleton = Repository.create(__dirname+'/data/test-skeleton', RepositoryKind.SKELETON);
-//     const repo = Repository.create(__dirname+'/data/test-package', RepositoryKind.PACKAGE);
+let conf: Configuration, app: Application, skeleton: Repository, repo: Repository;
 
-//     skeleton.fileList = <RepositoryFile[]>skeleton.files.map(f => RepositoryFile.create(f.relativeName, '--'));
-//     skeleton.composer.fromJson(skeleton.composer.toJson().replace(new RegExp(process.cwd(), 'g'), ''));
-//     skeleton.composer.filename = basename(skeleton.composer.filename);
-//     skeleton.path = basename(skeleton.path);
+beforeEach(() => {
+    conf = new Configuration(__dirname + '/../data/index.yml');
+    app = new Application(conf);
 
-//     repo.fileList = <RepositoryFile[]>repo.files.map(f => RepositoryFile.create(f.relativeName, '--'));
-//     repo.composer.fromJson(repo.composer.toJson().replace(new RegExp(process.cwd(), 'g'), ''));
-//     repo.composer.filename = basename(repo.composer.filename);
-//     repo.path = basename(repo.path);
+    skeleton = Repository.create(__dirname + '/data/test-skeleton', RepositoryKind.SKELETON);
+    repo = Repository.create(__dirname + '/data/test-package-2', RepositoryKind.PACKAGE);
 
-//     //app.compareRepositories(skeleton, repo)
-
-//     //expect(repo).toMatchSnapshot();
-
-// });
-
-it('does nothing', () => {
-    expect(1).toBe(1);
+    skeleton.loadFiles();
+    repo.loadFiles();
 });
 
-export {};
+it.skip('checks the repo for files not in the template', () => {
+    // app.checkRepoForFilesNotInSkeleton(repo, skeleton);
+    // const issues = repo.issues.map(issue => ({
+    //     name: issue.name,
+    //     result: issue.result,
+    //     score: issue.score,
+    //     resolvedNotes: issue.resolvedNotes,
+    // }));
+    // expect(issues)
+    //     .toMatchSnapshot();
+});

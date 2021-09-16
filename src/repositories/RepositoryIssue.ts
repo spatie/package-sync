@@ -93,32 +93,4 @@ export class RepositoryIssue {
 
         return this;
     }
-
-    public disableFixers(names: string[] | null = null) {
-        if (names === null) {
-            names = this.fixers.map(fixer => fixer.getName());
-        }
-
-        this.fixers.forEach(fixer => {
-            if (names?.includes(fixer.getName())) {
-                fixer.disable();
-            }
-        });
-
-        return this;
-    }
-
-    public enableFixers(names: string[] | null = null) {
-        if (names === null) {
-            names = this.fixers.map(fixer => fixer.getName());
-        }
-
-        this.fixers.forEach(fixer => {
-            if (names?.includes(fixer.getName())) {
-                fixer.enable();
-            }
-        });
-
-        return this;
-    }
 }

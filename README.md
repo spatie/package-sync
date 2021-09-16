@@ -1,8 +1,10 @@
 <p align="center">
-    <img alt="image" height="200" src="https://user-images.githubusercontent.com/5508707/113939320-d902eb80-97c9-11eb-9626-bc159775bf4b.png">
+    <img alt="image" height="125" src="https://user-images.githubusercontent.com/5508707/113939320-d902eb80-97c9-11eb-9626-bc159775bf4b.png">
 </p>
 
 # package-sync
+
+![version](https://shields.io/npm/v/package-sync-cli) ![license](https://shields.io/github/license/spatie/package-sync) ![downloads](https://shields.io/npm/dt/package-sync-cli?logo=npm) ![Run Tests](https://github.com/spatie/package-sync/actions/workflows/run-tests.yml/badge.svg)
 
 ---
 
@@ -16,7 +18,32 @@ compares the contents of a package repo against a package skeleton repo, display
 - `node v12+`
 - `git`
 
-## Setup
+## Installation
+
+You can install this application using npm:
+
+```bash
+npm install package-sync-cli
+
+./node_modules/.bin/package-sync analyze array-to-xml
+```
+
+or run using `npx`:
+
+```bash
+npx package-sync-cli analyze array-to-xml
+
+# with a specific config file
+npx package-sync-cli --config myconfig.yml analyze array-to-xml
+```
+
+## Standalone releases
+
+Each release also has a standalone version released as an archive that can be extracted and run without the need for `npm`, `npx`, or `git clone`.  See the [latest release](https://github.com/spatie/package-sync/releases/latest) to download the most recent standalone version.
+
+## Local Setup
+
+If you instead prefer to clone the repository, clone with `git clone` and then run:
 
 ```bash
 npm install
@@ -35,6 +62,10 @@ You can use the placeholder `{{__dirname}}` in the values of either setting and 
 
 > Make sure to quote the yaml value if you use the `{{__dirname}}` placeholder to ensure valid YAML.
 
+To configure the github user/organization name packages are pulled from, set the `config.packages.vendor` key.
+
+> Not maintaining Spatie packages? make sure to customize the `config.packages.email` and `config.packages.homepage` properties.
+
 See the configuration file comments for more information on the various options.
 
 ## Analyzing packages
@@ -47,16 +78,26 @@ Analyze the `spatie/array-to-xml` package using the `spatie/package-skeleton-php
 ./dist/package-sync analyze array-to-xml
 ```
 
-You will see something similar to the following:
-
 ![image](https://user-images.githubusercontent.com/5508707/113942438-c808a900-97ce-11eb-8546-4d160ccd3e58.png)
-
 
 Fixers are color-coded:
 
 - `green`: considered safe to run without major file changes
 - `blue`: 'multi' fixers run safe fixers on groups of related files _(such as all psalm-related files, etc.)_
 - `red`: considered risky - these fixers make _(possibly significant)_ modifications to existing files
+
+#### Issue Scores
+
+The values in the `score` column indicate how similar the package copy of a file is to the skeleton's copy.
+
+For decimal values, the closer to `1.0`, the more similar the files are: `0.75` means the files are somewhat similar, and `0.89` means they are very similar.
+Percentages indicate how different the files are: a value of `8.5%` would mean the files are fairly similar, differing by only that much.
+
+If an issue lists a filename but no value, the file only exists in either the skeleton or the package, but not both.
+
+Dependency version issues list a score of `major` or `minor`, indicating the part of the semver version that needs to be upgraded.
+
+Other issues not related to files, such as missing dependencies, do not have a score.
 
 ## Fixing package issues
 

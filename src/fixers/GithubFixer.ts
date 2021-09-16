@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { sep } from 'path';
+
 import { ComparisonKind } from '../types/FileComparisonResult';
 import { Fixer } from './Fixer';
 import { RepositoryIssue } from '../repositories/RepositoryIssue';
@@ -26,7 +26,7 @@ export class GithubFixer extends Fixer {
             return false;
         }
 
-        if (!issue.name.startsWith('.github' + sep)) {
+        if (!issue.name.startsWith('.github')) {
             return false;
         }
 
