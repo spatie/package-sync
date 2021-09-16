@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import { app } from '../Application';
 import { Command } from './Command';
-import { config } from '../Configuration';
 import { GitUtilties } from '../lib/GitUtilties';
 
 export default class PullTemplateCommand extends Command {
@@ -13,6 +13,7 @@ export default class PullTemplateCommand extends Command {
 
     static handle(argv: any): void {
         const argvName = argv.name ?? '';
+        const config = app.configuration;
 
         const shortTemplateName = (longName: string) => {
             return longName.split('-')
