@@ -19,45 +19,58 @@ it('adds a fixer if it has not yet been added', () => {
     issue.addFixer(fixer);
     issue.addFixer(fixer);
 
-    expect(issue.fixers).toHaveLength(1);
+    expect(issue.fixers)
+        .toHaveLength(1);
 });
 
 it('resolves and sets the name of the fixer when provided a string value', () => {
-    expect(issue.resolved).toBeFalsy();
+    expect(issue.resolved)
+        .toBeFalsy();
 
     issue.resolve('FixerName');
 
-    expect(issue.resolved).toBeTruthy();
-    expect(issue.resolvedByFixer).toBe('FixerName');
+    expect(issue.resolved)
+        .toBeTruthy();
+    expect(issue.resolvedByFixer)
+        .toBe('FixerName');
 });
 
 it('resolves and sets the name of the fixer when provided a fixer object', () => {
     const fixer = new FileNotFoundFixer(issue);
 
-    expect(issue.resolved).toBeFalsy();
+    expect(issue.resolved)
+        .toBeFalsy();
 
     issue.resolve(fixer);
 
-    expect(issue.resolved).toBeTruthy();
-    expect(issue.resolvedByFixer).toBe(fixer.getName());
+    expect(issue.resolved)
+        .toBeTruthy();
+    expect(issue.resolvedByFixer)
+        .toBe(fixer.getName());
 });
 
 it('appends a resolved note', () => {
-    expect(issue.resolvedNotes).toHaveLength(0);
+    expect(issue.resolvedNotes)
+        .toHaveLength(0);
 
     issue.addResolvedNote('one');
     issue.addResolvedNote('two');
 
-    expect(issue.resolvedNotes).toHaveLength(2);
-    expect(issue.resolvedNotes).toStrictEqual(['one', 'two']);
+    expect(issue.resolvedNotes)
+        .toHaveLength(2);
+    expect(issue.resolvedNotes)
+        .toStrictEqual(['one', 'two']);
 });
 
 it('prepends a resolved note', () => {
-    expect(issue.resolvedNotes).toHaveLength(0);
+    expect(issue.resolvedNotes)
+        .toHaveLength(0);
 
     issue.addResolvedNote('one');
     issue.addResolvedNote('two', true);
 
-    expect(issue.resolvedNotes).toHaveLength(2);
-    expect(issue.resolvedNotes).toStrictEqual(['two', 'one']);
+    expect(issue.resolvedNotes)
+        .toHaveLength(2);
+    expect(issue.resolvedNotes)
+        .toStrictEqual(['two', 'one']);
 });

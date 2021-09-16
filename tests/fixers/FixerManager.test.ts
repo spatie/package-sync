@@ -26,10 +26,14 @@ it('gets the class of a fixer based on its name', () => {
         FixerManager.getFixerClass(DirectoryNotFoundFixer.prettyName()),
     ];
 
-    expect(fixers[0]).toBe(FileNotFoundFixer);
-    expect(fixers[1]).toBe(DirectoryNotFoundFixer);
-    expect(FixerManager.getFixerClass('missing')).toBeNull();
-    expect(FixerManager.getFixerClass('')).toBeNull();
+    expect(fixers[0])
+        .toBe(FileNotFoundFixer);
+    expect(fixers[1])
+        .toBe(DirectoryNotFoundFixer);
+    expect(FixerManager.getFixerClass('missing'))
+        .toBeNull();
+    expect(FixerManager.getFixerClass(''))
+        .toBeNull();
 });
 
 it('correctly checks if a fixer is disabled', () => {
@@ -38,20 +42,25 @@ it('correctly checks if a fixer is disabled', () => {
 
     const fm = new FixerManager(config);
 
-    expect(fm.isFixerDisabled(FileNotFoundFixer)).toBeTruthy();
-    expect(fm.isFixerDisabled(DirectoryNotFoundFixer)).toBeFalsy();
+    expect(fm.isFixerDisabled(FileNotFoundFixer))
+        .toBeTruthy();
+    expect(fm.isFixerDisabled(DirectoryNotFoundFixer))
+        .toBeFalsy();
 });
 
 it('applies a fixer to an issue', () => {
     const config = new Configuration(__dirname + '/../data/index.yml').conf;
     const fm = new FixerManager(config);
 
-    expect(issue.resolved).toBeFalsy();
+    expect(issue.resolved)
+        .toBeFalsy();
 
     fm.fixIssue(issue, 'all', false);
 
-    expect(issue.resolvedByFixer).toBe(fixer.getName());
-    expect(issue.resolved).toBeTruthy();
+    expect(issue.resolvedByFixer)
+        .toBe(fixer.getName());
+    expect(issue.resolved)
+        .toBeTruthy();
 
     unlinkSync(`${repo.path}/${issue.name}`);
 });

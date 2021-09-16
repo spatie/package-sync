@@ -4,6 +4,11 @@ All notable changes to `package-sync` will be documented in this file.
 
 ---
 
+## 1.3.1 - unreleased
+
+- fix config file object references (#14)
+- update deps
+
 ## 1.3.0 - unreleased
 
 - fix `dist/package-sync` script to work better with `npm` and `npx`
