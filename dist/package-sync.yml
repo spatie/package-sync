@@ -11,7 +11,7 @@ config:
 
   git:
     branches:
-      default: master
+      default: main
       format: 'package-sync-{{hash}}'
       createOn: [fix]
 
