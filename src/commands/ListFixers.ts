@@ -17,6 +17,6 @@ export default class ListFixersCommand extends Command {
         const fixers = FixerRepository.all()
             .map(fixer => new fixer(<RepositoryIssue>(<unknown>null)));
 
-        ConsolePrinter.printFixerSummary(fixers);
+        ConsolePrinter.printTable(ConsolePrinter.printFixerSummary(fixers));
     }
 }

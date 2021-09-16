@@ -44,9 +44,12 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Verify the build process
+      run: npm run build:verify
+      
     - name: Run the tests with coverage
       run: npm run test -- --coverage --coverageReporters json
-
+      
 #    - name: Upload coverage to Codecov
 #      uses: codecov/codecov-action@v1
 #      with:

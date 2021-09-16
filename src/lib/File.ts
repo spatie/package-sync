@@ -2,6 +2,7 @@
 
 import { rmdirSync, existsSync, readFileSync, writeFileSync, unlinkSync, statSync } from 'fs';
 import { basename, extname } from 'path';
+import { config, Configuration } from '../Configuration';
 import { isDirectory } from './helpers';
 
 export enum FileType {
@@ -142,11 +143,15 @@ export class File {
         return this;
     }
 
-    public processTemplate(repoName: string): string {
+    public processTemplate(repoName: string, conf: Configuration | null = null): string {
+        if (conf === null) {
+            conf = config;
+        }
+
         return this.contents
-            .replace(/:vendor_name/g, 'spatie')
+            .replace(/:vendor_name/g, conf.conf.packages.vendor ?? 'spatie')
             .replace(/:package_name/g, repoName)
-            .replace(/author@domain\.com/g, 'freek@spatie.be')
-            .replace(/:author_homepage/g, 'https://spatie.be/open-source/support-us');
+            .replace(/author@domain\.com/g, conf.conf.packages.email ?? 'freek@spatie.be')
+            .replace(/:author_homepage/g, conf.conf.packages.homepage ?? 'https://spatie.be/open-source/support-us');
     }
 }

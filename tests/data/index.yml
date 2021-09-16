@@ -22,6 +22,11 @@ config:
       - package-skeleton-php
       - package-skeleton-laravel
       
+  packages:
+    vendor: spatie
+    email: custom@spatie.be
+    homepage: https://example.org/open-source/support-us
+
   scoreRequirements:
     defaults:
       similar: 0.75

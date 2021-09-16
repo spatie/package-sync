@@ -1,6 +1,7 @@
 import { spawnSync } from 'child_process';
 import { existsSync, lstatSync, readdirSync, statSync } from 'fs';
 import { basename } from 'path';
+import { GitCommandResult } from './GitCommandResult';
 
 const micromatch = require('micromatch');
 
@@ -74,6 +75,13 @@ export function uniqueStrings(arr: string[], allowEmptyLines = true, sortResult 
 
 export function runCommand(cmd: string, args: string[], cwd: string | undefined = undefined, stdio: any = 'inherit') {
     return spawnSync(cmd, args, { cwd: cwd, stdio: stdio, encoding: 'utf8', env: process.env });
+}
+
+export function runGitCommand(cmd: string, cwd: string | undefined = undefined, stdio: any = 'pipe'): GitCommandResult {
+    const result = runCommand('git', cmd.replace(/\s\s+/g, ' ')
+        .split(' '), cwd, stdio);
+
+    return new GitCommandResult(result);
 }
 
 export const last = (arr: any[]) => arr[arr.length - 1] ?? undefined;

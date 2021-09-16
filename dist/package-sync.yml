@@ -9,6 +9,12 @@ config:
     disabled:
       - rewrite-file
 
+  git:
+    branches:
+      default: master
+      format: 'package-sync-{{hash}}'
+      createOn: [fix]
+
   issues:
     ignored:
       # don't install these dependencies:
@@ -22,6 +28,11 @@ config:
       extra_file:
         - .scrutinizer.yml
 
+  packages:
+    vendor: spatie
+    email: freek@spatie.be
+    homepage: https://spatie.be/open-source/support-us
+    
   templates:
     # github organization name
     vendor: spatie
@@ -74,7 +85,8 @@ config:
   ignoreNames:
     - .git/*
     - .idea/*
-    - .vscode/*
+    - .vscode/*    
+    - '*/.gitkeep'
     - README.md
     - CHANGELOG.md
     - art/**/*

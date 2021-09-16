@@ -1,6 +1,5 @@
 import { app } from '../Application';
 import { Repository } from '../repositories/Repository';
-
 import Table from 'cli-table3';
 import { ComparisonKind } from '../types/FileComparisonResult';
 import Fixer from '../fixers/Fixer';
@@ -34,7 +33,9 @@ export class ConsolePrinter {
     }
 
     public static printTable(table: Table.Table) {
-        process.stdout.write(table.toString() + '\n\n');
+        const output = table.toString() + '\n\n';
+
+        process.stdout.write(output);
     }
 
     public static kindColor(kind: ComparisonKind) {
@@ -83,7 +84,7 @@ export class ConsolePrinter {
                 table.push([name, type, desc]);
             });
 
-        this.printTable(table);
+        return table;
     }
 
     public static printRepositoryIssues(repo: Repository) {
@@ -126,7 +127,7 @@ export class ConsolePrinter {
                 ]);
             });
 
-        this.printTable(table);
+        return table;
     }
 
     public static printRepositoryFixerResults(repo: Repository) {
@@ -146,6 +147,6 @@ export class ConsolePrinter {
                 table.push([colorText(issue.name, issue.kind), issue.resolvedByFixer, issue.resolvedNotes.join('; ')]);
             });
 
-        this.printTable(table);
+        return table;
     }
 }

@@ -1,16 +1,17 @@
 #!/bin/bash
 
-THISDIR=$(dirname $0)
+THISFILE=$(realpath $0)
+THISDIR=$(dirname $THISFILE)
 NODE=$(which node)
 
 # support for being run with npx or npm
-if [ -e "$THISDIR/../package-sync/dist/package-sync.js" ]; then
-    $NODE "$THISDIR/../package-sync/dist/package-sync.js" $*
-    exit 0
+if [ -f "$THISDIR/../package-sync-cli/dist/package-sync.js" ]; then
+    $NODE "$THISDIR/../package-sync-cli/dist/package-sync.js" $*
+    exit $?
 fi
 
 # support for running build locally
 if [ -e "$THISDIR/package-sync.js" ]; then
     $NODE "$THISDIR/package-sync.js" $*
-    exit 0
+    exit $?
 fi

@@ -1,26 +1,35 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
+import { Command } from '../commands/Command';
 import PullPackageCommand from '../commands/PullPackage';
 import PullTemplateCommand from '../commands/PullTemplate';
 import { RepositoryKind } from './Repository';
 
-//  (app.config.paths.packages,  app.config.paths.templates)
 export class RepositoryValidator {
-    constructor(public packagesPath: string, public templatesPath: string) {
-        //
+    constructor(
+        public packagesPath: string,
+        public templatesPath: string,
+        public pullPackageCmd: Command | null = null,
+        public pullTemplateCmd: Command | null = null,
+    ) {
+        this.pullPackageCmd = pullPackageCmd ?? PullPackageCommand;
+        this.pullTemplateCmd = pullTemplateCmd ?? PullTemplateCommand;
     }
 
     ensureExists(name: string, kind: RepositoryKind) {
         if (kind === RepositoryKind.PACKAGE) {
             this.ensurePathExists(this.packagesPath);
-            PullPackageCommand.handle({ name });
+            // @ts-ignore
+            this.pullPackageCmd.handle({ name });
             return true;
         }
 
         if (kind === RepositoryKind.SKELETON) {
             this.ensurePathExists(this.templatesPath);
-            PullTemplateCommand.handle({ name });
+            // @ts-ignore
+            this.pullTemplateCmd.handle({ name });
             return true;
         }
 

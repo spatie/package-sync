@@ -1,0 +1,3 @@
+package is :vendor_name/:package_name
+email is author@domain.com
+website is :author_homepage

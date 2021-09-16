@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks the repo for files not in the template 1`] = `
+Array [
+  Object {
+    "name": "one.txt",
+    "resolvedNotes": Array [],
+    "result": Object {
+      "kind": "extra_file",
+      "score": 0,
+    },
+    "score": "-",
+  },
+  Object {
+    "name": "two.txt",
+    "resolvedNotes": Array [],
+    "result": Object {
+      "kind": "extra_file",
+      "score": 0,
+    },
+    "score": "-",
+  },
+]
+`;

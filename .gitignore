@@ -1,6 +1,6 @@
 /node_modules
 /build
-/tempdir
+/coverage
 /dist/temp
 /dist/*.js
 package-lock.json

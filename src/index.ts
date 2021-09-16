@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable no-undef */
+
 import { loadCommand } from './commands/Command';
 
 const yargs = require('yargs');
 
 yargs(process.argv.slice(2))
     .scriptName('package-sync')
-    .version('1.0.0')
+    // @ts-ignore
+    .version(__APP_VERSION__) // this const is defined by esbuild at compile time
     .command(loadCommand(require('./commands/Analyze')))
     .command(loadCommand(require('./commands/Fix')))
     .command(loadCommand(require('./commands/ListFixers')))

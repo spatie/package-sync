@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processes files with template variables 1`] = `
+"package is spatie/my-package
+email is custom@spatie.be
+website is https://example.org/open-source/support-us
+"
+`;

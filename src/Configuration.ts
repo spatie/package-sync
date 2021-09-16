@@ -1,30 +1,52 @@
 import { readFileSync } from 'fs';
 import { ComparisonKind } from './types/FileComparisonResult';
 import { ScoreRequirements } from './types/ScoreRequirements';
-import { FileScoreRequirements } from './types/FileScoreRequirements';
 import { sep, basename } from 'path';
 import { ComparisonScoreRequirements } from './types/ComparisonScoreRequirements';
+import { existsSync } from 'fs';
 
 const yaml = require('js-yaml');
 const micromatch = require('micromatch');
 
+export enum PackageSyncAction {
+    FIX = 'fix', // eslint-disable-line no-unused-vars
+    ANALYZE = 'analyze', // eslint-disable-line no-unused-vars
+}
+
 export interface ConfigurationRecord {
+    paths: {
+        templates: string;
+        packages: string;
+    };
+
     fixers: {
         disabled?: string[];
         OptionalPackages: string[];
     };
 
+    git: {
+        branches: {
+            default: string;
+            format: string;
+            createOn: Set<PackageSyncAction>;
+        };
+    };
+
     scoreRequirements: ScoreRequirements;
     ignoreNames: Array<string>;
     skipComparisons: Array<string>;
-    paths: {
-        templates: string;
-        packages: string;
-    };
+
     templates: {
         vendor: string;
         names: string[];
     };
+
+    packages: {
+        vendor: string;
+        email: string;
+        homepage: string;
+    };
+
     issues: {
         ignored: {
             [ComparisonKind.DIRECTORY_NOT_FOUND]?: string[];
@@ -38,6 +60,41 @@ export interface ConfigurationRecord {
         };
     };
 }
+
+const defaultConfig = {
+    fixers: {
+        disabled: [],
+    },
+    scoreRequirements: {
+        defaults: {
+            similar: 0.5,
+            size: 20,
+        },
+        files: [],
+    },
+    ignoreNames: [],
+    skipComparisons: [],
+    paths: {
+        templates: `${__dirname}/templates`,
+        packages: `${__dirname}/packages`,
+    },
+    templates: {
+        vendor: 'spatie',
+        names: ['package-skeleton-php', 'package-skeleton-laravel'],
+    },
+    issues: {
+        ignored: {
+            [ComparisonKind.DIRECTORY_NOT_FOUND]: [],
+            [ComparisonKind.DIRECTORY_NOT_IN_SKELETON]: [],
+            [ComparisonKind.FILE_DOES_NOT_MATCH]: [],
+            [ComparisonKind.FILE_NOT_IN_SKELETON]: [],
+            [ComparisonKind.FILE_NOT_SIMILAR_ENOUGH]: [],
+            [ComparisonKind.PACKAGE_NOT_USED]: [],
+            [ComparisonKind.PACKAGE_SCRIPT_NOT_FOUND]: [],
+            [ComparisonKind.PACKAGE_VERSION_MISMATCH]: [],
+        },
+    },
+};
 
 export class Configuration {
     public conf: ConfigurationRecord;
@@ -57,6 +114,10 @@ export class Configuration {
     }
 
     public loadConfigurationFile(filename: string) {
+        if (!existsSync(filename)) {
+            return { config: defaultConfig };
+        }
+
         const content = readFileSync(filename, { encoding: 'utf-8' })
             .replace(/\{\{__dirname\}\}/g, __dirname);
 
@@ -68,7 +129,10 @@ export class Configuration {
     }
 
     public qualifiedPackageName(name: string): string {
-        return `${this.conf.templates.vendor}/${name}`;
+        if (name.includes('/') && name.length > 2) {
+            return name;
+        }
+        return `${this.conf.packages.vendor}/${name}`;
     }
 
     public getFullTemplateName(shortName: string): string {
@@ -114,7 +178,7 @@ export class Configuration {
     public getSimilarScoreRequirement(fn: string): number {
         const reqs = config.conf.scoreRequirements;
 
-        return reqs.files.find((req: FileScoreRequirements) => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
+        return reqs.files.find(req => req.name === basename(fn))?.scores?.similar ?? reqs.defaults.similar;
     }
 
     public getMaxAllowedSizeDifferenceScore(fn: string): number {

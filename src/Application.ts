@@ -1,23 +1,23 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
 import { existsSync, mkdirSync } from 'fs';
-import { ComparisonKind } from './types/FileComparisonResult';
-import { ComposerComparer } from './lib/composer/ComposerComparer';
-import { config, Configuration } from './Configuration';
-import { Repository, RepositoryKind } from './repositories/Repository';
-import { RepositoryIssue } from './repositories/RepositoryIssue';
-import { Comparisons } from './lib/comparisions/Comparisons';
-import { RepositoryFile } from './repositories/RepositoryFile';
-import { RepositoryValidator } from './repositories/RepositoryValidator';
+import { ComposerPackagesComparison } from './comparisons/ComposerPackagesComparison';
+import { ComposerScriptsComparison } from './comparisons/ComposerScriptsComparison';
+import { ExtraFilesComparison } from './comparisons/ExtraFilesComparison';
+import { FileExistsComparison } from './comparisons/FileExistsComparison';
+import { FileSizeComparison } from './comparisons/FileSizeComparison';
+import { StringComparison } from './comparisons/StringComparison';
+import { Configuration } from './Configuration';
 import { FixerRepository } from './fixers/FixerRepository';
-import { matches } from './lib/helpers';
-import { sep } from 'path';
+import { Repository, RepositoryKind } from './repositories/Repository';
+import { RepositoryValidator } from './repositories/RepositoryValidator';
 
 export class Application {
     public configuration: Configuration;
 
-    constructor() {
-        this.configuration = config;
+    constructor(configuration: Configuration | null = null) {
+        this.configuration = configuration ?? new Configuration();
 
         this.ensureStoragePathsExist();
     }
@@ -26,117 +26,67 @@ export class Application {
         return this.configuration.conf;
     }
 
+    public loadConfigFile(filename: string | null) {
+        if (this.configuration.filename === filename || filename === null) {
+            return this;
+        }
+
+        return this.useConfig(new Configuration(filename ?? this.configuration.filename));
+    }
+
+    public useConfig(configuration: Configuration) {
+        this.configuration = configuration;
+
+        return this;
+    }
+
     public ensureStoragePathsExist() {
-        if (!existsSync(config.conf.paths.templates)) {
-            mkdirSync(config.conf.paths.templates, { recursive: true });
+        if (!existsSync(this.configuration.conf.paths.templates)) {
+            mkdirSync(this.configuration.conf.paths.templates, { recursive: true });
         }
-        if (!existsSync(config.conf.paths.packages)) {
-            mkdirSync(config.conf.paths.packages, { recursive: true });
+        if (!existsSync(this.configuration.conf.paths.packages)) {
+            mkdirSync(this.configuration.conf.paths.packages, { recursive: true });
         }
-    }
-
-    performStringComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
-        const strComparison = Comparisons.strings(file?.processTemplate(), repoFile?.contents);
-
-        if (!strComparison.meetsRequirement(file.requiredScores.similar)) {
-            const compareResult = {
-                kind: ComparisonKind.FILE_NOT_SIMILAR_ENOUGH,
-                score: strComparison.similarityScore,
-            };
-
-            repo.issues.push(new RepositoryIssue(compareResult, file.relativeName, file, repoFile, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    performSizeComparison(skeleton: Repository, repo: Repository, file: RepositoryFile, repoFile: RepositoryFile | null) {
-        const sizeComparison = Comparisons.filesizes(file.sizeOnDisk, repoFile?.sizeOnDisk);
-
-        if (sizeComparison.meetsRequirement(file.requiredScores.size)) {
-            const result = {
-                kind: ComparisonKind.ALLOWED_SIZE_DIFFERENCE_EXCEEDED,
-                score: sizeComparison.format(2),
-            };
-
-            repo.issues.push(new RepositoryIssue(result, file.relativeName, file, repoFile, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    performFileExistsComparison(skeleton: Repository, repo: Repository, file: RepositoryFile) {
-        if (!file.shouldIgnore && !repo.hasFile(file)) {
-            const kind = file.isFile() ? ComparisonKind.FILE_NOT_FOUND : ComparisonKind.DIRECTORY_NOT_FOUND;
-
-            repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, file, null, skeleton, repo, false));
-
-            return true;
-        }
-
-        return false;
     }
 
     compareRepositories(skeleton: Repository, repo: Repository) {
+        const comparisons = {
+            // FileSizeComparison should be last to prioritize StringComparison
+            files: [FileExistsComparison, StringComparison, FileSizeComparison],
+            other: [ExtraFilesComparison, ComposerScriptsComparison, ComposerPackagesComparison],
+        };
+
         skeleton.files.forEach(file => {
             const repoFile = repo.getFile(file.relativeName);
 
-            if (this.performFileExistsComparison(skeleton, repo, file)) {
-                return;
-            }
+            for (const comparisonClass of comparisons.files) {
+                const comparison = comparisonClass.create(skeleton, repo, file, repoFile);
 
-            if (this.performStringComparison(skeleton, repo, file, repoFile)) {
-                return;
-            }
+                comparison.compare(null);
 
-            if (this.performSizeComparison(skeleton, repo, file, repoFile)) {
-                return;
+                if (!comparison.passed()) {
+                    return;
+                }
             }
         });
 
-        this.checkRepoForFilesNotInSkeleton(repo, skeleton);
-
-        ComposerComparer.comparePackages(skeleton.path, repo.path)
-            .forEach(r =>
-                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
-            );
-
-        ComposerComparer.compareScripts(skeleton.path, repo.path)
-            .forEach(r =>
-                repo.issues.push(new RepositoryIssue(r, r.name, null, null, skeleton, repo, false)),
-            );
-    }
-
-    checkRepoForFilesNotInSkeleton(repo: Repository, skeleton: Repository) {
-        repo.files
-            .filter(file => !matches(file.relativeName, config.conf.ignoreNames))
-            .filter(file => !config.conf.ignoreNames.includes(file.relativeName))
-            .filter(file => !file.shouldIgnore)
-            .filter(file => !skeleton.hasFile(file))
-            .forEach(file => {
-                const kind = file.isFile() ? ComparisonKind.FILE_NOT_IN_SKELETON : ComparisonKind.DIRECTORY_NOT_IN_SKELETON;
-
-                repo.issues.push(new RepositoryIssue({ kind, score: 0 }, file.relativeName, null, file, skeleton, repo, false));
-            });
+        comparisons.other.forEach((comparisonClass: any) => {
+            comparisonClass.create(skeleton, repo, null, null)
+                .compare(null);
+        });
     }
 
     analyzePackage(packageName: string) {
         const skeletonType = packageName.startsWith('laravel-') ? 'laravel' : 'php';
-        const templateName = config.getFullTemplateName(skeletonType);
+        const templateName = this.configuration.getFullTemplateName(skeletonType);
 
-        const skeletonPath = config.templatePath(templateName);
-        const repositoryPath = config.packagePath(packageName);
-        const validator = new RepositoryValidator(config.conf.paths.packages, config.conf.paths.templates);
+        const validator = new RepositoryValidator(this.config.paths.packages, this.config.paths.templates);
 
         validator.ensurePackageExists(packageName);
         validator.ensureTemplateExists(templateName);
 
-        const skeleton = Repository.create(skeletonPath, RepositoryKind.SKELETON);
-        const repo = Repository.create(repositoryPath, RepositoryKind.PACKAGE);
+        const skeleton = Repository.create(this.configuration.templatePath(templateName), RepositoryKind.SKELETON);
+        const repo = Repository.create(this.configuration.packagePath(packageName), RepositoryKind.PACKAGE);
 
         return this.analyzeRepository(skeleton, repo);
     }
@@ -147,7 +97,7 @@ export class Application {
         repo.issues.forEach(issue => {
             FixerRepository.all()
                 .forEach(fixer => {
-                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !config.shouldIgnoreIssue(issue)) {
+                    if (fixer.fixes(issue.kind) && fixer.canFix(issue) && !this.configuration.shouldIgnoreIssue(issue)) {
                         issue.addFixer(new fixer(issue));
                     }
                 });

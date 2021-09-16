@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-unused-vars */
 
+import { app } from '../Application';
 import { Command } from './Command';
 import { GitUtilties } from '../lib/GitUtilties';
-import { config } from '../Configuration';
 
 export default class PullPackageCommand extends Command {
     public static command = 'pull-package <name>';
@@ -14,6 +14,7 @@ export default class PullPackageCommand extends Command {
 
     static handle(argv: any): void {
         const name = argv.name;
+        const config = app.configuration;
 
         GitUtilties.displayStatusMessages = true;
 
