@@ -57,7 +57,7 @@
         "@typescript-eslint/parser": "^4.9.1",
         "better-strip-color": "^1.0.2",
         "concurrently": "^6.0.1",
-        "esbuild": "^0.13.4",
+        "esbuild": "^0.14.2",
         "eslint": "^7.15.0",
         "eslint-config-prettier": "^8.0.0",
         "eslint-plugin-prettier": "^3.2.0",
