@@ -44,7 +44,7 @@ const buildConfig = {
     write: true,
     platform: 'node',
     format: 'cjs',
-    target: ['node12'],
+    target: ['node14'],
     define: {
         __APP_VERSION__: `"${pkg.version}"`,
     },
