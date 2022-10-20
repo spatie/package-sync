@@ -5,84 +5,84 @@ Repository {
   "composerData": Composer {
     "filename": "composer.json",
     "loaded": false,
-    "rawData": Object {},
+    "rawData": {},
   },
-  "fileList": Array [
+  "fileList": [
     File {
       "data": "{
-    \\"name\\": \\"test/package-name\\",
-    \\"description\\": \\"some description\\",
-    \\"keywords\\": [
-        \\"test\\"
+    "name": "test/package-name",
+    "description": "some description",
+    "keywords": [
+        "test"
     ],
-    \\"homepage\\": \\"https://github.com/test/package-name\\",
-    \\"license\\": \\"MIT\\",
-    \\"require\\": {
-        \\"php\\": \\"^7.2|^8.0\\",
-        \\"psr/http-message\\": \\"^1.0\\"
+    "homepage": "https://github.com/test/package-name",
+    "license": "MIT",
+    "require": {
+        "php": "^7.2|^8.0",
+        "psr/http-message": "^1.0"
     },
-    \\"require-dev\\": {
-        \\"phpunit/phpunit\\": \\"^8.0|^9.3\\"
+    "require-dev": {
+        "phpunit/phpunit": "^8.0|^9.3"
     },
-    \\"autoload\\": {
-        \\"psr-4\\": {
-            \\"Test\\\\\\\\Url\\\\\\\\\\": \\"src\\"
+    "autoload": {
+        "psr-4": {
+            "Test\\\\Url\\\\": "src"
         }
     },
-    \\"autoload-dev\\": {
-        \\"psr-4\\": {
-            \\"Test\\\\\\\\Url\\\\\\\\Test\\\\\\\\\\": \\"tests\\"
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\\\Url\\\\Test\\\\": "tests"
         }
     },
-    \\"scripts\\": {
-        \\"test\\": \\"vendor/bin/phpunit\\",
-        \\"psalm\\": \\"vendor/bin/psalm\\"
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "psalm": "vendor/bin/psalm"
     },
-    \\"config\\": {
-        \\"sort-packages\\": true
+    "config": {
+        "sort-packages": true
     }
 }",
       "fn": "composer.json",
       "type": "file",
     },
     File {
-      "data": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
+      "data": "<?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    xmlns:xsi=\\"http://www.w3.org/2001/XMLSchema-instance\\"
-    xsi:noNamespaceSchemaLocation=\\"vendor/phpunit/phpunit/phpunit.xsd\\"
-    backupGlobals=\\"false\\"
-    backupStaticAttributes=\\"false\\"
-    bootstrap=\\"vendor/autoload.php\\"
-    colors=\\"true\\"
-    convertErrorsToExceptions=\\"true\\"
-    convertNoticesToExceptions=\\"true\\"
-    convertWarningsToExceptions=\\"true\\"
-    processIsolation=\\"false\\"
-    stopOnFailure=\\"false\\"
-    executionOrder=\\"random\\"
-    failOnWarning=\\"true\\"
-    failOnRisky=\\"true\\"
-    failOnEmptyTestSuite=\\"true\\"
-    beStrictAboutOutputDuringTests=\\"true\\"
-    verbose=\\"true\\"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    bootstrap="vendor/autoload.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    executionOrder="random"
+    failOnWarning="true"
+    failOnRisky="true"
+    failOnEmptyTestSuite="true"
+    beStrictAboutOutputDuringTests="true"
+    verbose="true"
 >
     <testsuites>
-        <testsuite name=\\"VendorName Test Suite\\">
+        <testsuite name="VendorName Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
     <coverage>
         <include>
-            <directory suffix=\\".php\\">./src</directory>
+            <directory suffix=".php">./src</directory>
         </include>
         <report>
-            <html outputDirectory=\\"build/coverage\\"/>
-            <text outputFile=\\"build/coverage.txt\\"/>
-            <clover outputFile=\\"build/logs/clover.xml\\"/>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="build/coverage.txt"/>
+            <clover outputFile="build/logs/clover.xml"/>
         </report>
     </coverage>
     <logging>
-        <junit outputFile=\\"build/report.junit.xml\\"/>
+        <junit outputFile="build/report.junit.xml"/>
     </logging>
 </phpunit>
 ",
@@ -90,7 +90,7 @@ Repository {
       "type": "file",
     },
   ],
-  "issues": Array [],
+  "issues": [],
   "kind": "package",
   "loadedFiles": true,
   "path": "test-package",

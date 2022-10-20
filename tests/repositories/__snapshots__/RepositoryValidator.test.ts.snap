@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ensures a package has been cloned or updated 1`] = `
-Array [
-  Object {
+[
+  {
     "name": "my-test-package",
   },
 ]
 `;
 
 exports[`ensures a template has been cloned or updated 1`] = `
-Array [
-  Object {
+[
+  {
     "name": "my-test-template",
   },
 ]

@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`runs a git command to pull a repository when the target dir exists 1`] = `
-Array [
+[
   "git pull lib",
 ]
 `;
 
 exports[`runs the correct git command to clone a repository when the target dir doesn't exist 1`] = `
-Array [
+[
   "git clone https://github.com/vendorname/some-repo-name.git target-dir temp",
 ]
 `;

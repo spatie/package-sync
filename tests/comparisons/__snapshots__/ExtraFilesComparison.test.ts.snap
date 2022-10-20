@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`creates issues when there are files that exist only in the repo directory 1`] = `
-Array [
-  Object {
+[
+  {
     "kind": "extra_file",
     "name": "one.txt",
   },
-  Object {
+  {
     "kind": "extra_file",
     "name": "two.txt",
   },
