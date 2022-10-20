@@ -4,6 +4,10 @@ All notable changes to `package-sync` will be documented in this file.
 
 ---
 
+# 1.3.2 - 2022-10-20
+
+- update deps
+
 ## 1.3.1 - unreleased
 
 - fix config file object references (#14)
