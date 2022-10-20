@@ -1,6 +1,6 @@
 {
     "name": "package-sync-cli",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "keep package repositories in sync with a master template repository",
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",
