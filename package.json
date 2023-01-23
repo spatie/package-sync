@@ -57,7 +57,7 @@
         "@typescript-eslint/parser": "^5.40.1",
         "better-strip-color": "^1.0.2",
         "concurrently": "^7.4.0",
-        "esbuild": "^0.15.12",
+        "esbuild": "^0.17.4",
         "eslint": "^8.25.0",
         "husky": "^8.0.1",
         "is-ci": "^3.0.1",
