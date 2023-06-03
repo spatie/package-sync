@@ -81,6 +81,6 @@ export abstract class Comparison {
     }
 
     public meetsRequirement(minimum: number | null): boolean {
-        return (this.score ?? 0) >= (minimum ?? 15);
+        return (Number(this.score ?? 0)) >= (minimum ?? 15);
     }
 }
