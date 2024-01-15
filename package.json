@@ -53,7 +53,7 @@
         "@types/jest": "^29.2.0",
         "@types/node": "^20.1.0",
         "@types/yargs": "^17.0.13",
-        "@typescript-eslint/eslint-plugin": "^5.40.1",
+        "@typescript-eslint/eslint-plugin": "^6.18.1",
         "@typescript-eslint/parser": "^5.40.1",
         "better-strip-color": "^1.0.2",
         "concurrently": "^8.0.1",
