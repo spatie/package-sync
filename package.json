@@ -58,7 +58,7 @@
         "better-strip-color": "^1.0.2",
         "concurrently": "^8.0.1",
         "esbuild": "^0.20.0",
-        "eslint": "^8.25.0",
+        "eslint": "^9.9.1",
         "husky": "^9.0.11",
         "is-ci": "^3.0.1",
         "jest": "^29.2.1",
