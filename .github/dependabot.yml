@@ -21,4 +21,7 @@ updates:
           - "patch"
     allow:
       - dependency-type: direct
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     versioning-strategy: increase-if-necessary
